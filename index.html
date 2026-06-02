@@ -1,0 +1,3012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datalastic API Documentation: Vessel Tracking, AIS & Maritime Data</title>
+<meta name="description" content="Datalastic API Documentation for the maritime API. Query live AIS vessel positions, historical ship data, ports, and sea routes across 20 endpoints with clean JSON responses and global coverage.">
+<link rel="canonical" href="https://docs.datalastic.com/">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Datalastic API Documentation: Vessel Tracking, AIS & Maritime Data">
+<meta property="og:description" content="Datalastic API Documentation for the maritime API. Query live AIS vessel positions, historical ship data, ports, and sea routes across 20 endpoints with clean JSON responses and global coverage.">
+<meta property="og:url" content="https://docs.datalastic.com/">
+<meta property="og:site_name" content="Datalastic">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Datalastic API Documentation">
+<meta name="twitter:description" content="Live AIS vessel tracking, historical ship data, ports, and sea routes. 20 endpoints, clean JSON, global coverage.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "name": "Datalastic API Documentation",
+  "description": "Datalastic API Documentation for the vessel tracking and maritime API: live AIS data, historical ship positions, ports, and sea routes.",
+  "url": "https://docs.datalastic.com/",
+  "author": {
+    "@type": "Organization",
+    "name": "Datalastic",
+    "url": "https://datalastic.com"
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;600;700&family=Khula:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+:root{
+  --color-dark:#0B0A18;
+  --color-purple:#6046AF;
+  --color-cyan:#92DDEA;
+  --color-pink:#FFA5D8;
+  --color-soft-purple:#BE9DDF;
+  --color-blue:#7EB8DA;
+  --color-bg:#ffffff;
+  --color-surface:#f7f7fb;
+  --color-border:#ebebf5;
+  --color-text:#1a1a2e;
+  --color-text-muted:#666680;
+  --sidebar-w:260px;
+  --rail-w:200px;
+  --content-max:780px;
+  --scroll-offset:80px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;scroll-padding-top:var(--scroll-offset);}
+body{
+  font-family:'Khula',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--color-bg);
+  color:var(--color-text);
+  line-height:1.65;
+  font-size:15px;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.mono,code,pre,.method-badge,.url-bar,.endpoint-url{font-family:'Inconsolata',monospace;}
+a{color:var(--color-purple);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ---------- Layout ---------- */
+.app{display:flex;min-height:100vh;}
+.sidebar{
+  width:var(--sidebar-w);
+  flex:0 0 var(--sidebar-w);
+  position:fixed;top:0;left:0;bottom:0;
+  background:var(--color-surface);
+  border-right:1px solid var(--color-border);
+  display:flex;flex-direction:column;
+  z-index:200;
+}
+.main-wrap{
+  margin-left:var(--sidebar-w);
+  flex:1;
+  display:flex;
+  justify-content:center;
+  min-width:0;
+}
+.content{
+  max-width:var(--content-max);
+  width:100%;
+  padding:48px 40px 120px;
+  min-width:0;
+}
+.rail{
+  width:var(--rail-w);
+  flex:0 0 var(--rail-w);
+  padding:48px 24px 48px 0;
+}
+.rail-inner{
+  position:sticky;
+  top:48px;
+}
+
+/* ---------- Sidebar ---------- */
+.brand{
+  display:flex;align-items:center;gap:10px;
+  padding:20px 22px 16px;
+}
+.brand svg{flex:0 0 auto;}
+.brand-name{
+  font-family:'Inconsolata',monospace;
+  font-weight:700;font-size:20px;
+  color:var(--color-text);letter-spacing:-.5px;
+}
+.search-wrap{padding:4px 18px 14px;position:relative;}
+.search-input{
+  width:100%;
+  padding:9px 12px 9px 34px;
+  border:1px solid var(--color-border);
+  border-radius:12px;
+  background:var(--color-bg);
+  font-family:'Khula',sans-serif;
+  font-size:13px;
+  color:var(--color-text);
+  outline:none;
+}
+.search-input:focus{border-color:var(--color-purple);box-shadow:0 0 0 3px rgba(96,70,175,.12);}
+.search-icon{position:absolute;left:30px;top:50%;transform:translateY(-50%);color:var(--color-text-muted);pointer-events:none;}
+.search-kbd{
+  position:absolute;right:30px;top:50%;transform:translateY(-50%);
+  font-family:'Inconsolata',monospace;font-size:11px;
+  color:var(--color-text-muted);
+  border:1px solid var(--color-border);
+  border-radius:5px;padding:1px 5px;background:var(--color-surface);
+  pointer-events:none;
+}
+.nav{flex:1;overflow-y:auto;padding:0 10px 12px;}
+.nav-group{margin-bottom:4px;}
+.nav-group-title{
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:'Inconsolata',monospace;
+  font-size:11px;font-weight:700;letter-spacing:.6px;
+  color:var(--color-text-muted);
+  text-transform:uppercase;
+  padding:12px 12px 6px;
+  cursor:pointer;user-select:none;
+}
+.nav-group-title .chev{transition:transform .18s;font-size:10px;}
+.nav-group.collapsed .chev{transform:rotate(-90deg);}
+.nav-group.collapsed .nav-items{display:none;}
+.nav-items{display:flex;flex-direction:column;}
+.nav-link{
+  font-size:13.5px;
+  color:var(--color-text-muted);
+  padding:5px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  display:block;
+  transition:background .12s,color .12s;
+  border-left:2px solid transparent;
+}
+.nav-link:hover{background:rgba(96,70,175,.07);color:var(--color-text);text-decoration:none;}
+.nav-link.active{
+  color:var(--color-purple);
+  font-weight:700;
+  background:rgba(96,70,175,.10);
+  border-left-color:var(--color-purple);
+}
+.nav-link.search-hidden{display:none;}
+.nav-group.search-hidden{display:none;}
+.sidebar-cta{padding:14px 18px;border-top:1px solid var(--color-border);}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  border-radius:16px;
+  font-family:'Khula',sans-serif;
+  font-weight:700;font-size:14px;
+  padding:11px 20px;
+  cursor:pointer;border:none;
+  transition:transform .1s,box-shadow .15s,background .15s;
+  text-decoration:none;
+}
+.btn:hover{text-decoration:none;}
+.btn-primary{background:var(--color-purple);color:#fff;}
+.btn-primary:hover{background:#503a93;box-shadow:0 4px 14px rgba(96,70,175,.3);}
+.btn-block{width:100%;}
+.btn-ghost{background:transparent;border:1px solid var(--color-border);color:var(--color-text);}
+.btn-ghost:hover{border-color:var(--color-purple);color:var(--color-purple);}
+.btn-sm{padding:7px 14px;font-size:13px;border-radius:12px;}
+
+/* ---------- Hamburger ---------- */
+.topbar{
+  display:none;
+  position:fixed;top:0;left:0;right:0;height:54px;
+  background:var(--color-surface);
+  border-bottom:1px solid var(--color-border);
+  z-index:150;
+  align-items:center;
+  padding:0 14px;gap:12px;
+}
+.hamburger{
+  background:none;border:1px solid var(--color-border);
+  border-radius:10px;width:38px;height:38px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--color-text);
+}
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(11,10,24,.4);z-index:180;
+}
+
+/* ---------- Content typography ---------- */
+.section{margin-bottom:72px;scroll-margin-top:var(--scroll-offset);}
+.section.search-hidden{display:none;}
+.section h1{font-size:34px;font-weight:700;letter-spacing:-.5px;margin-bottom:10px;line-height:1.2;}
+.section h2{font-size:24px;font-weight:700;margin:0 0 8px;letter-spacing:-.3px;}
+.section h3{font-size:17px;font-weight:700;margin:28px 0 10px;}
+.section h4{font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.5px;}
+.section p{margin-bottom:14px;color:var(--color-text);}
+.muted{color:var(--color-text-muted);}
+.lead{font-size:17px;color:var(--color-text-muted);margin-bottom:20px;}
+.section ul,.section ol{margin:0 0 16px 22px;}
+.section li{margin-bottom:6px;}
+hr.div{border:none;border-top:1px solid var(--color-border);margin:36px 0;}
+
+/* inline code pill */
+code.pill,p code,li code,td code{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:6px;
+  padding:1px 6px;
+  font-size:13px;
+  color:var(--color-purple);
+}
+.type-pill{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:6px;padding:1px 7px;font-size:12.5px;
+  font-family:'Inconsolata',monospace;color:var(--color-purple);
+  display:inline-block;
+}
+
+/* ---------- Hero ---------- */
+.hero{
+  background:var(--color-dark);
+  border-radius:20px;
+  padding:36px 36px;
+  margin-bottom:34px;
+  position:relative;overflow:hidden;
+}
+.hero h2{color:#fff;font-size:24px;margin-bottom:8px;}
+.hero p{color:var(--color-soft-purple);margin-bottom:20px;}
+.hero .btn-primary{background:var(--color-cyan);color:var(--color-dark);}
+.hero .btn-primary:hover{background:#a8e6f1;}
+.hero-deco{position:absolute;right:-30px;top:-30px;opacity:.18;color:var(--color-soft-purple);}
+
+/* ---------- Stats ---------- */
+.stats{display:flex;gap:14px;margin:26px 0;flex-wrap:wrap;}
+.stat{
+  flex:1;min-width:140px;
+  border:1px solid var(--color-border);
+  border-radius:16px;padding:18px 20px;
+  background:var(--color-surface);
+}
+.stat .num{font-family:'Inconsolata',monospace;font-size:26px;font-weight:700;color:var(--color-purple);}
+.stat .lbl{font-size:13px;color:var(--color-text-muted);}
+
+/* ---------- Tables ---------- */
+.table-wrap{overflow-x:auto;border:1px solid var(--color-border);border-radius:14px;margin:14px 0 18px;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{
+  background:var(--color-surface);
+  text-align:left;font-weight:700;
+  padding:10px 14px;border-bottom:1px solid var(--color-border);
+  font-family:'Inconsolata',monospace;font-size:12.5px;
+  letter-spacing:.3px;color:var(--color-text);
+  white-space:nowrap;
+}
+tbody td{padding:9px 14px;border-bottom:1px solid var(--color-border);vertical-align:top;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:rgba(96,70,175,.03);}
+.req-badge{
+  background:var(--color-purple);color:#fff;
+  font-family:'Inconsolata',monospace;font-size:10.5px;font-weight:700;
+  padding:1px 7px;border-radius:6px;letter-spacing:.3px;
+  text-transform:uppercase;white-space:nowrap;
+}
+.opt-badge{
+  color:var(--color-text-muted);font-size:12px;font-style:normal;
+}
+
+/* ---------- Endpoint card ---------- */
+.endpoint{margin-top:8px;}
+.method-row{
+  display:flex;align-items:stretch;gap:0;
+  border-radius:10px;overflow:hidden;
+  margin:8px 0 18px;
+  border:1px solid var(--color-border);
+}
+.method-badge{
+  display:flex;align-items:center;
+  font-weight:700;font-size:13px;
+  padding:0 16px;
+  letter-spacing:.5px;
+  color:#fff;background:var(--color-purple);
+}
+.method-badge.post{background:var(--color-cyan);color:var(--color-dark);}
+.url-bar{
+  flex:1;
+  background:var(--color-dark);
+  color:#fff;
+  display:flex;align-items:center;
+  padding:10px 14px;
+  font-size:13.5px;
+  overflow-x:auto;white-space:nowrap;
+  gap:10px;
+}
+.url-bar .u{flex:1;}
+.copy-btn{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  color:#cfcfe6;
+  border-radius:7px;
+  font-family:'Inconsolata',monospace;font-size:11px;
+  padding:4px 9px;cursor:pointer;white-space:nowrap;
+  transition:background .12s,color .12s;
+}
+.copy-btn:hover{background:rgba(255,255,255,.16);color:#fff;}
+.copy-btn.copied{background:var(--color-cyan);color:var(--color-dark);border-color:var(--color-cyan);}
+
+/* ---------- Code examples ---------- */
+.code-block{margin:14px 0 18px;border-radius:12px;overflow:hidden;border:1px solid #23223a;}
+.tabs{
+  display:flex;background:#15142a;border-bottom:1px solid #23223a;
+  overflow-x:auto;
+}
+.tab{
+  font-family:'Inconsolata',monospace;font-size:12.5px;
+  color:#9b9bc0;padding:9px 15px;cursor:pointer;
+  border:none;background:none;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:color .12s;
+}
+.tab:hover{color:#fff;}
+.tab.active{color:var(--color-cyan);border-bottom-color:var(--color-cyan);}
+.code-pane{position:relative;display:none;}
+.code-pane.active{display:block;}
+.code-pane pre{margin:0;padding:0;}
+.code-pane pre code.hljs{
+  background:var(--color-dark)!important;
+  padding:16px 16px 16px;
+  font-size:13px;line-height:1.6;
+  display:block;overflow-x:auto;
+}
+.code-pane .copy-btn{position:absolute;top:9px;right:9px;z-index:2;}
+
+/* single code (no tabs) */
+.code-single{position:relative;margin:14px 0 18px;border-radius:12px;overflow:hidden;border:1px solid #23223a;}
+.code-single pre{margin:0;}
+.code-single pre code.hljs{background:var(--color-dark)!important;padding:16px;font-size:13px;line-height:1.6;display:block;overflow-x:auto;}
+.code-single .copy-btn{position:absolute;top:9px;right:9px;z-index:2;}
+
+/* ---------- Collapsible / response attrs ---------- */
+.collapse{border:1px solid var(--color-border);border-radius:12px;margin:14px 0 18px;overflow:hidden;}
+.collapse-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;cursor:pointer;user-select:none;
+  background:var(--color-surface);
+  font-family:'Inconsolata',monospace;font-weight:700;font-size:13.5px;
+}
+.collapse-head .chev{transition:transform .18s;font-size:11px;color:var(--color-text-muted);}
+.collapse.open .chev{transform:rotate(90deg);}
+.collapse-body{display:none;padding:6px 16px 12px;}
+.collapse.open .collapse-body{display:block;}
+.attr{
+  display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--color-border);
+  font-size:13px;flex-wrap:wrap;
+}
+.attr:last-child{border-bottom:none;}
+.attr .a-name{font-family:'Inconsolata',monospace;font-weight:700;color:var(--color-text);}
+.attr .a-type{font-family:'Inconsolata',monospace;color:var(--color-blue);font-size:12px;}
+.attr .a-desc{color:var(--color-text-muted);flex:1;min-width:180px;}
+
+/* ---------- Endpoint Section Tabs ---------- */
+.ep-tabbar{
+  display:flex;gap:0;
+  border-bottom:2px solid var(--color-border);
+  margin:18px 0 0;
+  overflow-x:auto;scrollbar-width:none;
+}
+.ep-tabbar::-webkit-scrollbar{display:none;}
+.ep-tab{
+  padding:9px 18px;
+  border:none;background:none;
+  font-family:'Khula',sans-serif;font-size:14px;font-weight:600;
+  color:var(--color-text-muted);cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-2px;white-space:nowrap;
+  transition:color .15s,border-color .15s;
+}
+.ep-tab:hover{color:var(--color-text);}
+.ep-tab.active{color:var(--color-purple);border-bottom-color:var(--color-purple);}
+.ep-pane{display:none;padding-top:18px;}
+.ep-pane.active{display:block;}
+.tryit-inline{padding:4px 0;}
+.brand-logo{max-height:30px;width:auto;display:block;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:4px;color:var(--color-text);}
+.field .req-badge{margin-left:6px;}
+.field-input-wrap{position:relative;}
+.field input{
+  width:100%;padding:9px 12px;border:1px solid var(--color-border);
+  border-radius:10px;font-family:'Inconsolata',monospace;font-size:13px;
+  background:var(--color-bg);color:var(--color-text);outline:none;
+}
+.field input:focus{border-color:var(--color-purple);box-shadow:0 0 0 3px rgba(96,70,175,.12);}
+.field input.key-input{padding-left:32px;}
+.lock-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--color-text-muted);pointer-events:none;}
+.try-result{
+  margin-top:14px;border-radius:10px;overflow:hidden;display:none;border:1px solid #23223a;
+}
+.try-result.show{display:block;}
+.try-status{
+  font-family:'Inconsolata',monospace;font-size:12.5px;padding:7px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.try-status.ok{background:rgba(146,221,234,.15);color:#0b7285;}
+.try-status.err{background:rgba(255,165,216,.18);color:#a61e6a;}
+.try-result pre{margin:0;}
+.try-result pre code.hljs{background:var(--color-dark)!important;padding:14px;font-size:12.5px;max-height:380px;overflow:auto;display:block;}
+.post-note{
+  background:rgba(146,221,234,.14);border:1px solid var(--color-cyan);
+  border-radius:10px;padding:12px 14px;font-size:13.5px;color:#0b6a7a;
+}
+
+/* ---------- after-endpoint CTA ---------- */
+.endpoint-cta{
+  font-size:13px;color:var(--color-text-muted);
+  margin:14px 0 0;
+}
+.endpoint-cta a{font-weight:700;}
+
+/* ---------- callouts ---------- */
+.callout{
+  border:1px solid var(--color-border);border-left:3px solid var(--color-purple);
+  background:var(--color-surface);border-radius:10px;padding:14px 16px;margin:16px 0;
+  font-size:13.5px;
+}
+.callout.cyan{border-left-color:var(--color-cyan);}
+.callout.pink{border-left-color:var(--color-pink);}
+.callout strong{color:var(--color-text);}
+
+/* ---------- right rail ---------- */
+.rail-title{
+  font-family:'Inconsolata',monospace;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.6px;color:var(--color-text-muted);
+  margin-bottom:10px;
+}
+.rail-link{
+  display:block;font-size:12.5px;color:var(--color-text-muted);
+  padding:4px 0 4px 12px;border-left:2px solid var(--color-border);
+  cursor:pointer;transition:color .12s,border-color .12s;
+}
+.rail-link:hover{color:var(--color-text);text-decoration:none;}
+.rail-link.active{color:var(--color-purple);border-left-color:var(--color-purple);font-weight:700;}
+
+/* ---------- SDK cards ---------- */
+.sdk-card{border:1px solid var(--color-border);border-radius:16px;padding:20px 22px;margin-bottom:18px;background:var(--color-surface);}
+.sdk-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+.sdk-head h3{margin:0;}
+.badge-soon{background:var(--color-pink);color:var(--color-dark);font-family:'Inconsolata',monospace;font-size:11px;font-weight:700;padding:2px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px;}
+
+/* vessel types search */
+.vt-search{
+  width:100%;max-width:420px;padding:10px 14px;border:1px solid var(--color-border);
+  border-radius:12px;font-family:'Khula',sans-serif;font-size:14px;margin:6px 0 14px;outline:none;
+}
+.vt-search:focus{border-color:var(--color-purple);box-shadow:0 0 0 3px rgba(96,70,175,.12);}
+.vt-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px;}
+.vt-tag{
+  font-family:'Inconsolata',monospace;font-size:12.5px;
+  border:1px solid var(--color-border);background:var(--color-surface);
+  border-radius:8px;padding:4px 10px;color:var(--color-text);
+}
+.vt-tag.vt-hidden{display:none;}
+.vt-count{font-size:12.5px;color:var(--color-text-muted);margin-bottom:8px;}
+
+@media (max-width:1100px){
+  .rail{display:none;}
+}
+@media (max-width:768px){
+  :root{--scroll-offset:64px;}
+  .sidebar{
+    transform:translateX(-100%);
+    transition:transform .22s ease;
+    width:280px;flex-basis:280px;top:0;
+    box-shadow:0 0 30px rgba(0,0,0,.2);
+  }
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.show{display:block;}
+  .main-wrap{margin-left:0;}
+  .topbar{display:flex;}
+  .content{padding:74px 18px 90px;}
+  .rail{display:none;}
+  .section h1{font-size:27px;}
+  .hero{padding:26px 22px;}
+}
+.no-results{padding:40px 0;text-align:center;color:var(--color-text-muted);display:none;}
+.no-results.show{display:block;}
+
+/* Add-on badge pill */
+.badge-addon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffcc80;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  font-family: 'Khula', sans-serif;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Add-on callout banner on endpoint cards */
+.addon-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fff8f0;
+  border: 1px solid #ffcc80;
+  border-left: 4px solid #e65100;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-family: 'Khula', sans-serif;
+  font-size: 14px;
+  color: #5d3a00;
+  line-height: 1.5;
+}
+.addon-callout .addon-callout-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.addon-callout a {
+  color: #e65100;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* Nav section divider between core and add-ons within a group */
+.nav-addon-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 12px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #e65100;
+  font-family: 'Khula', sans-serif;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.nav-addon-divider::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #ffcc80;
+}
+
+/* Add-on nav items */
+.nav-link.addon-item {
+  color: var(--color-text-muted);
+}
+.nav-link.addon-item .addon-pip {
+  font-size: 10px;
+  margin-right: 2px;
+  opacity: 0.8;
+}
+.nav-link.addon-item.active,
+.nav-link.addon-item:hover {
+  color: #e65100;
+}
+
+/* Plan overview cards in Introduction */
+.plan-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (max-width: 640px) {
+  .plan-overview { grid-template-columns: 1fr; }
+}
+.plan-card {
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 20px;
+  background: var(--color-surface);
+}
+.plan-card.core { border-top: 3px solid var(--color-purple); }
+.plan-card.addons { border-top: 3px solid #e65100; }
+.plan-card h4 {
+  font-family: 'Inconsolata', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: var(--color-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.plan-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.plan-card ul li {
+  font-family: 'Khula', sans-serif;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  padding: 3px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.plan-card ul li::before {
+  content: '•';
+  color: var(--color-purple);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.plan-card.addons ul li::before { color: #e65100; }
+.plan-card .plan-note {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: 'Khula', sans-serif;
+  font-style: italic;
+}
+
+/* Credit table section headers */
+.credit-section-head {
+  font-family: 'Khula', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+.credit-section-head.addon-head {
+  color: #e65100;
+  background: #fff8f0;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <span class="brand-name">datalastic</span>
+</div>
+<div class="sidebar-overlay" id="overlay"></div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="https://datalastic.com" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+      <img class="brand-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAYAAADL1t+KAAAAAXNSR0IArs4c6QAAAAlwSFlzAAAOxAAADsQBlSsOGwAAA51pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0n77u/JyBpZD0nVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkJz8+Cjx4OnhtcG1ldGEgeG1sbnM6eD0nYWRvYmU6bnM6bWV0YS8nPgo8cmRmOlJERiB4bWxuczpyZGY9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMnPgoKIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PScnCiAgeG1sbnM6QXR0cmliPSdodHRwOi8vbnMuYXR0cmlidXRpb24uY29tL2Fkcy8xLjAvJz4KICA8QXR0cmliOkFkcz4KICAgPHJkZjpTZXE+CiAgICA8cmRmOmxpIHJkZjpwYXJzZVR5cGU9J1Jlc291cmNlJz4KICAgICA8QXR0cmliOkNyZWF0ZWQ+MjAyMS0wNS0yNzwvQXR0cmliOkNyZWF0ZWQ+CiAgICAgPEF0dHJpYjpFeHRJZD44ZTY0ZGI3NS03ZDBkLTQ2NTItYmY5OC1iZjVlYzViZjczMDk8L0F0dHJpYjpFeHRJZD4KICAgICA8QXR0cmliOkZiSWQ+NTI1MjY1OTE0MTc5NTgwPC9BdHRyaWI6RmJJZD4KICAgICA8QXR0cmliOlRvdWNoVHlwZT4yPC9BdHRyaWI6VG91Y2hUeXBlPgogICAgPC9yZGY6bGk+CiAgIDwvcmRmOlNlcT4KICA8L0F0dHJpYjpBZHM+CiA8L3JkZjpEZXNjcmlwdGlvbj4KCiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0nJwogIHhtbG5zOnBkZj0naHR0cDovL25zLmFkb2JlLmNvbS9wZGYvMS4zLyc+CiAgPHBkZjpBdXRob3I+SnVsaWEgU3ljaGV2YTwvcGRmOkF1dGhvcj4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PScnCiAgeG1sbnM6eG1wPSdodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvJz4KICA8eG1w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" alt="Datalastic">
+      <span class="brand-name">datalastic</span>
+    </a>
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="navSearch" placeholder="Search docs..." autocomplete="off">
+      <span class="search-kbd">⌘K</span>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="no-results" id="navNoResults" style="display:none;padding:12px 16px;color:#888;font-size:13px">No results</div>
+    <div class="sidebar-cta">
+      <a class="btn btn-primary btn-block" href="https://datalastic.com/pricing/" target="_blank" rel="noopener">Get API Key →</a>
+    </div>
+  </aside>
+
+  <div class="main-wrap">
+    <main class="content" id="content"></main>
+    <div class="rail">
+      <div class="rail-inner">
+        <div class="rail-title">On this page</div>
+        <div id="railLinks"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   DATA LAYER: navigation + endpoint/content definitions
+   ========================================================================= */
+const NAV = [
+  {group:"Getting Started", items:["introduction","authentication","stat","quickstart","rate-limits"]},
+  {group:"Core Concepts", items:["credit-system","async-reports","field-reference","vessel-types","error-codes"]},
+  {group:"Live Data", items:["vessel","vessel_pro","vessel_bulk","vessel_inradius","sat-e"]},
+  {group:"Historical Data", items:["vessel_history","inradius_history"]},
+  {group:"Vessel Data", items:["vessel_info","vessel_find","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine"]},
+  {group:"Ports & Routes", items:["port_find","port","route"]},
+  {group:"Companies", items:["companies"]},
+  {group:"Bulk Reports", items:["report-vessel_list","report-port_list","report-inradius_history","report-request_usage"]},
+  {group:"Add-On Reports", items:["report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies"]},
+  {group:"SDKs & Libraries", items:["sdk-python","sdk-node","sdk-go"]}
+];
+const TITLES = {
+  "introduction":"Introduction","authentication":"Authentication","stat":"Account & Usage","quickstart":"Quickstart","rate-limits":"Rate Limits & Credits",
+  "credit-system":"Credit System","async-reports":"Async Reports","field-reference":"Field Reference","vessel-types":"Vessel Types","error-codes":"Error Codes",
+  "vessel":"Vessel Tracking","vessel_pro":"Pro Vessel Tracking","vessel_bulk":"Bulk Vessel Tracking","vessel_inradius":"Area Traffic","sat-e":"SAT-E (Satellite Estimator)",
+  "vessel_history":"Vessel History","inradius_history":"Historical Area Scan",
+  "vessel_info":"Vessel Info","vessel_find":"Vessel Finder","dry_dock_dates":"Dry Dock Dates","casualty":"Casualties","inspections":"Inspections & Detentions","spd":"Sales & Demolitions","ownership":"Ownership","class_society":"Classification Society","engine":"Vessel Engines",
+  "port_find":"Port Finder","port":"Port Terminals","route":"Sea Routes",
+  "companies":"Maritime Companies",
+  "report-vessel_list":"Vessel List","report-port_list":"Port List","report-inradius_history":"Historical Area Scan","report-request_usage":"API Usage Report",
+  "report-dry_dock_dates":"Dry Dock Dates","report-casualty":"Ship Casualties","report-inspections":"Ship Inspections","report-spd":"Sales & Demolitions","report-ownership":"Vessel Ownership","report-class_society":"Classification Society","report-engine":"Vessel Engines","report-companies":"Maritime Companies",
+  "sdk-python":"Python SDK","sdk-node":"Node.js SDK","sdk-go":"Go SDK"
+};
+
+const PRICING = "https://datalastic.com/pricing/";
+
+/* helper to build code examples for a standard GET endpoint */
+function genGetExamples(base, path, params){
+  const qs = Object.entries(params).map(([k,v])=>`${k}=${v}`).join('&');
+  const fullUrl = `${base}${path}?api-key=YOUR_API_KEY&${qs}`;
+  const pyParams = Object.entries(params).map(([k,v])=>`    '${k}': '${v}'`).join(',\n');
+  const nodeParams = Object.entries(params).map(([k,v])=>`${k}: '${v}'`).join(', ');
+  const goAdds = Object.entries(params).map(([k,v])=>`    q.Add("${k}", "${v}")`).join('\n');
+  const rubyParams = Object.entries(params).map(([k,v])=>`${k}: '${v}'`).join(', ');
+  const phpParams = Object.entries(params).map(([k,v])=>`'${k}' => '${v}'`).join(', ');
+  return {
+    curl:`curl "${fullUrl}"`,
+    python:`import requests
+import json
+
+params = {
+    'api-key': 'YOUR_API_KEY',
+${pyParams}
+}
+api_base = '${base}'
+api_result = requests.get(api_base + '${path}', params)
+api_response = api_result.json()
+print(json.dumps(api_response, indent=4, sort_keys=True))`,
+    node:`const request = require("request");
+const api_key = "YOUR_API_KEY";
+const api_base = "${base}";
+
+function apiCall(method, params, cb) {
+  params['api-key'] = api_key;
+  request.get({url: \`\${api_base}\${method}\`, qs: params}, cb);
+}
+
+apiCall('${path}', {${nodeParams}}, (err, res, body) => {
+  console.log(body);
+});`,
+    go:`package main
+
+import (
+    "fmt"
+    "net/http"
+    "io"
+)
+
+func main() {
+    url := "${base}${path}"
+    req, _ := http.NewRequest("GET", url, nil)
+    q := req.URL.Query()
+    q.Add("api-key", "YOUR_API_KEY")
+${goAdds}
+    req.URL.RawQuery = q.Encode()
+    res, _ := http.DefaultClient.Do(req)
+    defer res.Body.Close()
+    body, _ := io.ReadAll(res.Body)
+    fmt.Println(string(body))
+}`,
+    ruby:`require 'net/http'
+require 'json'
+
+def api_call(method, params)
+  api_key = "YOUR_API_KEY"
+  api_base = "${base}"
+  uri = URI("#{api_base}#{method}")
+  params.merge!('api-key': api_key)
+  uri.query = URI.encode_www_form(params)
+  JSON.parse(Net::HTTP.get(uri))
+end
+
+puts JSON.pretty_generate(api_call('${path}', {${rubyParams}}))`,
+    php:`<?php
+$api_key = "YOUR_API_KEY";
+$api_base = "${base}";
+
+function apiCall($method, $params) {
+    global $api_key, $api_base;
+    $params['api-key'] = $api_key;
+    $url = $api_base . $method . '?' . http_build_query($params);
+    $c = curl_init($url);
+    curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+    $res = json_decode(curl_exec($c), true);
+    curl_close($c);
+    return $res;
+}
+
+print_r(apiCall('${path}', [${phpParams}]));`,
+    java:`HttpRequest request = HttpRequest.newBuilder()
+  .uri(URI.create("${fullUrl}"))
+  .method("GET", HttpRequest.BodyPublishers.noBody())
+  .build();
+HttpResponse<String> response = HttpClient.newHttpClient()
+  .send(request, HttpResponse.BodyHandlers.ofString());
+System.out.println(response.body());`
+  };
+}
+
+/* shared param fragments */
+const ID_PARAMS = [
+  ["api-key","string","required","Your API key"],
+  ["uuid","string","one required","Datalastic vessel UUID"],
+  ["mmsi","string","one required","9-digit MMSI number"],
+  ["imo","string","one required","7-digit IMO number"]
+];
+
+const BASE_V0 = "https://api.datalastic.com/api/v0/";
+const BASE_EXT = "https://api.datalastic.com/api/ext/";
+const BASE_MR = "https://api.datalastic.com/api/maritime_reports/";
+
+/* ENDPOINTS registry: full definition for every API endpoint card.
+   Each entry: {method, base, path, desc, params:[[name,type,req,desc]],
+   tryParams:[{name,def,required}], attrs:[[name,type,desc]], response:"json",
+   examples:{...} (optional override), avgTime, note} */
+const ENDPOINTS = {
+
+"vessel":{
+  method:"GET", base:BASE_V0, path:"vessel",
+  desc:"Real-time vessel tracking with the most popular AIS data fields. Returns current position, speed, course, heading, type, destination, and timestamp. Average response time is 0.005 seconds.",
+  params:ID_PARAMS,
+  tryParams:[{name:"mmsi",def:"566093000",required:false}],
+  attrs:[
+    ["uuid","string","Datalastic unique identifier"],["name","string","Vessel name"],
+    ["mmsi","string","9-digit MMSI"],["imo","string","7-digit IMO"],
+    ["eni","string|null","European ID"],["country_iso","string","2-letter country code"],
+    ["type","string","Vessel type"],["type_specific","string","Vessel subtype"],
+    ["lat","number","Latitude"],["lon","number","Longitude"],
+    ["speed","number","Speed in knots"],["course","number","Course in degrees"],
+    ["navigation_status","string","AIS navigational status"],["heading","number","Heading in degrees"],
+    ["destination","string","Reported destination"],["last_position_epoch","integer","Unix timestamp"],
+    ["last_position_UTC","string","ISO 8601 timestamp"]
+  ],
+  response:`{
+  "data": {
+    "uuid": "b8625b67-7142-cfd1-7b85-595cebfe4191",
+    "name": "MAERSK CHENNAI",
+    "mmsi": "566093000",
+    "imo": "9525338",
+    "eni": null,
+    "country_iso": "SG",
+    "type": "Cargo - Hazard A (Major)",
+    "type_specific": "Container Ship",
+    "lat": 6.303473,
+    "lon": 3.201678,
+    "speed": 0,
+    "course": 326,
+    "navigation_status": "Under way using engine",
+    "heading": 226,
+    "destination": "TANGER MED",
+    "last_position_epoch": 1620484020,
+    "last_position_UTC": "2021-05-08T14:27:00Z"
+  },
+  "meta": {
+    "duration": 0.00246942,
+    "endpoint": "/api/v0/vessel",
+    "success": true
+  }
+}`
+},
+
+"vessel_pro":{
+  method:"GET", base:BASE_V0, path:"vessel_pro",
+  desc:"All Basic tracking data plus Estimated Time of Arrival (ETA), Actual Time of Departure (ATD), current draft, and standardized destination/departure port names with UN/LOCODE. Average response time: 0.9 seconds.",
+  params:ID_PARAMS,
+  tryParams:[{name:"mmsi",def:"566093000",required:false}],
+  attrs:[
+    ["...","","All fields from /vessel, plus the following:"],
+    ["current_draught","number","Current reported draught in meters"],
+    ["dest_port","string","Standardized destination port name"],
+    ["dest_port_unlocode","string","Destination UN/LOCODE"],
+    ["dep_port","string","Departure port name"],
+    ["dep_port_unlocode","string","Departure UN/LOCODE"],
+    ["atd_epoch","integer","Actual departure timestamp (epoch)"],
+    ["atd_UTC","string","Actual departure timestamp (UTC)"],
+    ["eta_epoch","integer","Estimated arrival timestamp (epoch)"],
+    ["eta_UTC","string","Estimated arrival timestamp (UTC)"]
+  ],
+  response:`{
+  "data": {
+    "uuid": "b8625b67-7142-cfd1-7b85-595cebfe4191",
+    "name": "MAERSK CHENNAI",
+    "mmsi": "566093000",
+    "imo": "9525338",
+    "eni": null,
+    "country_iso": "SG",
+    "type": "Cargo - Hazard A (Major)",
+    "type_specific": "Container Ship",
+    "lat": 6.303473,
+    "lon": 3.201678,
+    "current_draught": 13.1,
+    "speed": 0,
+    "course": 326,
+    "navigation_status": "Under way using engine",
+    "heading": 226,
+    "destination": "NGAPP>TGLFW",
+    "dest_port": "LOME",
+    "dest_port_unlocode": "TGLFW",
+    "dep_port": "JEBEL ALI [AE]",
+    "dep_port_unlocode": "AEJEA",
+    "last_position_epoch": 1620484020,
+    "last_position_UTC": "2021-05-08T14:27:00Z",
+    "atd_epoch": 1621469820,
+    "atd_UTC": "2021-05-20T00:17:00Z",
+    "eta_epoch": 1622980800,
+    "eta_UTC": "2021-06-06T12:00:00Z"
+  },
+  "meta": {
+    "duration": 0.9124872,
+    "endpoint": "/api/v0/vessel_pro",
+    "success": true
+  }
+}`
+},
+
+"vessel_bulk":{
+  method:"GET", base:BASE_V0, path:"vessel_bulk",
+  desc:"Retrieve tracking data for up to 100 vessels in a single API call by chaining multiple MMSI, IMO, or UUID parameters. Returns the same fields as the Basic tracking endpoint. Credits are deducted only for successfully found vessels.",
+  examples:{
+    curl:`curl "https://api.datalastic.com/api/v0/vessel_bulk?api-key=YOUR_API_KEY&mmsi=566093000&imo=9249403"`,
+    python:`import requests
+import json
+
+params = [
+    ('api-key', 'YOUR_API_KEY'),
+    ('mmsi', '566093000'),
+    ('mmsi', '235362000'),
+    ('imo', '9249403'),
+]
+api_result = requests.get('https://api.datalastic.com/api/v0/vessel_bulk', params=params)
+print(json.dumps(api_result.json(), indent=4))`,
+    node:`const axios = require('axios');
+const res = await axios.get('https://api.datalastic.com/api/v0/vessel_bulk', {
+  params: new URLSearchParams([
+    ['api-key', 'YOUR_API_KEY'],
+    ['mmsi', '566093000'],
+    ['mmsi', '235362000'],
+    ['imo', '9249403'],
+  ])
+});
+console.log(res.data);`,
+    go:`package main
+
+import (
+    "fmt"
+    "net/http"
+    "io"
+)
+
+func main() {
+    url := "https://api.datalastic.com/api/v0/vessel_bulk"
+    req, _ := http.NewRequest("GET", url, nil)
+    q := req.URL.Query()
+    q.Add("api-key", "YOUR_API_KEY")
+    q.Add("mmsi", "566093000")
+    q.Add("mmsi", "235362000")
+    q.Add("imo", "9249403")
+    req.URL.RawQuery = q.Encode()
+    res, _ := http.DefaultClient.Do(req)
+    defer res.Body.Close()
+    body, _ := io.ReadAll(res.Body)
+    fmt.Println(string(body))
+}`,
+    ruby:`require 'net/http'
+require 'json'
+
+uri = URI("https://api.datalastic.com/api/v0/vessel_bulk")
+uri.query = "api-key=YOUR_API_KEY&mmsi=566093000&mmsi=235362000&imo=9249403"
+puts JSON.pretty_generate(JSON.parse(Net::HTTP.get(uri)))`,
+    php:`<?php
+$url = "https://api.datalastic.com/api/v0/vessel_bulk?api-key=YOUR_API_KEY&mmsi=566093000&mmsi=235362000&imo=9249403";
+$c = curl_init($url);
+curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+$res = json_decode(curl_exec($c), true);
+curl_close($c);
+print_r($res);`,
+    java:`HttpRequest request = HttpRequest.newBuilder()
+  .uri(URI.create("https://api.datalastic.com/api/v0/vessel_bulk?api-key=YOUR_API_KEY&mmsi=566093000&mmsi=235362000&imo=9249403"))
+  .method("GET", HttpRequest.BodyPublishers.noBody())
+  .build();
+HttpResponse<String> response = HttpClient.newHttpClient()
+  .send(request, HttpResponse.BodyHandlers.ofString());
+System.out.println(response.body());`
+  },
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["mmsi","string","multiple","MMSI (can repeat up to 100)"],
+    ["imo","string","multiple","IMO (can repeat up to 100)"],
+    ["uuid","string","multiple","UUID (can repeat up to 100)"]
+  ],
+  tryParams:[{name:"mmsi",def:"566093000",required:false},{name:"imo",def:"9249403",required:false}],
+  attrs:[
+    ["total","integer","Number of vessels found"],
+    ["vessels","array","Array of vessel objects (same fields as /vessel)"]
+  ],
+  response:`{
+  "data": {
+    "total": 2,
+    "vessels": [
+      {
+        "uuid": "17959a4c-f5a9-ed71-1a42-5bfab00670ef",
+        "name": "GARGANO",
+        "mmsi": "235362000",
+        "imo": "9249403",
+        "eni": null,
+        "country_iso": "GB",
+        "type": "Other",
+        "type_specific": "Supply Vessel",
+        "lat": 54.105115,
+        "lon": 0.016225,
+        "speed": 4.4,
+        "course": 332.8,
+        "heading": 333,
+        "navigation_status": "Under way using engine",
+        "destination": "SUNDERLAND",
+        "last_position_epoch": 1638543058,
+        "last_position_UTC": "2021-12-03T14:50:58Z",
+        "eta_epoch": null,
+        "eta_UTC": null
+      },
+      {
+        "uuid": "b8625b67-7142-cfd1-7b85-595cebfe4191",
+        "name": "MAERSK CHENNAI",
+        "mmsi": "566093000",
+        "imo": "9525338",
+        "eni": null,
+        "country_iso": "SG",
+        "type": "Cargo - Hazard A (Major)",
+        "type_specific": "Container Ship",
+        "lat": -4.92493,
+        "lon": 11.52828,
+        "speed": 10.8,
+        "course": 204,
+        "heading": 201,
+        "navigation_status": null,
+        "destination": "CGPNR>GHTMA",
+        "last_position_epoch": 1638335880,
+        "last_position_UTC": "2021-12-01T05:18:00Z",
+        "eta_epoch": null,
+        "eta_UTC": null
+      }
+    ]
+  },
+  "meta": {
+    "duration": 0.007911177,
+    "endpoint": "/api/v0/vessel_bulk",
+    "success": true
+  }
+}`
+},
+
+"vessel_inradius":{
+  method:"GET", base:BASE_V0, path:"vessel_inradius",
+  desc:"Scan a circular area to see all vessels currently within the radius. Supports a static geographic center (lat/lon coordinates or port by UUID/UNLOCODE) or a dynamic vessel-centered scan (MMSI/IMO/UUID). Supports type filtering and pagination for large result sets.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["lat","number","conditional","Center latitude (use with lon)"],
+    ["lon","number","conditional","Center longitude (use with lat)"],
+    ["port_uuid","string","conditional","Port UUID as center"],
+    ["port_unlocode","string","conditional","Port UN/LOCODE as center"],
+    ["uuid","string","conditional","Vessel UUID as dynamic center"],
+    ["mmsi","string","conditional","Vessel MMSI as dynamic center"],
+    ["imo","string","conditional","Vessel IMO as dynamic center"],
+    ["radius","number","required","Radius in nautical miles (max 50)"],
+    ["type","string","optional","Filter by vessel type"],
+    ["type_specific","string","optional","Filter by vessel subtype"],
+    ["exclude","string","optional","Exclude certain vessel types"],
+    ["_empty_","boolean","optional","Include/exclude null-type vessels"],
+    ["nav_status","integer","optional","Filter by navigational status number"],
+    ["next","string","optional","Pagination token (max 500 results/page)"]
+  ],
+  tryParams:[{name:"lat",def:"41.10103",required:true},{name:"lon",def:"1.224716",required:true},{name:"radius",def:"5",required:true}],
+  attrs:[
+    ["point","object","Center coordinates and radius used"],
+    ["total","integer","Number of vessels found"],
+    ["vessels","array","Vessel objects, each including a distance field (NM from center)"]
+  ],
+  response:`{
+  "data": {
+    "point": {"lat": 41.10103, "lon": 1.224716, "radius": 1},
+    "total": 3,
+    "vessels": [
+      {
+        "uuid": "9922c8cb-961d-20ac-761a-05fd3641aeee",
+        "name": "CHEM BULLDOG",
+        "mmsi": "538004629",
+        "imo": "9587790",
+        "eni": null,
+        "country_iso": "MH",
+        "type": "Tanker",
+        "type_specific": "Oil or Chemical Tanker",
+        "lat": 41.10445,
+        "lon": 1.226525,
+        "speed": 0,
+        "course": 349,
+        "heading": 165,
+        "navigation_status": null,
+        "destination": "OPL MALTA",
+        "last_position_epoch": 1638551100,
+        "last_position_UTC": "2021-12-03T17:05:00Z",
+        "eta_epoch": null,
+        "eta_UTC": null,
+        "distance": 0.221050226706503
+      }
+    ]
+  },
+  "meta": {
+    "duration": 0.004622499,
+    "endpoint": "/api/v0/vessel_inradius",
+    "success": true
+  }
+}`
+},
+
+"sat-e":{
+  method:"GET", base:BASE_EXT, path:"vessel_pro_est", addon:true,
+  note:"Uses the extended base URL <code>https://api.datalastic.com/api/ext/</code> (not <code>/api/v0/</code>).",
+  desc:"Get estimated vessel position even when the ship is out of AIS range, as if tracked by satellite. Estimated positions are intelligently calculated using the last known location, destination port, and route-based ETA.",
+  params:ID_PARAMS,
+  tryParams:[{name:"mmsi",def:"247282900",required:false}],
+  attrs:[
+    ["...","","All /vessel_pro fields, plus:"],
+    ["estimated_position","object","{lat, lon}, the calculated current position"]
+  ],
+  response:`{
+  "data": {
+    "uuid": "68d67148-2f42-7314-c78f-ed2439e6f9e5",
+    "name": "COSTA DELIZIOSA",
+    "mmsi": "247282900",
+    "imo": "9398917",
+    "country_iso": "IT",
+    "type": "Passenger",
+    "type_specific": "Passenger Ship",
+    "lat": 16.28777,
+    "lon": -25.34431,
+    "speed": 15.8,
+    "course": 201,
+    "heading": 198,
+    "current_draught": 8.1,
+    "navigation_status": "Under way using engine",
+    "destination": "BRREC-RECIFE",
+    "dest_port": "RECIFE",
+    "dest_port_unlocode": "BRREC",
+    "dep_port": "MINDELO",
+    "dep_port_unlocode": "CVMIN",
+    "last_position_epoch": 1734819960,
+    "last_position_UTC": "2024-12-21T22:26:00Z",
+    "atd_epoch": 1734809160,
+    "atd_UTC": "2024-12-21T19:26:00Z",
+    "eta_epoch": 1735206120,
+    "eta_UTC": "2024-12-26T09:42:00Z",
+    "estimated_position": {
+      "lat": 1.5818719819246652,
+      "lon": -31.117992949793297
+    }
+  },
+  "meta": {"duration": 0.072085886, "endpoint": "/api/ext/vessel_pro_est", "success": true}
+}`
+},
+
+"vessel_history":{
+  method:"GET", base:BASE_V0, path:"vessel_history",
+  desc:"Retrieve historical movement data for a specific vessel. Data is available since August 10, 2021. Only position changes are stored (stationary vessels may have gaps). Specify a date range or a number of past days.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["uuid","string","one required","Vessel UUID"],
+    ["mmsi","string","one required","Vessel MMSI"],
+    ["imo","string","one required","Vessel IMO"],
+    ["days","integer","optional","Last N days from today"],
+    ["from","string","optional","Start date YYYY-MM-DD"],
+    ["to","string","optional",'End date YYYY-MM-DD (max 30 days from "from")']
+  ],
+  tryParams:[{name:"mmsi",def:"431661000",required:false},{name:"days",def:"3",required:false}],
+  attrs:[
+    ["uuid","string","Vessel UUID"],["name","string","Vessel name"],
+    ["mmsi","string","MMSI"],["imo","string","IMO"],
+    ["positions","array","Ordered position records (lat, lon, speed, course, heading, destination, timestamps)"]
+  ],
+  response:`{
+  "data": {
+    "uuid": "9c4c0a78-0dca-312c-f851-65d59e55b8dc",
+    "name": "PHENIX LEGEND",
+    "mmsi": "431661000",
+    "imo": "9595539",
+    "eni": null,
+    "country_iso": "JP",
+    "type": "Tanker",
+    "type_specific": "LPG Tanker",
+    "positions": [
+      {
+        "lat": 34.560583333333334,
+        "lon": 134.15901666666667,
+        "speed": 0.1,
+        "course": 114,
+        "heading": 101,
+        "destination": ">JP TNO OFF",
+        "last_position_epoch": 1724972345,
+        "last_position_UTC": "2024-08-29T22:59:05Z"
+      },
+      {
+        "lat": 34.56061666666667,
+        "lon": 134.15908333333334,
+        "speed": 0.1,
+        "course": 3,
+        "heading": 104,
+        "destination": ">JP TNO OFF",
+        "last_position_epoch": 1724970723,
+        "last_position_UTC": "2024-08-29T22:32:03Z"
+      }
+    ]
+  },
+  "meta": {
+    "duration": 0.041392525,
+    "endpoint": "/api/v0/vessel_history",
+    "success": true
+  }
+}`
+},
+
+"vessel_info":{
+  method:"GET", base:BASE_V0, path:"vessel_info",
+  desc:"Retrieve static vessel specifications including physical dimensions, cargo capacity, speed characteristics, construction year, and homeport. Useful for enriching vessel records without needing real-time tracking data.",
+  params:ID_PARAMS,
+  tryParams:[{name:"mmsi",def:"566093000",required:false}],
+  attrs:[
+    ["uuid","string","Vessel UUID"],["name","string","Current vessel name"],["name_ais","string","Name broadcast over AIS"],
+    ["mmsi","string","MMSI"],["imo","string","IMO"],["eni","string|null","European ID"],
+    ["country_iso","string","2-letter country code"],["country_name","string","Full country name"],["callsign","string","Radio callsign"],
+    ["type","string","Vessel type"],["type_specific","string","Vessel subtype"],
+    ["gross_tonnage","integer","Gross Registered Tonnage"],["deadweight","integer","Deadweight tonnage"],
+    ["teu","string","Container capacity (TEU)"],["liquid_gas","number|null","Liquid gas capacity"],
+    ["length","number","Length in meters"],["breadth","number","Beam in meters"],
+    ["draught_avg","number","Average historical draught"],["draught_max","number","Maximum draught"],
+    ["speed_avg","number","Average speed"],["speed_max","number","Maximum speed"],
+    ["year_built","string","Year of construction"],["is_navaid","boolean","Whether vessel is a navigation aid"],
+    ["home_port","string","Port of registry"]
+  ],
+  response:`{
+  "data": {
+    "uuid": "b8625b67-7142-cfd1-7b85-595cebfe4191",
+    "name": "MAERSK CHENNAI",
+    "name_ais": "MAERSK CHENNAI",
+    "mmsi": "566093000",
+    "imo": "9525338",
+    "eni": null,
+    "country_iso": "SG",
+    "country_name": "Singapore",
+    "callsign": "9V9409",
+    "type": "Cargo",
+    "type_specific": "Container Ship",
+    "gross_tonnage": 50869,
+    "deadweight": 68898,
+    "teu": "4500",
+    "liquid_gas": null,
+    "length": 249.12,
+    "breadth": 37.4,
+    "draught_avg": 10.021295387634936,
+    "draught_max": 14.2,
+    "speed_avg": 7.4,
+    "speed_max": 20,
+    "year_built": "2011",
+    "is_navaid": false,
+    "home_port": "SINGAPORE"
+  },
+  "meta": {
+    "duration": 0.002185789,
+    "endpoint": "/api/v0/vessel_info",
+    "success": true
+  }
+}`
+},
+
+"vessel_find":{
+  method:"GET", base:BASE_V0, path:"vessel_find",
+  desc:"Search the vessel database using any combination of type, name, dimensions, country, or year built, without needing a specific MMSI or IMO number. Returns up to 500 results per page; use the next pagination token for additional pages.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["name","string","optional","Vessel name (use with fuzzy)"],
+    ["fuzzy","integer","optional","0=exact match, 1=similar names"],
+    ["type","string","optional","Vessel type filter"],
+    ["type_specific","string","optional","Vessel subtype filter"],
+    ["_empty_","boolean","optional","Include/exclude null-type vessels"],
+    ["country_iso","string","optional","2-letter country code"],
+    ["gross_tonnage_min","integer","optional","Minimum gross tonnage"],
+    ["gross_tonnage_max","integer","optional","Maximum gross tonnage"],
+    ["deadweight_min","integer","optional","Minimum deadweight"],
+    ["deadweight_max","integer","optional","Maximum deadweight"],
+    ["length_min","number","optional","Minimum length (meters)"],
+    ["length_max","number","optional","Maximum length (meters)"],
+    ["breadth_min","number","optional","Minimum breadth (meters)"],
+    ["breadth_max","number","optional","Maximum breadth (meters)"],
+    ["year_built_min","integer","optional","Earliest year built"],
+    ["year_built_max","integer","optional","Latest year built"],
+    ["next","string","optional","Pagination token from previous response"]
+  ],
+  tryParams:[{name:"name",def:"THALASSINI",required:false},{name:"fuzzy",def:"1",required:false}],
+  attrs:[
+    ["data","array","Array of vessel records (same fields as /vessel_info)"],
+    ["meta.next","string","Pagination token for the next page, if more results exist"]
+  ],
+  response:`{
+  "data": [
+    {
+      "uuid": "bd7614f7-82af-89d6-4d1b-7cf0d1bd0ce6",
+      "name": "THALASSINI",
+      "name_ais": "THALASSINI",
+      "mmsi": "229609000",
+      "imo": "9286592",
+      "eni": null,
+      "country_iso": "MT",
+      "country_name": "Malta",
+      "callsign": "9HA3445",
+      "type": "Cargo",
+      "type_specific": "Bulk Carrier",
+      "gross_tonnage": 42887,
+      "deadweight": 82977,
+      "teu": null,
+      "liquid_gas": null,
+      "length": 228.99,
+      "breadth": 32.26,
+      "draught_avg": null,
+      "draught_max": null,
+      "speed_avg": null,
+      "speed_max": null,
+      "year_built": "2005",
+      "is_navaid": false,
+      "home_port": "VALLETTA"
+    }
+  ],
+  "meta": {
+    "duration": 0.001209523,
+    "endpoint": "/api/v0/vessel_find",
+    "next": "00e32b7a-4067-d6b2-8d73-2bdda4fe72bb",
+    "success": true
+  }
+}`
+},
+
+"port_find":{
+  method:"GET", base:BASE_V0, path:"port_find",
+  desc:"Search for maritime ports by name, UNLOCODE, type, country, or geographic coordinates. Fuzzy search allows finding ports by approximate name. Geographic search returns ports within a specified radius.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["name","string","optional","Port name"],
+    ["uuid","string","optional","Port UUID"],
+    ["fuzzy","integer","optional","0=exact match, 1=approximate"],
+    ["port_type","string","optional","Port/Anchorage/Marina/Offshore Terminal/Shelter/Demolition Yard/Canal/Fishing Harbour"],
+    ["country_iso","string","optional","2-letter country code"],
+    ["unlocode","string","optional","UN/LOCODE"],
+    ["lat","number","optional","Center latitude (use with lon and radius)"],
+    ["lon","number","optional","Center longitude"],
+    ["radius","number","optional","Search radius in NM (max 60)"]
+  ],
+  tryParams:[{name:"name",def:"LONDON",required:false},{name:"fuzzy",def:"1",required:false}],
+  attrs:[
+    ["data","array","Matching port records"],
+    ["uuid","string","Port UUID"],["port_name","string","Port name"],
+    ["country_iso","string","2-letter country code"],["country_name","string","Full country name"],
+    ["unlocode","string","UN/LOCODE"],["port_type","string","Port classification"],
+    ["lat","number","Latitude"],["lon","number","Longitude"],
+    ["area_lvl1","string","Top-level maritime area"],["area_lvl2","string","Sub maritime area"]
+  ],
+  response:`{
+  "data": [
+    {
+      "uuid": "17f4481e-801a-2c57-a356-e8ccf561f14f",
+      "port_name": "LONDON",
+      "country_iso": "GB",
+      "country_name": "United Kingdom",
+      "unlocode": "GBLON",
+      "port_type": "Port",
+      "lat": 51.49743,
+      "lon": -0.04960075,
+      "area_lvl1": "UK Coast & Atlantic",
+      "area_lvl2": "North Sea"
+    }
+  ],
+  "meta": {
+    "duration": 0.0846065,
+    "endpoint": "/api/v0/port_find",
+    "success": true
+  }
+}`
+},
+
+"port":{
+  method:"GET", base:BASE_V0, path:"port",
+  desc:"Retrieve detailed information for a specific port, including all associated terminals with coordinates, operator names, contact details, and addresses. Supports lookup by name, UUID, UNLOCODE, or geographic radius.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["name","string","optional","Port name"],
+    ["uuid","string","optional","Port UUID"],
+    ["unlocode","string","optional","Port UN/LOCODE"],
+    ["lat","number","optional","Center latitude"],
+    ["lon","number","optional","Center longitude"],
+    ["radius","number","optional","Search radius in NM (max 50)"]
+  ],
+  tryParams:[{name:"unlocode",def:"ESMPG",required:false}],
+  attrs:[
+    ["uuid","string","Port UUID"],["port_name","string","Port name"],
+    ["country_iso","string","2-letter country code"],["country_name","string","Full country name"],
+    ["unlocode","string","UN/LOCODE"],["port_type","string","Port classification"],
+    ["lat","number","Latitude"],["lon","number","Longitude"],
+    ["area_lvl1","string","Top-level maritime area"],["area_lvl2","string","Sub maritime area"],
+    ["terminals","array","Terminal objects: terminal_code, terminal_name, company_name, lat, lon, url, address"]
+  ],
+  response:`{
+  "data": {
+    "uuid": "3713d077-5daa-a40a-60df-1a55f6d5f515",
+    "port_name": "MARIN",
+    "country_iso": "ES",
+    "country_name": "Spain",
+    "unlocode": "ESMPG",
+    "port_type": "Port",
+    "lat": 42.40034,
+    "lon": -8.695311,
+    "area_lvl1": "UK Coast & Atlantic",
+    "area_lvl2": "UK Coast & Atlantic",
+    "terminals": [
+      {
+        "terminal_code": "MPT",
+        "terminal_name": "MARIN PORT TERMINAL",
+        "company_name": "PEREZ TORRES MARITIMA S.L.",
+        "lat": 42.405278,
+        "lon": -8.692778,
+        "url": "https://www.ptmar.com/en/puertos/puerto-marin",
+        "address": "Muelle comercial s/n, 36900 Marín, Pontevedra, Spain"
+      }
+    ]
+  },
+  "meta": {
+    "duration": 0.002404252,
+    "endpoint": "/api/v0/port",
+    "success": true
+  }
+}`
+},
+
+"route":{
+  method:"GET", base:BASE_EXT, path:"route", addon:true,
+  note:"Uses the extended base URL <code>https://api.datalastic.com/api/ext/</code>. This endpoint is <strong>free of charge</strong>.",
+  desc:"Calculate the optimal sea route between two points. Input can be GPS coordinates, port UUIDs, or UN/LOCODEs. Returns a GeoJSON LineString with waypoints and total distance in nautical miles.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["lat_from","number","conditional","Origin latitude"],
+    ["lon_from","number","conditional","Origin longitude"],
+    ["port_uuid_from","string","conditional","Origin port UUID"],
+    ["port_unlocode_from","string","conditional","Origin port UNLOCODE"],
+    ["lat_to","number","conditional","Destination latitude"],
+    ["lon_to","number","conditional","Destination longitude"],
+    ["port_uuid_to","string","conditional","Destination port UUID"],
+    ["port_unlocode_to","string","conditional","Destination port UNLOCODE"]
+  ],
+  tryParams:[{name:"port_unlocode_from",def:"FIHEL",required:false},{name:"port_unlocode_to",def:"EETLL",required:false}],
+  attrs:[
+    ["from","object","GeoJSON Feature for the origin point/port"],
+    ["route","object","GeoJSON Feature (LineString) with waypoints and properties.total_dist (NM)"],
+    ["to","object","GeoJSON Feature for the destination point/port"]
+  ],
+  response:`{
+  "data": {
+    "from": {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [24.9445, 60.1685]},
+      "properties": {"type": "Port", "port_name": "HELSINKI", "port_uuid": "7d9ba108-52b4-47d7-a74d-13d4e1a80a51", "port_unlocode": "FIHEL"}
+    },
+    "route": {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[24.9445, 60.1685], [24.908, 60.1121], [24.7, 59.8], [24.768, 59.446]]
+      },
+      "properties": {"total_dist": 82.7222}
+    },
+    "to": {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [24.768, 59.446]},
+      "properties": {"type": "Port", "port_name": "TALLINN OLD CITY", "port_uuid": "f7d4d2ea-c629-4e9d-0f31-88fafd964530", "port_unlocode": "EETLL"}
+    }
+  },
+  "meta": {"duration": 0.080311591, "endpoint": "/api/ext/route", "success": true}
+}`
+},
+
+"dry_dock_dates":{
+  method:"GET", base:BASE_MR, path:"dry_dock_dates", addon:true,
+  bulkType:"dry_dock_dates",
+  desc:"Retrieve planned and completed dry dock dates, special survey dates, IOPP certificate dates, and technical manager contact information for vessels.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["imo","string","optional","Vessel IMO number"],
+    ["name","string","optional","Vessel name"],
+    ["dry_dock_from","string","optional","Filter from date (YYYY-MM-DD)"],
+    ["dry_dock_to","string","optional","Filter to date (YYYY-MM-DD)"]
+  ],
+  tryParams:[{name:"imo",def:"9169122",required:false}],
+  attrs:[
+    ["id","integer","Record ID"],["imo","string","Vessel IMO"],["vessel_name","string","Vessel name"],
+    ["special_survey_date","string","Next special survey date"],["dry_dock_date","string","Dry dock date"],
+    ["iopp_issue_date","string","IOPP certificate issue date"],["iopp_exp_date","string","IOPP certificate expiry date"],
+    ["technical_manager","string","Technical manager company"],["country_code","string","Manager country code"],
+    ["website","string","Manager website"],["email","string","Contact email"],["phone","string","Contact phone"],
+    ["address","string","Manager address"],["linkedin","string","LinkedIn URL"],["modified_at","string","Last modified timestamp"]
+  ],
+  response:`{
+  "data": [
+    {
+      "id": 3,
+      "imo": "9169122",
+      "vessel_name": "MSC ANNICK",
+      "special_survey_date": "2025-09-10",
+      "dry_dock_date": "2025-09-10",
+      "iopp_issue_date": "2021-08-31",
+      "iopp_exp_date": "2025-09-10",
+      "country_name": null,
+      "technical_manager": "MSC Shipmanagement Ltd",
+      "country_code": "CYP",
+      "website": "https://mscshipmanagement.com/",
+      "email": "safety@mscsmcy.com",
+      "phone": "+357 25 844 800",
+      "address": "MSC House, 8, Spyrou Kyprianou Avenue, Limassol, Cyprus",
+      "linkedin": "https://cy.linkedin.com/in/ravi-amarnath-41215b3b",
+      "modified_at": "2023-09-05T00:00:00Z"
+    }
+  ],
+  "meta": {"duration": 0.1806652, "endpoint": "/api/maritime_reports/dry_dock_dates", "success": true}
+}`
+},
+
+"casualty":{
+  method:"GET", base:BASE_MR, path:"casualty", addon:true,
+  bulkType:"casualty",
+  desc:"Access historical ship casualty records including grounding, collision, fire, sinking, and other incidents. Each record includes the incident type, date, and a detailed narrative description.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["imo","string","optional","Vessel IMO"],
+    ["name","string","optional","Vessel name"],
+    ["from","string","optional","Start date YYYY-MM-DD"],
+    ["to","string","optional","End date YYYY-MM-DD"]
+  ],
+  tryParams:[{name:"imo",def:"9319569",required:false}],
+  attrs:[
+    ["id","integer","Record ID"],["imo","string","Vessel IMO"],["vessel_name","string","Vessel name"],
+    ["casualty_date","string","Incident date"],["casualty_type","string","Type of incident"],
+    ["casualty_details","string","Narrative description"],["modified_at","string","Last modified timestamp"]
+  ],
+  response:`{
+  "data": [
+    {
+      "id": 1793,
+      "imo": "9319569",
+      "vessel_name": "VENTO",
+      "casualty_date": "2023-09-03",
+      "casualty_type": "Beached/Grounded",
+      "casualty_details": "Container ship ran onto sandy bar and grounded at Cape Ammoglossa, Kos island, Greece, Aegean sea, en route from Aliaga to Ashdod. Vessel was refloated by tugs on 6 September and towed to anchorage. Inspection found no significant damage and vessel was in seaworthy condition.",
+      "modified_at": "2023-09-15T00:00:00Z"
+    }
+  ],
+  "meta": {"duration": 0.018317122, "endpoint": "/api/maritime_reports/casualty", "success": true}
+}`
+},
+
+"inspections":{
+  method:"GET", base:BASE_MR, path:"inspections", addon:true,
+  bulkType:"inspections",
+  desc:"Retrieve Port State Control (PSC) inspection records including inspection type, authority, port, deficiency descriptions, and whether the vessel was detained. Includes technical manager contact information.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["imo","string","optional","Vessel IMO"],
+    ["name","string","optional","Vessel name"],
+    ["from","string","optional","Start date YYYY-MM-DD"],
+    ["to","string","optional","End date YYYY-MM-DD"]
+  ],
+  tryParams:[{name:"imo",def:"9362126",required:false}],
+  attrs:[
+    ["id","integer","Record ID"],["imo","string","Vessel IMO"],["vessel_name","string","Vessel name"],
+    ["vessel_type_code","string","Vessel type code"],["flag_code","string","Flag state code"],
+    ["inspection_date","string","Inspection date"],["inspection_authority","string","Inspecting authority"],
+    ["inspection_port","string","Port of inspection"],["inspection_type","string","Inspection type"],
+    ["detention","string","Whether vessel was detained (TRUE/FALSE)"],["ship_deficiencies","string","Number of deficiencies"],
+    ["deficiency_description","string","Deficiency details"],["technical_ism_manager","string","Technical/ISM manager"],
+    ["country_code","string","Manager country code"],["website","string","Manager website"],
+    ["email","string","Contact email"],["phone","string","Contact phone"],["address","string","Manager address"],
+    ["company_imo","string","Company IMO"],["modified_at","string","Last modified timestamp"]
+  ],
+  response:`{
+  "data": [
+    {
+      "id": 10,
+      "imo": "9362126",
+      "vessel_name": "ESVAGT CASSIOPEIA",
+      "vessel_type_code": "Stan",
+      "flag_code": "DEN",
+      "inspection_date": "2023-09-05",
+      "inspection_authority": "Norway",
+      "inspection_port": "Tananger",
+      "inspection_type": "Detailed",
+      "detention": "FALSE",
+      "ship_deficiencies": "4",
+      "deficiency_description": "Structural Conditions; 02109 - Permanent means of access; Not properly maintained; Emergency Systems; 04108 - Muster list; Incomplete; Pollution prevention - Ballast Water; 14801 - Ballast Water Management Plan; Not updated; Emergency Systems; 04109 - Fire drills; Lack of training",
+      "technical_ism_manager": "Esvagt A/S",
+      "country_code": "DEN",
+      "website": "http://www.esvagt.dk",
+      "email": "mail@esvagt.dk",
+      "phone": "+45 78 73 07 30",
+      "address": "Dokvej 4, 6700 Esbjerg, Denmark",
+      "company_imo": "0792139",
+      "modified_at": "2023-09-05T00:00:00Z"
+    }
+  ],
+  "meta": {"duration": 0.010656275, "endpoint": "/api/maritime_reports/inspections", "success": true}
+}`
+},
+
+"spd":{
+  method:"GET", base:BASE_MR, path:"spd", addon:true,
+  bulkType:"sales_purchase_demolitions",
+  desc:"Access records of ship sales, purchases, and demolitions including transaction dates, seller, buyer, sale price, light displacement tonnage, and destination (for scrapping).",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["imo","string","optional","Vessel IMO"],
+    ["name","string","optional","Vessel name"],
+    ["from","string","optional","Start date YYYY-MM-DD"],
+    ["to","string","optional","End date YYYY-MM-DD"]
+  ],
+  tryParams:[{name:"imo",def:"9104586",required:false}],
+  attrs:[
+    ["id","integer","Record ID"],["sales_report_date","string","Sale report date"],["imo","string","Vessel IMO"],
+    ["vessel_name","string","Vessel name"],["flag_name","string","Flag state"],["vessel_type_code","string","Vessel type code"],
+    ["built_year","string","Year built"],["dwt_design","integer","Design deadweight"],["gt","integer","Gross tonnage"],
+    ["ldt","integer","Light displacement tonnage"],["seller","string","Seller"],["buyer","string","Buyer"],
+    ["sales_price_usd_mio","number|null","Sale price (USD millions)"],["sales_price_usd/ldt","number","Price per LDT (USD)"],
+    ["destination","string","Destination (for scrapping)"],["sales_type","string","Transaction type"],
+    ["dry_dock_date","string","Dry dock date"],["special_survey_date","string","Special survey date"],
+    ["sales_note","string|null","Notes"],["previous_sales_record","string|null","Prior record reference"],["modified_at","string","Last modified timestamp"]
+  ],
+  response:`{
+  "data": [
+    {
+      "id": 2,
+      "sales_report_date": "2023-09-04",
+      "imo": "9104586",
+      "vessel_name": "ONE HAPPY",
+      "flag_name": "Panama",
+      "vessel_type_code": "Bulk",
+      "built_year": "1995",
+      "dwt_design": 45455,
+      "gt": 26091,
+      "ldt": 7726,
+      "seller": "One Navigation Denizcilik AS",
+      "buyer": "Indian Breakers",
+      "sales_price_usd_mio": null,
+      "sales_price_usd/ldt": 498,
+      "destination": "India",
+      "sales_type": "Sold for demo",
+      "dry_dock_date": "2020-07-31",
+      "special_survey_date": "2025-07-31",
+      "sales_note": null,
+      "previous_sales_record": null,
+      "modified_at": "2023-09-04T00:00:00Z"
+    }
+  ],
+  "meta": {"duration": 0.010656275, "endpoint": "/api/maritime_reports/spd", "success": true}
+}`
+},
+
+"ownership":{
+  method:"GET", base:BASE_MR, path:"ownership", addon:true,
+  bulkType:"ownership",
+  desc:"Find the beneficial owner, commercial operator, technical manager, and commercial manager of any vessel. Filter by company name to find all vessels managed by a specific company.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["imo","string","optional","Vessel IMO"],
+    ["name","string","optional","Vessel name"],
+    ["beneficial_owner","string","optional","Filter by owner name"],
+    ["operator","string","optional","Filter by operator name"],
+    ["technical_manager","string","optional","Filter by technical manager"],
+    ["commercial_manager","string","optional","Filter by commercial manager"],
+    ["updated_from","string","optional","Records updated since YYYY-MM-DD"]
+  ],
+  tryParams:[{name:"imo",def:"9951783",required:false}],
+  attrs:[
+    ["id","integer","Record ID"],["imo","string","Vessel IMO"],["vessel_name","string","Vessel name"],
+    ["beneficial_owner","string","Beneficial owner"],["beneficial_owner_country","string","Owner country"],
+    ["operator","string","Operator"],["operator_country","string","Operator country"],
+    ["flag_name","string|null","Flag state"],["vessel_type_code","string","Vessel type code"],
+    ["built_year","string","Year built"],["buyer","string|null","Buyer"],["dwt_design","integer","Design deadweight"],
+    ["class1_code","string|null","Classification society code"],["technical_manager","string|null","Technical manager"],
+    ["technical_manager_country","string|null","Technical manager country"],["commercial_manager","string","Commercial manager"],
+    ["commercial_manager_country","string","Commercial manager country"],["modified_at","string","Last modified timestamp"]
+  ],
+  response:`{
+  "data": [
+    {
+      "id": 38914,
+      "imo": "9951783",
+      "vessel_name": "KARLOVASI",
+      "beneficial_owner": "Samos Steamship Co",
+      "beneficial_owner_country": "Greece",
+      "operator": "Samos Steamship Co",
+      "operator_country": "Greece",
+      "flag_name": null,
+      "vessel_type_code": "Bulk",
+      "built_year": "2023",
+      "buyer": null,
+      "dwt_design": 63470,
+      "class1_code": null,
+      "technical_manager": null,
+      "technical_manager_country": null,
+      "commercial_manager": "Samos Steamship Co",
+      "commercial_manager_country": "Greece",
+      "modified_at": "2020-01-01T00:00:00Z"
+    }
+  ],
+  "meta": {"duration": 0.010656275, "endpoint": "/api/maritime_reports/ownership", "success": true}
+}`
+},
+
+"class_society":{
+  method:"GET", base:BASE_MR, path:"class_society", addon:true,
+  bulkType:"class_society",
+  desc:"Retrieve classification society information, vessel physical specifications (LOA, LBP, depth, beam), engine details, and ownership information for any vessel.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["imo","string","optional","Vessel IMO"],
+    ["name","string","optional","Vessel name"],
+    ["fuzzy","integer","optional","0=exact, 1=approximate"],
+    ["beneficial_owner","string","optional","Filter by owner name"],
+    ["beneficial_owner_imo","string","optional","Filter by owner IMO"],
+    ["technical_manager","string","optional","Filter by manager name"],
+    ["technical_manager_imo","string","optional","Filter by manager IMO"],
+    ["updated_from","string","optional","Records updated since YYYY-MM-DD"]
+  ],
+  tryParams:[{name:"imo",def:"9950404",required:false}],
+  attrs:[
+    ["imo","string","Vessel IMO"],["vessel_name","string","Vessel name"],["vessel_type_code","string","Vessel type code"],
+    ["flag_name","string","Flag state"],["built_year","string","Year built"],["dwt_design","integer","Design deadweight"],
+    ["special_survey_date","string|null","Special survey date"],["dry_dock_date","string|null","Dry dock date"],
+    ["class1_code","string","Classification society code"],["beneficial_owner_imo","string","Owner IMO"],
+    ["beneficial_owner","string","Beneficial owner"],["technical_manager_imo","string","Technical manager IMO"],
+    ["technical_manager","string","Technical manager"],["draft_design","number","Design draft (m)"],
+    ["nt","integer","Net tonnage"],["gt","integer","Gross tonnage"],["loa","number","Length overall (m)"],
+    ["lbp","number","Length between perpendiculars (m)"],["depth","number","Depth (m)"],["beam_moduled","number","Moulded beam (m)"],
+    ["engine_builder","string","Engine builder"],["engine_designer","string","Engine designer"],
+    ["propulsion_type_code","string","Propulsion type code"],["modified_at","string","Last modified timestamp"]
+  ],
+  response:`{
+  "data": [
+    {
+      "imo": "9950404",
+      "vessel_name": "DARYA RASHMI",
+      "vessel_type_code": "Bulk",
+      "flag_name": "Marshall Islands",
+      "built_year": "2023",
+      "dwt_design": 82210,
+      "special_survey_date": null,
+      "dry_dock_date": null,
+      "class1_code": "ABS",
+      "beneficial_owner_imo": "0783189",
+      "beneficial_owner": "Chellaram Shipping (Hong Kong) Ltd.",
+      "technical_manager_imo": "0783189",
+      "technical_manager": "Chellaram Shipping (Hong Kong) Ltd.",
+      "draft_design": 14.5,
+      "nt": 27155,
+      "gt": 44577,
+      "loa": 229,
+      "lbp": 225.5,
+      "depth": 20.35,
+      "beam_moduled": 32.26,
+      "engine_builder": "Hudong Heavy Machinery",
+      "engine_designer": "MAN B&W",
+      "propulsion_type_code": "MO",
+      "modified_at": "2023-10-19T00:00:00Z"
+    }
+  ],
+  "meta": {"duration": 0.006306971, "endpoint": "/api/maritime_reports/class_society", "success": true}
+}`
+},
+
+"engine":{
+  method:"GET", base:BASE_MR, path:"engine", addon:true,
+  bulkType:"engine",
+  desc:"Access engine specifications for vessels including designation, builder, designer, maximum continuous output (MCO), RPM, and propulsion type.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["imo","string","optional","Vessel IMO"],
+    ["name","string","optional","Vessel name"],
+    ["fuzzy","integer","optional","0=exact, 1=approximate"],
+    ["updated_from","string","optional","Records updated since YYYY-MM-DD"]
+  ],
+  tryParams:[{name:"imo",def:"9575149",required:false}],
+  attrs:[
+    ["imo","string","Vessel IMO"],["vessel_name","string","Vessel name"],["vessel_type_code","string","Vessel type code"],
+    ["propulsion_type_code","string","Propulsion type code"],["mco","integer","Maximum continuous output"],
+    ["mco_unit","string","MCO unit (e.g. kW)"],["mco_rpm","integer","MCO RPM"],["trading_category_code","string","Trading category"],
+    ["built_year","string","Year built"],["gt","integer","Gross tonnage"],["engine_designation","string","Engine model designation"],
+    ["engine_builder","string","Engine builder"],["engine_designer","string","Engine designer"],["modified_at","string","Last modified timestamp"]
+  ],
+  response:`{
+  "data": [
+    {
+      "imo": "9575149",
+      "vessel_name": "DARYA MAYA",
+      "vessel_type_code": "Bulk",
+      "propulsion_type_code": "MO",
+      "mco": 8300,
+      "mco_unit": "kW",
+      "mco_rpm": 91,
+      "trading_category_code": "Live",
+      "built_year": "2012",
+      "gt": 35812,
+      "engine_designation": "5S60ME-C8",
+      "engine_builder": "HHM Shangchuan Diesel",
+      "engine_designer": "MAN B&W",
+      "modified_at": "2023-10-17T00:00:00Z"
+    }
+  ],
+  "meta": {"duration": 0.010222716, "endpoint": "/api/maritime_reports/engine", "success": true}
+}`
+},
+
+"companies":{
+  method:"GET", base:BASE_MR, path:"companies", addon:true,
+  bulkType:"companies",
+  desc:"Search maritime companies by name or IMO number. Returns company type, registration country, status, contact details, and parent company information.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["company_imo","string","optional","Company IMO number"],
+    ["name","string","optional","Company name"],
+    ["updated_from","string","optional","Records updated since YYYY-MM-DD"]
+  ],
+  tryParams:[{name:"company_imo",def:"0537883",required:false}],
+  attrs:[
+    ["id","integer","Record ID"],["short_name","string","Short company name"],["long_name","string","Full legal name"],
+    ["company_type","string","Company classification"],["country_code","string","Registration country code"],
+    ["company_imo","string","Company IMO number"],["website","string","Company website"],["company_status","string","Active/Inactive"],
+    ["email","string","Contact email"],["phone","string","Contact phone"],["address","string","Registered address"],
+    ["linkedin","string|null","LinkedIn URL"],["parent_company_imo","string|null","Parent company IMO"],
+    ["parent_company_name","string|null","Parent company name"],["modified_at","string","Last modified timestamp"]
+  ],
+  response:`{
+  "data": [
+    {
+      "id": 7654,
+      "short_name": "Avon Steamship",
+      "long_name": "Avon Steamship Co.",
+      "company_type": "Independent Shipping",
+      "country_code": "USA",
+      "company_imo": "0537883",
+      "website": "https://www.avonsteamship.com",
+      "company_status": "Active",
+      "email": "info@avonsteamship.com",
+      "phone": "+1 195 906 4115",
+      "address": "The Triad Office Center, 2001 Marcus Avenue, North New Hyde Park NY 11042, USA",
+      "linkedin": null,
+      "parent_company_imo": null,
+      "parent_company_name": null,
+      "modified_at": "2021-06-25T00:00:00Z"
+    }
+  ],
+  "meta": {"duration": 0.1806652, "endpoint": "/api/maritime_reports/companies", "success": true}
+}`
+}
+
+};
+
+/* =========================================================================
+   HTML helpers
+   ========================================================================= */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function paramsTable(params){
+  const rows = params.map(([name,type,req,desc])=>{
+    let reqCell;
+    if(req==="required") reqCell=`<span class="req-badge">required</span>`;
+    else if(req==="optional") reqCell=`<span class="opt-badge">optional</span>`;
+    else reqCell=`<span class="opt-badge">${esc(req)}</span>`;
+    return `<tr>
+      <td><code>${esc(name)}</code></td>
+      <td><span class="type-pill">${esc(type)}</span></td>
+      <td>${reqCell}</td>
+      <td>${esc(desc)}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="table-wrap"><table>
+    <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+let cbId=0;
+function codeBlock(lang,code){
+  return `<div class="code-pane" data-lang="${lang}">
+    <button class="copy-btn" data-copy>Copy</button>
+    <pre><code class="language-${lang}">${esc(code)}</code></pre>
+  </div>`;
+}
+const LANGS=[["bash","cURL"],["python","Python"],["javascript","Node.js"],["go","Go"],["ruby","Ruby"],["php","PHP"],["java","Java"]];
+function codeTabs(ex){
+  const map={bash:ex.curl,python:ex.python,javascript:ex.node,go:ex.go,ruby:ex.ruby,php:ex.php,java:ex.java};
+  const tabs=LANGS.map(([l,label],i)=>`<button class="tab${i===0?' active':''}" role="tab" aria-selected="${i===0?'true':'false'}" data-tab="${l}">${label}</button>`).join('');
+  const panes=LANGS.map(([l],i)=>{
+    const c=codeBlock(l,map[l]||'');
+    return c.replace('class="code-pane"',`class="code-pane${i===0?' active':''}" role="tabpanel"`);
+  }).join('');
+  return `<div class="code-block">
+    <div class="tabs" role="tablist" aria-label="Code language">${tabs}</div>
+    ${panes}
+  </div>`;
+}
+function singleCode(lang,code){
+  return `<div class="code-single">
+    <button class="copy-btn" data-copy>Copy</button>
+    <pre><code class="language-${lang}">${esc(code)}</code></pre>
+  </div>`;
+}
+
+function attrsCollapse(attrs){
+  const rows=attrs.map(([n,t,d])=>`<div class="attr">
+    <span class="a-name">${esc(n)}</span>
+    ${t?`<span class="a-type">${esc(t)}</span>`:''}
+    <span class="a-desc">${esc(d)}</span>
+  </div>`).join('');
+  return `<div class="collapse">
+    <div class="collapse-head" data-collapse><span>Response Attributes</span><span class="chev">▶</span></div>
+    <div class="collapse-body">${rows}</div>
+  </div>`;
+}
+
+function tryItContent(key,ep){
+  const keyField=`<div class="field">
+    <label>api-key <span class="req-badge">required</span></label>
+    <div class="field-input-wrap">
+      <svg class="lock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <input type="password" class="key-input" data-apikey placeholder="Your API key (stored locally)">
+    </div>
+  </div>`;
+  const fields=(ep.tryParams||[]).map(p=>`<div class="field">
+    <label>${esc(p.name)}${p.required?' <span class="req-badge">required</span>':''}</label>
+    <div class="field-input-wrap"><input type="text" data-param="${esc(p.name)}" value="${esc(p.def||'')}"></div>
+  </div>`).join('');
+  return `<div class="tryit-inline" data-endpoint="${key}">
+    <div class="callout-warn" style="background:#fffbeb;border-left:3px solid #f59e0b;color:#78350f;padding:8px 12px;border-radius:4px;font-size:13px;margin-bottom:12px">⚡ Live request: sends a real API call and deducts credits from your account.</div>
+    ${keyField}
+    ${fields}
+    <button class="btn btn-primary btn-sm" data-send>Send Request →</button>
+    <div class="try-result">
+      <div class="try-status"></div>
+      <pre><code class="language-json" data-result></code></pre>
+    </div>
+  </div>`;
+}
+
+/* render a full endpoint card */
+function renderEndpoint(key){
+  const ep=ENDPOINTS[key];
+  const isGet=ep.method!=="POST";
+  const fullUrl=`${ep.base}${ep.path}`;
+  const badge=isGet?'<span class="method-badge">GET</span>':'<span class="method-badge post">POST</span>';
+  const examples=ep.examples||genGetExamples(ep.base,ep.path,Object.fromEntries((ep.tryParams||[]).map(p=>[p.name,p.def])));
+  const bulk=ep.bulkType?`<div class="callout cyan"><strong>Bulk download available.</strong> For the entire dataset, submit an async report: <code>POST /api/v0/report</code> with <code>report_type: "${ep.bulkType}"</code> and an optional <code>updated_from</code> parameter. See <a data-nav="async-reports">Async Reports</a>.</div>`:'';
+  const addonCallout=ep.addon?`<div class="addon-callout">
+        <span class="addon-callout-icon">➕</span>
+        <span>This is an <strong>Add-On endpoint</strong>, available on Add-Ons plan tiers (Starter+Add-Ons, Experimenter+Add-Ons, Developer Pro+Add-Ons). Upgrade to an Add-Ons plan to get access. Your API key stays the same and automatically gains access once your plan includes Add-Ons. <a href="${PRICING}" target="_blank" rel="noopener">View pricing →</a></span>
+      </div>`:'';
+  const tabBar=`<div class="ep-tabbar">
+    <button class="ep-tab active" data-eptab="params">Parameters</button>
+    <button class="ep-tab" data-eptab="code">Code Examples</button>
+    <button class="ep-tab" data-eptab="response">Response</button>
+    ${isGet?'<button class="ep-tab" data-eptab="tryit">Try It ⚡</button>':''}
+  </div>`;
+  return `
+    <div class="endpoint">
+      ${addonCallout}
+      ${ep.note?`<div class="callout">${ep.note}</div>`:''}
+      <div class="method-row">
+        ${badge}
+        <div class="url-bar"><span class="u">${esc(fullUrl)}</span><button class="copy-btn" data-copy data-text="${esc(fullUrl)}">Copy</button></div>
+      </div>
+      <p>${ep.desc}</p>
+      ${tabBar}
+      <div class="ep-pane active" data-eptabpane="params">
+        ${paramsTable(ep.params)}
+      </div>
+      <div class="ep-pane" data-eptabpane="code">
+        ${codeTabs(examples)}
+      </div>
+      <div class="ep-pane" data-eptabpane="response">
+        ${attrsCollapse(ep.attrs)}
+        ${singleCode('json',ep.response)}
+        ${bulk}
+      </div>
+      ${isGet?`<div class="ep-pane" data-eptabpane="tryit">${tryItContent(key,ep)}</div>`:''}
+      <p class="endpoint-cta">Don't have an API key yet? <a href="${PRICING}" target="_blank" rel="noopener">Get one →</a></p>
+    </div>`;
+}
+
+function endpointSection(key){
+  const ep=ENDPOINTS[key];
+  const addonBadge=ep.addon?' <span class="badge-addon">➕ Add-On</span>':'';
+  return `<section class="section" id="${key}" data-title="${esc(TITLES[key])}">
+    <h1>${esc(TITLES[key])}${addonBadge}</h1>
+    ${renderEndpoint(key)}
+  </section>`;
+}
+
+/* =========================================================================
+   STATIC CONTENT SECTIONS
+   ========================================================================= */
+const FIELD_REF=[
+ ["name","Vessel name","MAERSK CHENNAI"],["mmsi","Maritime Mobile Service Identity, 9-digit vessel identifier","566093000"],
+ ["imo","International Maritime Organization 7-digit number","9525338"],["eni","European Number of Identification","234456177"],
+ ["uuid","Datalastic unique vessel identifier","b8625b67-7142-cfd1-7b85-595cebfe4191"],["country_iso","2-letter ISO country code","SG"],
+ ["country_name","Full country name","Singapore"],["callsign","Vessel radio callsign","9V9409"],
+ ["type","Vessel primary type","Cargo - Hazard A (Major)"],["type_specific","Vessel subtype","Container Ship"],
+ ["lat","Current latitude","6.303473"],["lon","Current longitude","3.201678"],["speed","Current speed in knots","5"],
+ ["course","Course over ground in degrees","326"],["heading","True heading in degrees","226"],
+ ["navigation_status","AIS navigational status","Under way using engine"],["destination","Reported next destination","ROTTERDAM"],
+ ["eta_UTC","Estimated time of arrival (UTC)","2021-06-11T16:49:00Z"],["eta_epoch","Estimated time of arrival (Unix epoch)","1624127400"],
+ ["atd_UTC","Actual time of departure (UTC)","2021-05-20T00:17:00Z"],["atd_epoch","Actual time of departure (Unix epoch)","1621469820"],
+ ["last_position_UTC","Last AIS position timestamp (UTC)","2021-05-08T14:27:00Z"],["last_position_epoch","Last AIS position timestamp (epoch)","1620484020"],
+ ["current_draught","Currently reported draught in meters","13.1"],["draught_avg","Average historical draught","9.5"],
+ ["draught_max","Maximum draught","10.5"],["speed_avg","Average speed","7.4"],["speed_max","Maximum speed","20"],
+ ["gross_tonnage","Gross Registered Tonnage","50869"],["deadweight","Deadweight tonnage","61614"],
+ ["teu","Twenty-foot equivalent units (container capacity)","4500"],["liquid_gas","Liquid gas capacity","null"],
+ ["length","Vessel length in meters","249.12"],["breadth","Vessel beam in meters","37.4"],["year_built","Year of construction","2011"],
+ ["home_port","Port of registry","SINGAPORE"],["is_navaid","Whether vessel is a navigation aid","false"],
+ ["dest_port","Standardized destination port name","LOME"],["dest_port_unlocode","Destination port UN/LOCODE","TGLFW"],
+ ["dep_port","Departure port name","JEBEL ALI [AE]"],["dep_port_unlocode","Departure port UN/LOCODE","AEJEA"]
+];
+const VTYPES="Anti-Pollution, Anti-Pollution Vessel, Beacon Cardinal E, Beacon Cardinal N, Beacon Cardinal S, Beacon Cardinal W, Beacon Isolated danger, Beacon Port Hand, Beacon Preferred Channel Port hand, Beacon Preferred Channel Starboard hand, Beacon Safe Water, Beacon Special Mark, Beacon Starboard Hand, Cardinal Mark E, Cardinal Mark N, Cardinal Mark S, Cardinal Mark W, Cargo, Cargo - Hazard A (Major), Cargo - Hazard B, Cargo - Hazard C (Minor), Cargo - Hazard D (Recognizable), Cargo: Hazardous category A, Cargo: Hazardous category B, Cargo: Hazardous category C, Cargo: Hazardous category D, Dive Ops, Dive Vessel, Dredger, Fishing, High Speed Craft, HSC, Isolated Danger, Law Enforce, Law Enforcement, Light Vessel, Light without Sectors, Light with Sectors, Local Vessel, Manned VTS, Medical Trans, Military Ops, Navigation Aid, OffShore Structure, Other, Passenger, Pilot Vessel, Pleasure Craft, Port Hand Mark, Port Tender, Preferred Channel Port Hand, Preferred Channel Starboard Hand, RACON, Reference Point, Reserved, Safe Water, Sailing Vessel, SAR, SAR Aircraft, Search and Rescue Aircraft, Search and Rescue Vessel, Spare, Special Craft, Starboard Hand Mark, Tanker, Tanker - Hazard A (Major), Tanker - Hazard B, Tanker - Hazard C (Minor), Tanker - Hazard D (Recognizable), Tanker: Hazardous category A, Tanker: Hazardous category B, Tanker: Hazardous category C, Tanker: Hazardous category D, Tug, Unspecified, WIG, Wing In Grnd".split(/,\s*/);
+const VSUBTYPES="Accommodation Barge, Accommodation Jack Up, Accommodation Platform, Accommodation Ship, Accommodation Vessel, Aggregates Carrier, Air Cushion Patrol Vessel, Anchor Handling Vessel, Anti-Pollution, Anti-Pollution Vessel, Articulated Pusher Tug, Asphalt or Bitumen Tanker, Backhoe Dredger, Barge Carrier, Bulk Carrier, Bulker, Bunkering Tanker, Buoy-Laying Vessel, Cable Layer, Cabu Carrier, Cargo, Cargo Barge, Cargo or Containership, Cement Carrier, Chemical Tanker, CO2 Tanker, Combat Vessel, Command Vessel, Construction Support Vessel, Container, Container Ship, Crane Barge, Crane Ship, Crew Boat, Crude Oil, Crude Oil Tanker, Cutter Suction Dredger, Deck Cargo Pontoon, Deck Cargo Ship, Dive Vessel, Diving Support Platform, Diving Support Vessel, Dredger, Drill Barge, Drilling Jack Up, Drilling Rig, Drill Ship, Edible Oil Tanker, Factory Trawler, Fire Fighting Vessel, Fish Carrier, Fishery Patrol Vessel, Fishery Research Vessel, Fishery Support Vessel, Fish Factory, Fishing Vessel, Floating Crane, Floating Hotel or Restaurant, Floating Sheerleg, Floating Storage or Production, Fruit Juice Tanker, General Cargo, Heavy Lift Vessel, Heavy Load Carrier, Hopper Barge, Hopper Dredger, Hospital Ship, Houseboat, Hovercraft, Hydrofoil, Icebreaker, LNG Tanker, LPG Tanker, LPG or Chemical Tanker, Livestock Carrier, Mining Vessel, Motor Hopper, Multi Purpose Offshore Vessel, Naval Craft, Naval Patrol Vessel, Nuclear Fuel Carrier, Obo Carrier, Offshore Construction Vessel, Offshore Supply Ship, Oil or Chemical Tanker, Oil Products Tanker, Ore Carrier, Passenger Ship, Patrol Vessel, Pipe Layer, Platform, Pollution Control Vessel, Pusher Tug, Reefer, Research or Survey Vessel, Ro-Ro Cargo, Sailing Vessel, Salvage or Rescue Vessel, Shuttle Tanker, Supply Vessel, Tank Barge, Tanker, Towing Vessel, Trawler, Tug, Tug or Ice Breaker, Utility Vessel, Vehicles Carrier, Waste Disposal Vessel, Water Tanker, Work Vessel, Yacht".split(/,\s*/);
+
+function staticSection(id){
+  switch(id){
+
+  case "introduction": return `<section class="section" id="introduction" data-title="Introduction">
+    <h1>Datalastic API Documentation</h1>
+    <div class="hero">
+      <svg class="hero-deco" width="160" height="160" viewBox="0 0 32 32" fill="none"><path d="M4 19 C7 16 9 22 12 19 C15 16 17 22 20 19 C23 16 25 22 28 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M16 4 V13 M16 13 L12 10 M16 13 L20 10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h2>Start building in under 5 minutes</h2>
+      <p>Real-time vessel tracking, historical ship data, ports, and maritime data, all behind one API key.</p>
+      <a class="btn btn-primary" href="${PRICING}" target="_blank" rel="noopener">Get your API Key →</a>
+    </div>
+    <p class="lead">AIS signals from our own towers worldwide, combined with data from thousands of additional sources. Collected, cleaned, and structured into one reliable API.</p>
+    <div class="stats">
+      <div class="stat"><div class="num">1,000,000</div><div class="lbl">Vessels</div></div>
+      <div class="stat"><div class="num">22,000</div><div class="lbl">Ports</div></div>
+      <div class="stat"><div class="num">Global</div><div class="lbl">Coverage</div></div>
+    </div>
+    <div class="plan-overview">
+      <div class="plan-card core">
+        <h4><span style="color:var(--color-purple)">◆</span> Data Feed</h4>
+        <ul>
+          <li>Live Vessel Tracking (Basic, Pro, Bulk)</li>
+          <li>Area Traffic Scanning</li>
+          <li>Historical Vessel Data</li>
+          <li>Vessel Info &amp; Finder</li>
+          <li>Port Finder &amp; Terminals</li>
+          <li>Vessel List &amp; Port List reports</li>
+        </ul>
+        <p class="plan-note">Included in Starter, Experimenter, and Developer Pro plans.</p>
+      </div>
+      <div class="plan-card addons">
+        <h4><span>➕</span> Add-Ons</h4>
+        <ul>
+          <li>SAT-E (Satellite Estimator)</li>
+          <li>Dry Dock Dates</li>
+          <li>Ship Casualties</li>
+          <li>Inspections &amp; Detentions</li>
+          <li>Sales &amp; Demolitions</li>
+          <li>Vessel Ownership</li>
+          <li>Classification Society</li>
+          <li>Vessel Engines</li>
+          <li>Maritime Companies</li>
+          <li>Sea Routes</li>
+        </ul>
+        <p class="plan-note">Available on Add-Ons plan tiers. Upgrade your plan to get access. Same API key.</p>
+      </div>
+    </div>
+    <p>The API covers real-time vessel tracking, marine location traffic data, port information, and historical ship data, with every endpoint returning clean, structured JSON. Use this Vessel Tracking API Documentation as your reference for the live AIS feeds, and read on for the full AIS API Documentation across all 20 endpoints.</p>
+    <h3>What you can build</h3>
+    <ul>
+      <li>Live vessel tracking dashboards and fleet monitoring</li>
+      <li>Area traffic scans and geofencing alerts</li>
+      <li>Historical voyage reconstruction and analytics</li>
+      <li>Port, terminal, and sea-route logistics planning</li>
+      <li>Vessel due-diligence: ownership, casualties, inspections, classification</li>
+    </ul>
+    <div class="callout"><strong>Need help?</strong> Reach the team at <a href="mailto:support@datalastic.com">support@datalastic.com</a>.</div>
+  </section>`;
+
+  case "authentication": return `<section class="section" id="authentication" data-title="Authentication">
+    <h1>Authentication</h1>
+    <p>Across this Maritime API Documentation, all requests authenticate with a single API key passed as a query parameter. There are no headers or OAuth flows to manage.</p>
+    <h4>Base URLs</h4>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Endpoints</th><th>Base URL</th></tr></thead>
+      <tbody>
+        <tr><td>Most endpoints</td><td><code>https://api.datalastic.com/api/v0/</code></td></tr>
+        <tr><td>Extended endpoints (SAT-E, Sea Routes)</td><td><code>https://api.datalastic.com/api/ext/</code></td></tr>
+        <tr><td>Maritime report data</td><td><code>https://api.datalastic.com/api/maritime_reports/</code></td></tr>
+      </tbody>
+    </table></div>
+    <h4>API Key parameter</h4>
+    ${singleCode('bash','api-key={YOUR_API_KEY}')}
+    <div class="callout">
+      <strong>One API key.</strong> Your API key is the same across all Datalastic plans. Core Data Feed endpoints are available on all plans. Add-On endpoints require an Add-Ons plan tier. Upgrade or switch plans at any time and your key automatically gains access to the corresponding endpoints.
+    </div>
+    <p>Find your key in your profile, or receive it by email upon subscription.</p>
+    <h3>Check your key status</h3>
+    <p>Verify a key and view request usage via the stats endpoint:</p>
+    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/stat?api-key=YOUR_API_KEY"')}
+    <a class="btn btn-primary" href="${PRICING}" target="_blank" rel="noopener" style="margin-top:10px">Get API Key →</a>
+  </section>`;
+
+  case "stat": return `<section class="section" id="stat" data-title="Account &amp; Usage">
+    <h1>Account &amp; Usage</h1>
+    <p>The <code>/stat</code> endpoint lets you check your API key status and monitor credit consumption at any time. It is free to call and does not deduct credits.</p>
+    <h3>Endpoint</h3>
+    ${singleCode('bash','GET https://api.datalastic.com/api/v0/stat')}
+    <h3>Parameters</h3>
+    <div class="table-wrap"><table class="params-table">
+      <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>api-key</code></td><td><span class="type-pill">string</span></td><td><span class="req-badge">required</span></td><td>Your API key</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Response Fields</h3>
+    <div class="table-wrap"><table class="params-table">
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>user_id</code></td><td><span class="type-pill">string</span></td><td>Your API key identifier</td></tr>
+        <tr><td><code>key_status</code></td><td><span class="type-pill">string</span></td><td>Key validity: <code>"Valid"</code> or <code>"Invalid"</code></td></tr>
+        <tr><td><code>requests_made</code></td><td><span class="type-pill">integer</span></td><td>Credits used in the current billing period</td></tr>
+        <tr><td><code>requests_remaining</code></td><td><span class="type-pill">integer</span></td><td>Credits remaining in the current billing period</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Example</h3>
+    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/stat?api-key=YOUR_API_KEY"')}
+    ${singleCode('json',`{
+  "data": {
+    "user_id": "{YOUR_API_KEY}",
+    "key_status": "Valid",
+    "requests_made": 112,
+    "requests_remaining": 888
+  },
+  "meta": {
+    "duration": 0.004715806,
+    "endpoint": "/api/v0/stat",
+    "success": true
+  }
+}`)}
+  </section>`;
+
+  case "quickstart": return `<section class="section" id="quickstart" data-title="Quickstart">
+    <h1>Quickstart</h1>
+    <p class="lead">Make your first call in three steps.</p>
+    <h3>1. Get your API key</h3>
+    <p>Sign up and grab a key at <a href="${PRICING}" target="_blank" rel="noopener">datalastic.com/pricing/</a>.</p>
+    <h3>2. Make your first request</h3>
+    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/vessel?api-key=YOUR_KEY&mmsi=566093000"')}
+    <h3>3. Parse the JSON response</h3>
+    ${singleCode('json',`{
+  "data": {
+    "uuid": "b8625b67-7142-cfd1-7b85-595cebfe4191",
+    "name": "MAERSK CHENNAI",
+    "mmsi": "566093000",
+    "lat": 6.303473,
+    "lon": 3.201678,
+    "speed": 0
+  },
+  "meta": { "success": true }
+}`)}
+    <div class="callout cyan">That's it. Explore the <a data-nav="vessel">Vessel Tracking</a> endpoint next, or jump to <a data-nav="vessel_inradius">Area Traffic</a>.</div>
+  </section>`;
+
+  case "rate-limits": return `<section class="section" id="rate-limits" data-title="Rate Limits & Credits">
+    <h1>Rate Limits & Credits</h1>
+    <p>Each subscription plan provides a monthly allowance of database (DB) credits. Credits are only deducted on <strong>successful</strong> requests.</p>
+    <h3>Plans</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Plan</th><th>Monthly DB Credits</th></tr></thead>
+      <tbody>
+        <tr><td>Starter</td><td>20,000 credits / month</td></tr>
+        <tr><td>Experimenter</td><td>80,000 credits / month</td></tr>
+        <tr><td>Developer Pro</td><td>Unlimited credits / month</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Rate limit</h3>
+    <p>The API allows <strong>600 requests per minute</strong>. Exceeding this returns a <code>Too Many Requests</code> error (HTTP 429). Implement backoff and retry logic for high-volume workloads.</p>
+    <div class="callout pink"><strong>Only successful requests deduct credits.</strong> Failed lookups (e.g. a vessel not found) do not consume your allowance.</div>
+    <a class="btn btn-ghost btn-sm" href="${PRICING}" target="_blank" rel="noopener">Compare plans →</a>
+  </section>`;
+
+  case "credit-system": return `<section class="section" id="credit-system" data-title="Credit System">
+    <h1>Credit System</h1>
+    <p>Credits are deducted per endpoint according to the volume of data returned. The table below summarizes the cost of each endpoint.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Endpoint</th><th>Credit Cost</th></tr></thead>
+      <tbody>
+        <tr><td colspan="2" class="credit-section-head">Data Feed</td></tr>
+        <tr><td><code>/vessel</code> or <code>/vessel_pro</code></td><td>1 credit per vessel</td></tr>
+        <tr><td><code>/vessel_bulk</code></td><td>1 credit per successfully found vessel (up to 100 per call)</td></tr>
+        <tr><td><code>/vessel_inradius</code></td><td>Credits = number of ships found (max 500 deducted per request)</td></tr>
+        <tr><td><code>/vessel_history</code></td><td>1 credit per vessel per day (e.g. 2 vessels × 10 days = 20 credits)</td></tr>
+        <tr><td><code>/vessel_info</code></td><td>1 credit per vessel</td></tr>
+        <tr><td><code>/vessel_find</code></td><td>1 credit per vessel found</td></tr>
+        <tr><td><code>/port_find</code></td><td>1 credit per port found</td></tr>
+        <tr><td><code>/report</code> (any type)</td><td>1 credit per submission</td></tr>
+        <tr><td>Historical Location (<code>inradius_history</code>)</td><td>(Days) × (Vessels/Day), max 500/day</td></tr>
+        <tr><td>Vessel List report</td><td>5,000 credits</td></tr>
+        <tr><td>Port List report</td><td>500 credits</td></tr>
+        <tr><td>Request Usage report</td><td>Free</td></tr>
+        <tr><td colspan="2" class="credit-section-head addon-head">➕ Add-Ons</td></tr>
+        <tr><td>Sea Routes (<code>/route</code>)</td><td>Free</td></tr>
+        <tr><td>SAT-E (<code>/vessel_pro_est</code>)</td><td>1 credit per vessel query</td></tr>
+        <tr><td><code>/dry_dock_dates</code></td><td>1 credit per record returned</td></tr>
+        <tr><td><code>/casualty</code></td><td>1 credit per record returned</td></tr>
+        <tr><td><code>/inspections</code></td><td>1 credit per record returned</td></tr>
+        <tr><td>Sales &amp; Demolitions (<code>/spd</code>)</td><td>1 credit per record returned</td></tr>
+        <tr><td><code>/ownership</code></td><td>1 credit per record returned</td></tr>
+        <tr><td><code>/class_society</code></td><td>1 credit per record returned</td></tr>
+        <tr><td><code>/engine</code></td><td>1 credit per record returned</td></tr>
+        <tr><td><code>/companies</code></td><td>1 credit per record returned</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Monitor usage</h3>
+    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/stat?api-key=YOUR_API_KEY"')}
+    ${singleCode('json',`{
+  "data": {
+    "user_id": "{YOUR_API_KEY}",
+    "key_status": "Valid",
+    "requests_made": 112,
+    "requests_remaining": 888
+  },
+  "meta": {
+    "duration": 0.004715806,
+    "endpoint": "/api/v0/stat",
+    "success": true
+  }
+}`)}
+  </section>`;
+
+  case "async-reports": return `<section class="section" id="async-reports" data-title="Async Reports">
+    <h1>Async Reports</h1>
+    <p>Large datasets such as historical area scans, full vessel and port lists, and maritime report bulk downloads are generated asynchronously. You submit a job, poll for completion, then download a ZIP from the returned <code>result_url</code>.</p>
+    <div class="method-row">
+      <span class="method-badge post">POST</span>
+      <div class="url-bar"><span class="u">https://api.datalastic.com/api/v0/report</span><button class="copy-btn" data-copy data-text="https://api.datalastic.com/api/v0/report">Copy</button></div>
+    </div>
+    <h3>Lifecycle</h3>
+    <p>A report transitions through the following states:</p>
+    <p><code>Submit</code> → <code>_PENDING_</code> → <code>_IN_PROGRESS_</code> → <code>_DONE_</code> (with <code>result_url</code> ZIP download link)</p>
+    <h3>1. Submit a report</h3>
+    ${codeTabs({
+      curl:`curl -X POST -H "Content-Type: application/json" \\
+  -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
+  "https://api.datalastic.com/api/v0/report"`,
+      python:`import requests
+
+r = requests.post(
+  url='https://api.datalastic.com/api/v0/report',
+  json={
+    'api-key': 'YOUR_KEY',
+    'report_type': 'inradius_history',
+    'lat': 51.8951, 'lon': 4.3973, 'radius': 10,
+    'from': '2022-07-01', 'to': '2022-07-05'
+  }
+)
+print(r.text)`,
+      node:`const fetch = require('node-fetch');
+
+const res = await fetch('https://api.datalastic.com/api/v0/report', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    'api-key': 'YOUR_KEY',
+    report_type: 'inradius_history',
+    lat: 51.8951, lon: 4.3973, radius: 10,
+    from: '2022-07-01', to: '2022-07-05'
+  })
+});
+console.log(await res.text());`,
+      go:`package main
+
+import (
+    "bytes"
+    "fmt"
+    "io"
+    "net/http"
+)
+
+func main() {
+    body := []byte(\`{"api-key":"YOUR_KEY","report_type":"inradius_history","lat":51.8951,"lon":4.3973,"radius":10,"from":"2022-07-01","to":"2022-07-05"}\`)
+    res, _ := http.Post("https://api.datalastic.com/api/v0/report", "application/json", bytes.NewBuffer(body))
+    defer res.Body.Close()
+    out, _ := io.ReadAll(res.Body)
+    fmt.Println(string(out))
+}`,
+      ruby:`require 'net/http'
+require 'json'
+
+uri = URI('https://api.datalastic.com/api/v0/report')
+req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+req.body = {
+  'api-key' => 'YOUR_KEY', 'report_type' => 'inradius_history',
+  'lat' => 51.8951, 'lon' => 4.3973, 'radius' => 10,
+  'from' => '2022-07-01', 'to' => '2022-07-05'
+}.to_json
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |h| h.request(req) }
+puts res.body`,
+      php:`<?php
+$payload = json_encode([
+  'api-key' => 'YOUR_KEY', 'report_type' => 'inradius_history',
+  'lat' => 51.8951, 'lon' => 4.3973, 'radius' => 10,
+  'from' => '2022-07-01', 'to' => '2022-07-05'
+]);
+$c = curl_init('https://api.datalastic.com/api/v0/report');
+curl_setopt_array($c, [
+  CURLOPT_POST => true,
+  CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+  CURLOPT_POSTFIELDS => $payload,
+  CURLOPT_RETURNTRANSFER => true
+]);
+echo curl_exec($c);
+curl_close($c);`,
+      java:`String payload = "{\\"api-key\\":\\"YOUR_KEY\\",\\"report_type\\":\\"inradius_history\\",\\"lat\\":51.8951,\\"lon\\":4.3973,\\"radius\\":10,\\"from\\":\\"2022-07-01\\",\\"to\\":\\"2022-07-05\\"}";
+HttpRequest request = HttpRequest.newBuilder()
+  .uri(URI.create("https://api.datalastic.com/api/v0/report"))
+  .header("Content-Type", "application/json")
+  .POST(HttpRequest.BodyPublishers.ofString(payload))
+  .build();
+HttpResponse<String> response = HttpClient.newHttpClient()
+  .send(request, HttpResponse.BodyHandlers.ofString());
+System.out.println(response.body());`
+    })}
+    <h4>Pending response</h4>
+    ${singleCode('json',`{
+  "data": {
+    "created_at": "2022-07-31T16:29:21.873349Z",
+    "params": {
+      "from": "2022-07-01T00:00:00Z",
+      "lat": 51.8951,
+      "lon": 4.3973,
+      "radius": 10,
+      "report_type": "inradius_history",
+      "to": "2022-07-05T00:00:00Z"
+    },
+    "report_id": "4ddc14e0-9059-9b86-1156-8efd93f0cfe6",
+    "report_type": "inradius_history",
+    "status": "_PENDING_"
+  },
+  "meta": {"duration": 0.0136832, "endpoint": "/api/v0/report", "success": true}
+}`)}
+    <h3>2. Poll the report status</h3>
+    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/report?api-key=YOUR_KEY&report_id=4ddc14e0-9059-9b86-1156-8efd93f0cfe6"')}
+    <p>List all of your reports with <code>report_id=_all</code>:</p>
+    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/report?api-key=YOUR_API_KEY&report_id=_all"')}
+    <h4>Done response (with result_url)</h4>
+    ${singleCode('json',`{
+  "data": {
+    "report_id": "4ddc14e0-9059-9b86-1156-8efd93f0cfe6",
+    "report_type": "inradius_history",
+    "status": "_DONE_",
+    "result_url": "https://report.datalastic.com/dl/4ddc14e0-9059-9b86-1156-8efd93f0cfe6.zip",
+    "created_at": "2022-07-31T18:33:07.999153Z",
+    "updated_at": "2022-07-31T19:22:37.733028Z"
+  },
+  "meta": {"duration": 0.002157077, "endpoint": "/api/v0/report", "success": true}
+}`)}
+    <div class="callout cyan">Once <code>status</code> is <code>_DONE_</code>, download the ZIP at <code>result_url</code>. See <a data-nav="report-vessel_list">Bulk Reports</a> for every available report type.</div>
+  </section>`;
+
+  case "field-reference": return `<section class="section" id="field-reference" data-title="Field Reference">
+    <h1>Field Reference</h1>
+    <p>A complete reference of fields returned across the vessel endpoints, with example values.</p>
+    <input type="text" class="vt-search" id="frSearch" placeholder="Filter fields...">
+    <div class="table-wrap"><table id="frTable">
+      <thead><tr><th>Field</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        ${FIELD_REF.map(([f,d,ex])=>`<tr class="fr-row"><td><code>${esc(f)}</code></td><td>${esc(d)}</td><td class="muted">${esc(ex)}</td></tr>`).join('')}
+      </tbody>
+    </table></div>
+  </section>`;
+
+  case "vessel-types": return `<section class="section" id="vessel-types" data-title="Vessel Types">
+    <h1>Vessel Types</h1>
+    <p>The <code>type</code> field holds the primary AIS vessel category; <code>type_specific</code> holds a refined subtype. There are 306 total type/subtype combinations. Use the search below to filter.</p>
+    <input type="text" class="vt-search" id="vtSearch" placeholder="Search vessel types & subtypes...">
+    <div class="vt-count" id="vtCount"></div>
+    <h4>Main types <span class="muted">(type field)</span></h4>
+    <div class="vt-grid" id="vtMain">${VTYPES.map(t=>`<span class="vt-tag">${esc(t)}</span>`).join('')}</div>
+    <h4>Key subtypes <span class="muted">(type_specific field)</span></h4>
+    <div class="vt-grid" id="vtSub">${VSUBTYPES.map(t=>`<span class="vt-tag">${esc(t)}</span>`).join('')}</div>
+  </section>`;
+
+  case "error-codes": return `<section class="section" id="error-codes" data-title="Error Codes">
+    <h1>Error Codes</h1>
+    <p>When a request fails, the API returns a JSON body with <code>meta.success: false</code> and an appropriate HTTP status code.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Code</th><th>HTTP Status</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Bad Request</td><td><span class="type-pill">400</span></td><td>Missing required parameter or invalid parameter value</td></tr>
+        <tr><td>Unauthorized</td><td><span class="type-pill">401</span></td><td>Invalid or expired API key</td></tr>
+        <tr><td>Payment Required</td><td><span class="type-pill">402</span></td><td>API key is valid but credit balance is exhausted or subscription has expired. Purchase more credits to continue</td></tr>
+        <tr><td>Not Found</td><td><span class="type-pill">404</span></td><td>Requested vessel, port, or resource was not found</td></tr>
+        <tr><td>Too Many Requests</td><td><span class="type-pill">429</span></td><td>More than 600 API calls in a single minute. Implement backoff and retry logic</td></tr>
+        <tr><td>Internal Error</td><td><span class="type-pill">500</span></td><td>Server-side error. Retry the request</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout"><strong>402 vs 429:</strong> A <code>402</code> means your credits are exhausted, so purchase more to continue. A <code>429</code> is a per-minute rate limit (600 req/min), so back off and retry. Treat <code>404</code> as an expected outcome for lookups that may not exist.</div>
+  </section>`;
+
+  case "inradius_history": return `<section class="section" id="inradius_history" data-title="Historical Area Scan">
+    <h1>Historical Area Scan</h1>
+    <div class="method-row">
+      <span class="method-badge post">POST</span>
+      <div class="url-bar"><span class="u">https://api.datalastic.com/api/v0/report</span><button class="copy-btn" data-copy data-text="https://api.datalastic.com/api/v0/report">Copy</button></div>
+    </div>
+    <p>Generate an async report of all vessels that passed through a geographic area during a specified time period. Submit it as a report job, poll for completion, then download the result as a ZIP file. Set <code>report_type</code> to <code>inradius_history</code>.</p>
+    <h4>JSON Body Parameters</h4>
+    ${paramsTable([
+      ["api-key","string","required","Your API key"],
+      ["report_type","string","required",'Must be "inradius_history"'],
+      ["lat","number","required","Center latitude"],
+      ["lon","number","required","Center longitude"],
+      ["radius","number","required","Radius in NM (max 50)"],
+      ["from","string","required","Start date YYYY-MM-DD"],
+      ["to","string","required",'End date YYYY-MM-DD (max 7 days from "from")']
+    ])}
+    <div class="callout pink"><strong>Credit cost:</strong> (Number of Days) × (Number of Vessels per Day), max 500 vessels per day.</div>
+    <h4>Submit</h4>
+    ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
+  -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
+  "https://api.datalastic.com/api/v0/report"`)}
+    <div class="callout cyan">See the <a data-nav="async-reports">Async Reports</a> section for the full submit → poll → download lifecycle and response examples.</div>
+    <p class="endpoint-cta">Don't have an API key yet? <a href="${PRICING}" target="_blank" rel="noopener">Get one →</a></p>
+  </section>`;
+
+  case "report-vessel_list": return bulkReportSection("report-vessel_list","Vessel List","vessel_list","5,000 credits",
+    "Download a complete database of all vessels with detailed specifications.",
+    "Contains: name, IMO, MMSI, UUID, callsign, country, type, subtype, draft, TEU, deadweight, dimensions, speeds, year_built, homeport, and activity status.",
+    `{"api-key": "YOUR_KEY", "report_type": "vessel_list"}`);
+
+  case "report-port_list": return bulkReportSection("report-port_list","Port List","port_list","500 credits",
+    "Download the complete ports database.",
+    "Contains: uuid, name, country, unlocode, type, lat, lon, and area levels.",
+    `{"api-key": "YOUR_KEY", "report_type": "port_list"}`);
+
+  case "report-inradius_history": return `<section class="section" id="report-inradius_history" data-title="Historical Location Data">
+    <h1>Historical Location Data</h1>
+    <div class="method-row">
+      <span class="method-badge post">POST</span>
+      <div class="url-bar"><span class="u">https://api.datalastic.com/api/v0/report</span><button class="copy-btn" data-copy data-text="https://api.datalastic.com/api/v0/report">Copy</button></div>
+    </div>
+    <p>Generate a historical scan of all vessels that passed through a geographic area during a time window. Submit it as an async job, poll for completion, then download the ZIP result.</p>
+    <h4>JSON Body Parameters</h4>
+    ${paramsTable([
+      ["api-key","string","required","Your API key"],
+      ["report_type","string","required",'Must be "inradius_history"'],
+      ["lat","number","required","Center latitude"],
+      ["lon","number","required","Center longitude"],
+      ["radius","number","required","Radius in NM (max 50)"],
+      ["from","string","required","Start date YYYY-MM-DD"],
+      ["to","string","required",'End date YYYY-MM-DD (max 7 days from "from")']
+    ])}
+    <div class="callout pink"><strong>Credit cost:</strong> (Days) × (Vessels/Day), max 500 vessels/day.</div>
+    <h4>Submit</h4>
+    ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
+  -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
+  "https://api.datalastic.com/api/v0/report"`)}
+    <div class="callout cyan">See the <a data-nav="async-reports">Async Reports</a> section for the full polling and download workflow.</div>
+  </section>`;
+
+  case "report-request_usage": return `<section class="section" id="report-request_usage" data-title="API Usage Report">
+    <h1>API Usage Report</h1>
+    <div class="method-row">
+      <span class="method-badge post">POST</span>
+      <div class="url-bar"><span class="u">https://api.datalastic.com/api/v0/report</span><button class="copy-btn" data-copy data-text="https://api.datalastic.com/api/v0/report">Copy</button></div>
+    </div>
+    <p>Download a detailed log of your API key's usage history. Set <code>report_type</code> to <code>request_usage</code>. <strong>This report is free.</strong></p>
+    <h4>JSON Body Parameters</h4>
+    ${paramsTable([
+      ["api-key","string","required","Your API key"],
+      ["report_type","string","required",'Must be "request_usage"'],
+      ["from","string","optional","Start date YYYY-MM-DD"],
+      ["to","string","optional",'End date YYYY-MM-DD (max 31 days from "from")']
+    ])}
+    <p class="muted">If <code>from</code>/<code>to</code> are omitted, the report covers the last month. Contains: endpoint called, credits deducted, remaining balance, and date/time.</p>
+    <h4>Submit</h4>
+    ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
+  -d '{"api-key": "YOUR_KEY", "report_type": "request_usage", "from": "2024-01-01", "to": "2024-01-31"}' \\
+  "https://api.datalastic.com/api/v0/report"`)}
+    <div class="callout cyan">Poll and download as described in <a data-nav="async-reports">Async Reports</a>.</div>
+  </section>`;
+
+  case "sdk-python": return sdkSection("sdk-python","Python SDK","https://github.com/datalastic/datalastic-python","pip install datalastic","python",
+`from datalastic import Client
+
+client = Client(api_key="YOUR_API_KEY")
+vessel = client.vessel.get(mmsi="566093000")
+print(vessel.name, vessel.lat, vessel.lon)`);
+
+  case "sdk-node": return sdkSection("sdk-node","Node.js SDK","https://github.com/datalastic/datalastic-node","npm install datalastic","javascript",
+`const { Datalastic } = require('datalastic');
+
+const client = new Datalastic({ apiKey: 'YOUR_API_KEY' });
+const vessel = await client.vessel.get({ mmsi: '566093000' });
+console.log(vessel.name, vessel.lat, vessel.lon);`);
+
+  case "sdk-go": return sdkSection("sdk-go","Go SDK","https://github.com/datalastic/datalastic-go","go get github.com/datalastic/datalastic-go","go",
+`client := datalastic.NewClient("YOUR_API_KEY")
+vessel, err := client.Vessel.Get(datalastic.VesselParams{MMSI: "566093000"})
+fmt.Printf("%s: %.6f, %.6f\\n", vessel.Name, vessel.Lat, vessel.Lon)`);
+
+  case "report-dry_dock_dates": return bulkReportSection(
+    "report-dry_dock_dates","Dry Dock Dates Report","dry_dock_dates","1 credit per record",
+    "Download all dry dock and special survey records across the fleet, including IOPP certificate dates and technical manager contact information.",
+    "Contains: id, imo, vessel_name, special_survey_date, dry_dock_date, iopp_issue_date, iopp_exp_date, technical_manager, country_code, website, email, phone, address, linkedin, modified_at.",
+    `{"api-key": "YOUR_KEY", "report_type": "dry_dock_dates"}`,
+    true);
+
+  case "report-casualty": return bulkReportSection(
+    "report-casualty","Ship Casualty Report","casualty","1 credit per record",
+    "Download historical casualty records covering groundings, collisions, fires, sinkings, and other incidents. Each record includes the incident type and a detailed narrative description.",
+    "Contains: id, imo, vessel_name, casualty_date, casualty_type, casualty_details, modified_at.",
+    `{"api-key": "YOUR_KEY", "report_type": "casualty", "from": "2024-01-01", "to": "2024-01-31"}`,
+    true);
+
+  case "report-inspections": return bulkReportSection(
+    "report-inspections","Ship Inspections Report","inspections","1 credit per record",
+    "Download Port State Control (PSC) inspection records including authority, port, deficiency descriptions, and detention outcomes.",
+    "Contains: id, imo, vessel_name, vessel_type_code, flag_code, inspection_date, inspection_authority, inspection_port, inspection_type, detention, ship_deficiencies, deficiency_description, technical_ism_manager, country_code, website, email, phone, address, company_imo, modified_at.",
+    `{"api-key": "YOUR_KEY", "report_type": "inspections", "from": "2024-01-01", "to": "2024-01-31"}`,
+    true);
+
+  case "report-spd": return bulkReportSection(
+    "report-spd","Ship Sales & Demolitions Report","sales_purchase_demolitions","1 credit per record",
+    "Download records of ship sales, purchases, and demolitions including transaction dates, buyer, seller, sale price, and scrapping destination.",
+    "Contains: id, sales_report_date, imo, vessel_name, flag_name, vessel_type_code, built_year, dwt_design, gt, ldt, seller, buyer, sales_price_usd_mio, sales_price_usd/ldt, destination, sales_type, dry_dock_date, special_survey_date, sales_note, previous_sales_record, modified_at.",
+    `{"api-key": "YOUR_KEY", "report_type": "sales_purchase_demolitions", "from": "2024-01-01", "to": "2024-01-31"}`,
+    true);
+
+  case "report-ownership": return bulkReportSection(
+    "report-ownership","Vessel Ownership Report","ownership","1 credit per record",
+    "Download beneficial ownership, operator, technical manager, and commercial manager records across the fleet.",
+    "Contains: id, imo, vessel_name, beneficial_owner, beneficial_owner_country, operator, operator_country, flag_name, vessel_type_code, built_year, dwt_design, class1_code, technical_manager, technical_manager_country, commercial_manager, commercial_manager_country, modified_at.",
+    `{"api-key": "YOUR_KEY", "report_type": "ownership"}`,
+    true);
+
+  case "report-class_society": return bulkReportSection(
+    "report-class_society","Classification Society Report","class_society","1 credit per record",
+    "Download classification society records with full physical vessel specifications (LOA, LBP, depth, beam, draft) and engine details.",
+    "Contains: imo, vessel_name, vessel_type_code, flag_name, built_year, dwt_design, special_survey_date, dry_dock_date, class1_code, beneficial_owner_imo, beneficial_owner, technical_manager_imo, technical_manager, draft_design, nt, gt, loa, lbp, depth, beam_moduled, engine_builder, engine_designer, propulsion_type_code, modified_at.",
+    `{"api-key": "YOUR_KEY", "report_type": "class_society"}`,
+    true);
+
+  case "report-engine": return bulkReportSection(
+    "report-engine","Vessel Engine Report","engine","1 credit per record",
+    "Download engine specifications for the fleet including designation, builder, designer, MCO, RPM, and propulsion type.",
+    "Contains: imo, vessel_name, vessel_type_code, propulsion_type_code, mco, mco_unit, mco_rpm, trading_category_code, built_year, gt, engine_designation, engine_builder, engine_designer, modified_at.",
+    `{"api-key": "YOUR_KEY", "report_type": "engine"}`,
+    true);
+
+  case "report-companies": return bulkReportSection(
+    "report-companies","Maritime Companies Report","companies","1 credit per record",
+    "Download the full maritime companies database including company type, registration country, status, contact details, and parent company relationships.",
+    "Contains: id, short_name, long_name, company_type, country_code, company_imo, website, company_status, email, phone, address, linkedin, parent_company_imo, parent_company_name, modified_at.",
+    `{"api-key": "YOUR_KEY", "report_type": "companies"}`,
+    true);
+
+  default: return '';
+  }
+}
+
+function bulkReportSection(id,title,type,cost,desc,contains,body,addon=false){
+  return `<section class="section" id="${id}" data-title="${esc(title)}">
+    <h1>${esc(title)}</h1>
+    <div class="method-row">
+      <span class="method-badge post">POST</span>
+      <div class="url-bar"><span class="u">https://api.datalastic.com/api/v0/report</span><button class="copy-btn" data-copy data-text="https://api.datalastic.com/api/v0/report">Copy</button></div>
+    </div>
+    ${addon?`<div class="addon-callout">
+      <span class="addon-callout-icon">➕</span>
+      <span>This is an <strong>Add-On report</strong>, available on Add-Ons plan tiers (Starter+Add-Ons, Experimenter+Add-Ons, Developer Pro+Add-Ons). Your API key stays the same when you upgrade. <a href="${PRICING}" target="_blank" rel="noopener">View pricing →</a></span>
+    </div>`:''}
+    <p>${esc(desc)}</p>
+    <div class="callout pink"><strong>Cost: ${esc(cost)}.</strong></div>
+    <p class="muted">${esc(contains)}</p>
+    <h4>JSON Body</h4>
+    ${singleCode('json',body)}
+    <h4>Submit</h4>
+    ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
+  -d '${body}' \\
+  "https://api.datalastic.com/api/v0/report"`)}
+    <div class="callout cyan">Poll for completion and download the ZIP as described in <a data-nav="async-reports">Async Reports</a>.</div>
+  </section>`;
+}
+
+function sdkSection(id,title,github,install,lang,example){
+  return `<section class="section" id="${id}" data-title="${esc(title)}">
+    <div class="sdk-card">
+      <div class="sdk-head"><h3>${esc(title)}</h3><span class="badge-soon">Coming Soon</span></div>
+      <p class="muted">GitHub: <a href="${github}" target="_blank" rel="noopener">${esc(github.replace('https://github.com/',''))}</a></p>
+      <p class="muted" style="font-size:12px;margin-top:-8px;">Repository coming soon.</p>
+      <h4>Install</h4>
+      ${singleCode('bash',install)}
+      <h4>Example</h4>
+      ${singleCode(lang,example)}
+    </div>
+  </section>`;
+}
+
+/* =========================================================================
+   BUILD PAGE
+   ========================================================================= */
+const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","sdk-python","sdk-node","sdk-go"]);
+
+function buildContent(){
+  const parts=[];
+  NAV.forEach(g=>g.items.forEach(id=>{
+    if(ENDPOINTS[id]) parts.push(endpointSection(id));
+    else parts.push(staticSection(id));
+  }));
+  document.getElementById('content').innerHTML=parts.join('\n');
+}
+
+/* nav IDs that are add-on endpoints (purchased separately) */
+const ADDON_NAV_IDS=new Set(["sat-e","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine","companies","route","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies"]);
+
+function buildNav(){
+  const nav=document.getElementById('nav');
+  nav.innerHTML=NAV.map(g=>{
+    let dividerInserted=false;
+    const items=g.items.map(id=>{
+      const isAddon=ADDON_NAV_IDS.has(id);
+      let html='';
+      if(isAddon && !dividerInserted){
+        html+=`<div class="nav-addon-divider">➕ Add-Ons</div>`;
+        dividerInserted=true;
+      }
+      const cls=isAddon?'nav-link addon-item':'nav-link';
+      const pip=isAddon?'<span class="addon-pip">➕</span>':'';
+      html+=`<a class="${cls}" data-nav="${id}">${pip}${esc(TITLES[id])}</a>`;
+      return html;
+    }).join('');
+    return `<div class="nav-group" data-group="${esc(g.group)}">
+      <div class="nav-group-title" data-grouptoggle><span>${esc(g.group)}</span><span class="chev">▼</span></div>
+      <div class="nav-items">${items}</div>
+    </div>`;
+  }).join('');
+}
+
+/* =========================================================================
+   INTERACTIONS
+   ========================================================================= */
+function scrollToId(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const y=el.getBoundingClientRect().top+window.scrollY-80;
+  window.scrollTo({top:y,behavior:'smooth'});
+}
+
+function setActiveNav(id){
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.dataset.nav===id));
+}
+
+/* highlight one code element */
+function hl(el){ if(window.hljs){ try{hljs.highlightElement(el);}catch(e){} } }
+
+function initInteractions(){
+  // group collapse
+  document.querySelectorAll('[data-grouptoggle]').forEach(t=>{
+    t.addEventListener('click',()=>t.closest('.nav-group').classList.toggle('collapsed'));
+  });
+  // nav links + any data-nav anchors in content
+  document.body.addEventListener('click',e=>{
+    const navEl=e.target.closest('[data-nav]');
+    if(navEl){
+      e.preventDefault();
+      const id=navEl.dataset.nav;
+      scrollToId(id); setActiveNav(id);
+      closeSidebar();
+      return;
+    }
+    // copy buttons
+    const cp=e.target.closest('[data-copy]');
+    if(cp){ doCopy(cp); return; }
+    // endpoint section tabs (Parameters / Code Examples / Response / Try It)
+    const eptab=e.target.closest('[data-eptab]');
+    if(eptab){
+      const card=eptab.closest('.endpoint');
+      card.querySelectorAll('.ep-tab').forEach(t=>t.classList.remove('active'));
+      card.querySelectorAll('.ep-pane').forEach(p=>p.classList.remove('active'));
+      eptab.classList.add('active');
+      const pane=card.querySelector(`[data-eptabpane="${eptab.dataset.eptab}"]`);
+      if(pane) pane.classList.add('active');
+      return;
+    }
+    // code tabs (language switcher inside Code Examples pane)
+    const tab=e.target.closest('.tab');
+    if(tab){
+      const block=tab.closest('.code-block');
+      block.querySelectorAll('.tab').forEach(t=>{t.classList.toggle('active',t===tab);t.setAttribute('aria-selected',t===tab?'true':'false');});
+      block.querySelectorAll('.code-pane').forEach(p=>p.classList.toggle('active',p.dataset.lang===tab.dataset.tab));
+      return;
+    }
+    // collapse (response attrs)
+    const ch=e.target.closest('[data-collapse]');
+    if(ch){ ch.closest('.collapse').classList.toggle('open'); return; }
+    // send request
+    const send=e.target.closest('[data-send]');
+    if(send){ sendTry(send); return; }
+  });
+}
+
+function doCopy(btn){
+  const text=btn.dataset.text || btn.parentElement.querySelector('code')?.textContent || '';
+  if(!text.trim()){
+    const orig=btn.textContent;
+    btn.textContent='Failed'; btn.style.color='#e53e3e';
+    setTimeout(()=>{btn.textContent=orig;btn.style.color='';},2000);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig=btn.textContent;
+    btn.textContent='Copied!'; btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);
+  }).catch(()=>{
+    const orig=btn.textContent;
+    btn.textContent='Failed'; btn.style.color='#e53e3e';
+    setTimeout(()=>{btn.textContent=orig;btn.style.color='';},2000);
+  });
+}
+
+/* ---------- Try It ---------- */
+const KEY_STORE='datalastic_api_key';
+function syncApiKeyInputs(val){
+  document.querySelectorAll('[data-apikey]').forEach(i=>{if(i.value!==val)i.value=val;});
+}
+function initApiKey(){
+  let saved='';
+  try{ saved=localStorage.getItem(KEY_STORE)||''; }catch(e){ saved=''; }
+  syncApiKeyInputs(saved);
+  document.body.addEventListener('input',e=>{
+    const k=e.target.closest('[data-apikey]');
+    if(k){ try{ localStorage.setItem(KEY_STORE,k.value); }catch(e){} syncApiKeyInputs(k.value); }
+  });
+}
+
+function sendTry(btn){
+  const panel=btn.closest('.tryit-inline');
+  const key=panel.dataset.endpoint;
+  const ep=ENDPOINTS[key];
+  if(!ep) return;
+  const apiKey=panel.querySelector('[data-apikey]').value.trim();
+  const resultBox=panel.querySelector('.try-result');
+  const statusEl=panel.querySelector('.try-status');
+  const codeEl=panel.querySelector('[data-result]');
+  resultBox.classList.add('show');
+
+  if(!apiKey){
+    statusEl.className='try-status err';
+    statusEl.innerHTML='<span>Missing API key</span><span>400</span>';
+    codeEl.textContent='Enter your API key above to send a live request.';
+    codeEl.removeAttribute('data-highlighted'); codeEl.className='language-json'; hl(codeEl);
+    return;
+  }
+  const params=new URLSearchParams();
+  params.set('api-key',apiKey);
+  panel.querySelectorAll('[data-param]').forEach(inp=>{
+    if(inp.value.trim()!=='') params.set(inp.dataset.param,inp.value.trim());
+  });
+  const url=`${ep.base}${ep.path}?${params.toString()}`;
+  statusEl.className='try-status';
+  statusEl.innerHTML='<span>Sending…</span><span></span>';
+  codeEl.textContent='';
+  btn.disabled=true; const blbl=btn.textContent; btn.textContent='Sending…';
+
+  fetch(url).then(async res=>{
+    const text=await res.text();
+    let bodyText, json;
+    try{ json=JSON.parse(text); bodyText=JSON.stringify(json,null,2); }
+    catch(e){ bodyText=text||'(no body)'; }
+    const ok=res.ok && (!json || json.meta?.success!==false);
+    statusEl.className='try-status '+(ok?'ok':'err');
+    statusEl.innerHTML=`<span>${ok?'Success':'Error'}</span><span>HTTP ${res.status}</span>`;
+    codeEl.textContent=bodyText;
+    codeEl.removeAttribute('data-highlighted'); codeEl.className='language-json'; hl(codeEl);
+  }).catch(err=>{
+    statusEl.className='try-status err';
+    statusEl.innerHTML=`<span>Network / CORS error</span><span>n/a</span>`;
+    codeEl.textContent='Request failed: '+err.message+'\n\nSome browsers block cross-origin requests. Use the code examples above to run this request from your server.';
+    codeEl.removeAttribute('data-highlighted'); codeEl.className='language-json'; hl(codeEl);
+  }).finally(()=>{ btn.disabled=false; btn.textContent=blbl; });
+}
+
+/* ---------- Sidebar (mobile) ---------- */
+let trapFocus=null;
+function openSidebar(){
+  const sidebar=document.getElementById('sidebar');
+  sidebar.classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+  const focusables=[...sidebar.querySelectorAll('a, button, input, [tabindex]:not([tabindex="-1"])')].filter(el=>el.offsetParent!==null || el===document.activeElement);
+  const list=focusables.length?focusables:[...sidebar.querySelectorAll('a, button, input, [tabindex]:not([tabindex="-1"])')];
+  const first=list[0], last=list[list.length-1];
+  trapFocus=function(e){
+    if(e.key==='Escape'){ closeSidebar(); return; }
+    if(e.key!=='Tab') return;
+    if(!list.length) return;
+    if(e.shiftKey){
+      if(document.activeElement===first || !sidebar.contains(document.activeElement)){ e.preventDefault(); last.focus(); }
+    }else{
+      if(document.activeElement===last || !sidebar.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+    }
+  };
+  document.addEventListener('keydown',trapFocus);
+  if(first) first.focus();
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  if(trapFocus){
+    document.removeEventListener('keydown',trapFocus); trapFocus=null;
+    const hb=document.getElementById('hamburger');
+    if(hb) hb.focus();
+  }
+}
+function initSidebar(){
+  document.getElementById('hamburger').addEventListener('click',()=>{
+    document.getElementById('sidebar').classList.contains('open')?closeSidebar():openSidebar();
+  });
+  document.getElementById('overlay').addEventListener('click',closeSidebar);
+}
+
+/* ---------- Search ---------- */
+function initSearch(){
+  const input=document.getElementById('navSearch');
+  const noResEl=document.getElementById('navNoResults');
+  const noRes=show=>{ if(noResEl) noResEl.style.display=show?'block':'none'; };
+  let prevQ='';
+  function filter(){
+    const q=input.value.trim().toLowerCase();
+    let anyVisible=false;
+    // nav links
+    NAV.forEach(g=>{
+      const groupEl=document.querySelector(`.nav-group[data-group="${cssEsc(g.group)}"]`);
+      let groupHas=false;
+      g.items.forEach(id=>{
+        const link=groupEl.querySelector(`.nav-link[data-nav="${id}"]`);
+        const match=q==='' || TITLES[id].toLowerCase().includes(q) || id.toLowerCase().includes(q);
+        link.classList.toggle('search-hidden',!match);
+        if(match)groupHas=true;
+      });
+      groupEl.classList.toggle('search-hidden',!groupHas);
+      if(groupHas)anyVisible=true;
+    });
+    // sections
+    document.querySelectorAll('.section').forEach(sec=>{
+      const t=(sec.dataset.title||'').toLowerCase();
+      const match=q==='' || t.includes(q) || sec.id.toLowerCase().includes(q) || sec.textContent.toLowerCase().includes(q);
+      sec.classList.toggle('search-hidden',!match);
+    });
+    noRes(!anyVisible);
+    // when clearing search, re-fire the IntersectionObserver for the current viewport
+    if(prevQ!=='' && q===''){ window.dispatchEvent(new Event('scroll')); }
+    prevQ=q;
+  }
+  input.addEventListener('input',filter);
+  document.addEventListener('keydown',e=>{
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();input.focus();input.select();}
+    if(e.key==='Escape'&&document.activeElement===input){input.value='';filter();input.blur();}
+  });
+}
+function cssEsc(s){return s.replace(/"/g,'\\"');}
+
+/* ---------- Field Reference + Vessel Types search ---------- */
+function initFilters(){
+  const fr=document.getElementById('frSearch');
+  if(fr){
+    fr.addEventListener('input',()=>{
+      const q=fr.value.trim().toLowerCase();
+      document.querySelectorAll('#frTable .fr-row').forEach(r=>{
+        r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';
+      });
+    });
+  }
+  const vt=document.getElementById('vtSearch');
+  if(vt){
+    const count=document.getElementById('vtCount');
+    const tags=()=>document.querySelectorAll('#vtMain .vt-tag, #vtSub .vt-tag');
+    const update=()=>{
+      const q=vt.value.trim().toLowerCase();
+      let shown=0;
+      tags().forEach(t=>{
+        const m=t.textContent.toLowerCase().includes(q);
+        t.classList.toggle('vt-hidden',!m); if(m)shown++;
+      });
+      count.textContent=`${shown} of ${tags().length} shown`;
+    };
+    vt.addEventListener('input',update); update();
+  }
+}
+
+/* ---------- IntersectionObserver active nav + rail ---------- */
+let railIds=[];
+function buildRail(currentId){
+  const sec=document.getElementById(currentId);
+  const rail=document.getElementById('railLinks');
+  if(!sec){rail.innerHTML='';return;}
+  const heads=[...sec.querySelectorAll('h3, h4')].filter(h=>h.textContent.trim()!=='');
+  if(heads.length<2){rail.innerHTML='';document.querySelector('.rail').style.display='none';return;}
+  document.querySelector('.rail').style.display='';
+  document.querySelector('.rail').style.visibility='';
+  railIds=[];
+  rail.innerHTML=heads.map((h,i)=>{
+    if(!h.id) h.id=currentId+'-h-'+i;
+    railIds.push(h.id);
+    return `<span class="rail-link" data-raillink="${h.id}">${esc(h.textContent)}</span>`;
+  }).join('');
+  rail.querySelectorAll('[data-raillink]').forEach(l=>{
+    l.addEventListener('click',()=>scrollToId(l.dataset.raillink));
+  });
+}
+function initObserver(){
+  const sections=[...document.querySelectorAll('.section')];
+  let current=null;
+  let obsTimer=null;
+  const secObs=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        const id=en.target.id;
+        if(id!==current){
+          current=id;
+          clearTimeout(obsTimer);
+          obsTimer=setTimeout(()=>{
+            setActiveNav(id);
+            try{ history.replaceState(null,'','#'+id); }catch(e){}
+            buildRail(id);
+          },250);
+        }
+      }
+    });
+  },{rootMargin:'-80px 0px -65% 0px',threshold:0});
+  sections.forEach(s=>secObs.observe(s));
+
+  // rail sub-highlight
+  const railObs=new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        document.querySelectorAll('.rail-link').forEach(l=>l.classList.toggle('active',l.dataset.raillink===en.target.id));
+      }
+    });
+  },{rootMargin:'-80px 0px -70% 0px',threshold:0});
+  // observe headings (re-run when rail rebuilds)
+  const mo=new MutationObserver(()=>{
+    railIds.forEach(id=>{const el=document.getElementById(id);if(el)railObs.observe(el);});
+  });
+  mo.observe(document.getElementById('railLinks'),{childList:true});
+}
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded',()=>{
+  buildNav();
+  buildContent();
+  // syntax highlight all code blocks
+  if(window.hljs){
+    document.querySelectorAll('pre code').forEach(el=>{ if(!el.hasAttribute('data-result')) hl(el); });
+  }
+  initInteractions();
+  initApiKey();
+  initSidebar();
+  initSearch();
+  initFilters();
+  initObserver();
+  // open hash target / default
+  const hash=location.hash.slice(1);
+  if(hash && document.getElementById(hash)){ setTimeout(()=>scrollToId(hash),50); setActiveNav(hash);}
+  else setActiveNav('introduction');
+});
+</script>
+</body>
+</html>
