@@ -554,25 +554,10 @@ tbody tr:hover{background:rgba(96,70,175,.03);}
   font-weight: 600;
 }
 
-/* Nav section divider between core and add-ons within a group */
-.nav-addon-divider {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 12px 4px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: #e65100;
-  font-family: 'Khula', sans-serif;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-.nav-addon-divider::before {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: #ffcc80;
+/* Orange separator between nav groups */
+.nav-group + .nav-group {
+  border-top: 1px solid #ffcc80;
+  padding-top: 4px;
 }
 
 /* Add-on nav items */
@@ -739,23 +724,23 @@ const PRICING = "https://datalastic.com/pricing/";
 /* helper to build code examples for a standard GET endpoint */
 function genGetExamples(base, path, params){
   const qs = Object.entries(params).map(([k,v])=>`${k}=${v}`).join('&');
-  const fullUrl = `${base}${path}?api-key=YOUR_API_KEY&${qs}`;
+  const urlNoKey = qs ? `${base}${path}?${qs}` : `${base}${path}`;
   const pyParams = Object.entries(params).map(([k,v])=>`    '${k}': '${v}'`).join(',\n');
   const nodeParams = Object.entries(params).map(([k,v])=>`${k}: '${v}'`).join(', ');
   const goAdds = Object.entries(params).map(([k,v])=>`    q.Add("${k}", "${v}")`).join('\n');
   const rubyParams = Object.entries(params).map(([k,v])=>`${k}: '${v}'`).join(', ');
   const phpParams = Object.entries(params).map(([k,v])=>`'${k}' => '${v}'`).join(', ');
   return {
-    curl:`curl "${fullUrl}"`,
+    curl:`curl -H "x-api-key: YOUR_API_KEY" "${urlNoKey}"`,
     python:`import requests
 import json
 
+headers = {'x-api-key': 'YOUR_API_KEY'}
 params = {
-    'api-key': 'YOUR_API_KEY',
 ${pyParams}
 }
 api_base = '${base}'
-api_result = requests.get(api_base + '${path}', params)
+api_result = requests.get(api_base + '${path}', params=params, headers=headers)
 api_response = api_result.json()
 print(json.dumps(api_response, indent=4, sort_keys=True))`,
     node:`const request = require("request");
@@ -763,8 +748,7 @@ const api_key = "YOUR_API_KEY";
 const api_base = "${base}";
 
 function apiCall(method, params, cb) {
-  params['api-key'] = api_key;
-  request.get({url: \`\${api_base}\${method}\`, qs: params}, cb);
+  request.get({url: \`\${api_base}\${method}\`, qs: params, headers: {'x-api-key': api_key}}, cb);
 }
 
 apiCall('${path}', {${nodeParams}}, (err, res, body) => {
@@ -781,8 +765,8 @@ import (
 func main() {
     url := "${base}${path}"
     req, _ := http.NewRequest("GET", url, nil)
+    req.Header.Set("x-api-key", "YOUR_API_KEY")
     q := req.URL.Query()
-    q.Add("api-key", "YOUR_API_KEY")
 ${goAdds}
     req.URL.RawQuery = q.Encode()
     res, _ := http.DefaultClient.Do(req)
@@ -797,9 +781,11 @@ def api_call(method, params)
   api_key = "YOUR_API_KEY"
   api_base = "${base}"
   uri = URI("#{api_base}#{method}")
-  params.merge!('api-key': api_key)
   uri.query = URI.encode_www_form(params)
-  JSON.parse(Net::HTTP.get(uri))
+  req = Net::HTTP::Get.new(uri)
+  req['x-api-key'] = api_key
+  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+  JSON.parse(res.body)
 end
 
 puts JSON.pretty_generate(api_call('${path}', {${rubyParams}}))`,
@@ -809,10 +795,10 @@ $api_base = "${base}";
 
 function apiCall($method, $params) {
     global $api_key, $api_base;
-    $params['api-key'] = $api_key;
     $url = $api_base . $method . '?' . http_build_query($params);
     $c = curl_init($url);
     curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($c, CURLOPT_HTTPHEADER, ['x-api-key: ' . $api_key]);
     $res = json_decode(curl_exec($c), true);
     curl_close($c);
     return $res;
@@ -820,7 +806,8 @@ function apiCall($method, $params) {
 
 print_r(apiCall('${path}', [${phpParams}]));`,
     java:`HttpRequest request = HttpRequest.newBuilder()
-  .uri(URI.create("${fullUrl}"))
+  .uri(URI.create("${urlNoKey}"))
+  .header("x-api-key", "YOUR_API_KEY")
   .method("GET", HttpRequest.BodyPublishers.noBody())
   .build();
 HttpResponse<String> response = HttpClient.newHttpClient()
@@ -949,22 +936,22 @@ const ENDPOINTS = {
   method:"GET", base:BASE_V0, path:"vessel_bulk",
   desc:"Retrieve tracking data for up to 100 vessels in a single API call by chaining multiple MMSI, IMO, or UUID parameters. Returns the same fields as the Basic tracking endpoint. Credits are deducted only for successfully found vessels.",
   examples:{
-    curl:`curl "https://api.datalastic.com/api/v0/vessel_bulk?api-key=YOUR_API_KEY&mmsi=566093000&imo=9249403"`,
+    curl:`curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/vessel_bulk?mmsi=566093000&imo=9249403"`,
     python:`import requests
 import json
 
+headers = {'x-api-key': 'YOUR_API_KEY'}
 params = [
-    ('api-key', 'YOUR_API_KEY'),
     ('mmsi', '566093000'),
     ('mmsi', '235362000'),
     ('imo', '9249403'),
 ]
-api_result = requests.get('https://api.datalastic.com/api/v0/vessel_bulk', params=params)
+api_result = requests.get('https://api.datalastic.com/api/v0/vessel_bulk', params=params, headers=headers)
 print(json.dumps(api_result.json(), indent=4))`,
     node:`const axios = require('axios');
 const res = await axios.get('https://api.datalastic.com/api/v0/vessel_bulk', {
+  headers: {'x-api-key': 'YOUR_API_KEY'},
   params: new URLSearchParams([
-    ['api-key', 'YOUR_API_KEY'],
     ['mmsi', '566093000'],
     ['mmsi', '235362000'],
     ['imo', '9249403'],
@@ -982,8 +969,8 @@ import (
 func main() {
     url := "https://api.datalastic.com/api/v0/vessel_bulk"
     req, _ := http.NewRequest("GET", url, nil)
+    req.Header.Set("x-api-key", "YOUR_API_KEY")
     q := req.URL.Query()
-    q.Add("api-key", "YOUR_API_KEY")
     q.Add("mmsi", "566093000")
     q.Add("mmsi", "235362000")
     q.Add("imo", "9249403")
@@ -997,17 +984,22 @@ func main() {
 require 'json'
 
 uri = URI("https://api.datalastic.com/api/v0/vessel_bulk")
-uri.query = "api-key=YOUR_API_KEY&mmsi=566093000&mmsi=235362000&imo=9249403"
-puts JSON.pretty_generate(JSON.parse(Net::HTTP.get(uri)))`,
+uri.query = "mmsi=566093000&mmsi=235362000&imo=9249403"
+req = Net::HTTP::Get.new(uri)
+req['x-api-key'] = 'YOUR_API_KEY'
+res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+puts JSON.pretty_generate(JSON.parse(res.body))`,
     php:`<?php
-$url = "https://api.datalastic.com/api/v0/vessel_bulk?api-key=YOUR_API_KEY&mmsi=566093000&mmsi=235362000&imo=9249403";
+$url = "https://api.datalastic.com/api/v0/vessel_bulk?mmsi=566093000&mmsi=235362000&imo=9249403";
 $c = curl_init($url);
 curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($c, CURLOPT_HTTPHEADER, ['x-api-key: YOUR_API_KEY']);
 $res = json_decode(curl_exec($c), true);
 curl_close($c);
 print_r($res);`,
     java:`HttpRequest request = HttpRequest.newBuilder()
-  .uri(URI.create("https://api.datalastic.com/api/v0/vessel_bulk?api-key=YOUR_API_KEY&mmsi=566093000&mmsi=235362000&imo=9249403"))
+  .uri(URI.create("https://api.datalastic.com/api/v0/vessel_bulk?mmsi=566093000&mmsi=235362000&imo=9249403"))
+  .header("x-api-key", "YOUR_API_KEY")
   .method("GET", HttpRequest.BodyPublishers.noBody())
   .build();
 HttpResponse<String> response = HttpClient.newHttpClient()
@@ -1960,7 +1952,7 @@ function attrsCollapse(attrs){
 
 function tryItContent(key,ep){
   const keyField=`<div class="field">
-    <label>api-key <span class="req-badge">required</span></label>
+    <label>x-api-key <span class="req-badge">required</span></label>
     <div class="field-input-wrap">
       <svg class="lock-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
       <input type="password" class="key-input" data-apikey placeholder="Your API key (stored locally)">
@@ -2123,7 +2115,14 @@ function staticSection(id){
 
   case "authentication": return `<section class="section" id="authentication" data-title="Authentication">
     <h1>Authentication</h1>
-    <p>Across this Maritime API Documentation, all requests authenticate with a single API key passed as a query parameter. There are no headers or OAuth flows to manage.</p>
+    <p>All requests authenticate with a single API key. Send it as a request header — this is the recommended approach.</p>
+    <h4>Recommended: header</h4>
+    ${singleCode('bash','x-api-key: YOUR_API_KEY')}
+    <p>Example:</p>
+    ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/vessel?mmsi=566093000"')}
+    <h4>Alternative: query parameter</h4>
+    <p>You can also pass the key as a query parameter. This is simpler for quick testing in a browser or plain cURL, but the key will appear in server logs.</p>
+    ${singleCode('bash','?api-key=YOUR_API_KEY')}
     <h4>Base URLs</h4>
     <div class="table-wrap"><table>
       <thead><tr><th>Endpoints</th><th>Base URL</th></tr></thead>
@@ -2133,15 +2132,13 @@ function staticSection(id){
         <tr><td>Maritime report data</td><td><code>https://api.datalastic.com/api/maritime_reports/</code></td></tr>
       </tbody>
     </table></div>
-    <h4>API Key parameter</h4>
-    ${singleCode('bash','api-key={YOUR_API_KEY}')}
     <div class="callout">
       <strong>One API key.</strong> Your API key is the same across all Datalastic plans. Core Data Feed endpoints are available on all plans. Add-On endpoints require an Add-Ons plan tier. Upgrade or switch plans at any time and your key automatically gains access to the corresponding endpoints.
     </div>
     <p>Find your key in your profile, or receive it by email upon subscription.</p>
     <h3>Check your key status</h3>
     <p>Verify a key and view request usage via the stats endpoint:</p>
-    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/stat?api-key=YOUR_API_KEY"')}
+    ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/stat"')}
     <a class="btn btn-primary" href="${PRICING}" target="_blank" rel="noopener" style="margin-top:10px">Get API Key →</a>
   </section>`;
 
@@ -2168,7 +2165,7 @@ function staticSection(id){
       </tbody>
     </table></div>
     <h3>Example</h3>
-    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/stat?api-key=YOUR_API_KEY"')}
+    ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/stat"')}
     ${singleCode('json',`{
   "data": {
     "user_id": "{YOUR_API_KEY}",
@@ -2190,7 +2187,7 @@ function staticSection(id){
     <h3>1. Get your API key</h3>
     <p>Sign up and grab a key at <a href="${PRICING}" target="_blank" rel="noopener">datalastic.com/pricing/</a>.</p>
     <h3>2. Make your first request</h3>
-    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/vessel?api-key=YOUR_KEY&mmsi=566093000"')}
+    ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/vessel?mmsi=566093000"')}
     <h3>3. Parse the JSON response</h3>
     ${singleCode('json',`{
   "data": {
@@ -2257,7 +2254,7 @@ function staticSection(id){
       </tbody>
     </table></div>
     <h3>Monitor usage</h3>
-    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/stat?api-key=YOUR_API_KEY"')}
+    ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/stat"')}
     ${singleCode('json',`{
   "data": {
     "user_id": "{YOUR_API_KEY}",
@@ -2385,9 +2382,9 @@ System.out.println(response.body());`
   "meta": {"duration": 0.0136832, "endpoint": "/api/v0/report", "success": true}
 }`)}
     <h3>2. Poll the report status</h3>
-    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/report?api-key=YOUR_KEY&report_id=4ddc14e0-9059-9b86-1156-8efd93f0cfe6"')}
+    ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/report?report_id=4ddc14e0-9059-9b86-1156-8efd93f0cfe6"')}
     <p>List all of your reports with <code>report_id=_all</code>:</p>
-    ${singleCode('bash','curl "https://api.datalastic.com/api/v0/report?api-key=YOUR_API_KEY&report_id=_all"')}
+    ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/report?report_id=_all"')}
     <h4>Done response (with result_url)</h4>
     ${singleCode('json',`{
   "data": {
@@ -2663,18 +2660,11 @@ const ADDON_NAV_IDS=new Set(["sat-e","dry_dock_dates","casualty","inspections","
 function buildNav(){
   const nav=document.getElementById('nav');
   nav.innerHTML=NAV.map(g=>{
-    let dividerInserted=false;
     const items=g.items.map(id=>{
       const isAddon=ADDON_NAV_IDS.has(id);
-      let html='';
-      if(isAddon && !dividerInserted){
-        html+=`<div class="nav-addon-divider">➕ Add-Ons</div>`;
-        dividerInserted=true;
-      }
       const cls=isAddon?'nav-link addon-item':'nav-link';
       const pip=isAddon?'<span class="addon-pip">➕</span>':'';
-      html+=`<a class="${cls}" data-nav="${id}">${pip}${esc(TITLES[id])}</a>`;
-      return html;
+      return `<a class="${cls}" data-nav="${id}">${pip}${esc(TITLES[id])}</a>`;
     }).join('');
     return `<div class="nav-group" data-group="${esc(g.group)}">
       <div class="nav-group-title" data-grouptoggle><span>${esc(g.group)}</span><span class="chev">▼</span></div>
@@ -2799,17 +2789,17 @@ function sendTry(btn){
     return;
   }
   const params=new URLSearchParams();
-  params.set('api-key',apiKey);
   panel.querySelectorAll('[data-param]').forEach(inp=>{
     if(inp.value.trim()!=='') params.set(inp.dataset.param,inp.value.trim());
   });
-  const url=`${ep.base}${ep.path}?${params.toString()}`;
+  const qs=params.toString();
+  const url=`${ep.base}${ep.path}${qs?'?'+qs:''}`;
   statusEl.className='try-status';
   statusEl.innerHTML='<span>Sending…</span><span></span>';
   codeEl.textContent='';
   btn.disabled=true; const blbl=btn.textContent; btn.textContent='Sending…';
 
-  fetch(url).then(async res=>{
+  fetch(url,{headers:{'x-api-key':apiKey}}).then(async res=>{
     const text=await res.text();
     let bodyText, json;
     try{ json=JSON.parse(text); bodyText=JSON.stringify(json,null,2); }
