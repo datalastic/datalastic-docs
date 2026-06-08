@@ -700,7 +700,7 @@ const NAV = [
   {group:"Live Data", items:["vessel","vessel_pro","vessel_bulk","vessel_inradius","sat-e"]},
   {group:"Historical Data", items:["vessel_history","inradius_history"]},
   {group:"Vessel Data", items:["vessel_info","vessel_find","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine"]},
-  {group:"Ports & Routes", items:["port_find","port","route"]},
+  {group:"Ports & Routes", items:["port_find","port","port_terminals","route"]},
   {group:"Companies", items:["companies"]},
   {group:"Bulk Reports", items:["report-vessel_list","report-port_list","report-inradius_history","report-request_usage"]},
   {group:"Add-On Reports", items:["report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies"]},
@@ -712,7 +712,7 @@ const TITLES = {
   "vessel":"Vessel Tracking","vessel_pro":"Pro Vessel Tracking","vessel_bulk":"Bulk Vessel Tracking","vessel_inradius":"Area Traffic","sat-e":"SAT-E (Satellite Estimator)",
   "vessel_history":"Vessel History","inradius_history":"Historical Area Scan",
   "vessel_info":"Vessel Info","vessel_find":"Vessel Finder","dry_dock_dates":"Dry Dock Dates","casualty":"Casualties","inspections":"Inspections & Detentions","spd":"Sales & Demolitions","ownership":"Ownership","class_society":"Classification Society","engine":"Vessel Engines",
-  "port_find":"Port Finder","port":"Port Terminals","route":"Sea Routes",
+  "port_find":"Port Finder","port":"Port Info","port_terminals":"Port Terminals","route":"Sea Routes",
   "companies":"Maritime Companies",
   "report-vessel_list":"Vessel List","report-port_list":"Port List","report-inradius_history":"Historical Area Scan","report-request_usage":"API Usage Report",
   "report-dry_dock_dates":"Dry Dock Dates","report-casualty":"Ship Casualties","report-inspections":"Ship Inspections","report-spd":"Sales & Demolitions","report-ownership":"Vessel Ownership","report-class_society":"Classification Society","report-engine":"Vessel Engines","report-companies":"Maritime Companies",
@@ -1373,7 +1373,7 @@ System.out.println(response.body());`
     ["unlocode","string","optional","UN/LOCODE"],
     ["lat","number","optional","Center latitude (use with lon and radius)"],
     ["lon","number","optional","Center longitude"],
-    ["radius","number","optional","Search radius in NM (max 60)"]
+    ["radius","number","optional","Search radius in NM (max 50)"]
   ],
   tryParams:[{name:"name",def:"LONDON",required:false},{name:"fuzzy",def:"1",required:false}],
   attrs:[
@@ -1409,15 +1409,11 @@ System.out.println(response.body());`
 
 "port":{
   method:"GET", base:BASE_V0, path:"port",
-  desc:"Retrieve detailed information for a specific port, including all associated terminals with coordinates, operator names, contact details, and addresses. Supports lookup by name, UUID, UNLOCODE, or geographic radius.",
+  desc:"Return detailed data for a specific port: UUID, name, country, type, coordinates, and area classification. Look up a port by UUID or UNLOCODE. When a port has terminals, they are included in the port object. Not all ports have terminals.",
   params:[
     ["api-key","string","required","Your API key"],
-    ["name","string","optional","Port name"],
     ["uuid","string","optional","Port UUID"],
-    ["unlocode","string","optional","Port UN/LOCODE"],
-    ["lat","number","optional","Center latitude"],
-    ["lon","number","optional","Center longitude"],
-    ["radius","number","optional","Search radius in NM (max 50)"]
+    ["unlocode","string","optional","Port UN/LOCODE"]
   ],
   tryParams:[{name:"unlocode",def:"ESMPG",required:false}],
   attrs:[
@@ -2079,7 +2075,7 @@ function staticSection(id){
           <li>Area Traffic Scanning</li>
           <li>Historical Vessel Data</li>
           <li>Vessel Info &amp; Finder</li>
-          <li>Port Finder &amp; Terminals</li>
+          <li>Port Finder &amp; Info</li>
           <li>Vessel List &amp; Port List reports</li>
         </ul>
         <p class="plan-note">Included in Starter, Experimenter, and Developer Pro plans.</p>
@@ -2598,6 +2594,49 @@ fmt.Printf("%s: %.6f, %.6f\\n", vessel.Name, vessel.Lat, vessel.Lon)`);
     `{"api-key": "YOUR_KEY", "report_type": "companies"}`,
     true);
 
+  case "port_terminals": return `<section class="section" id="port_terminals" data-title="Port Terminals">
+    <h1>Port Terminals</h1>
+    <div class="method-row">
+      <span class="method-badge">GET</span>
+      <div class="url-bar"><span class="u">https://api.datalastic.com/api/v0/port</span><button class="copy-btn" data-copy data-text="https://api.datalastic.com/api/v0/port">Copy</button></div>
+    </div>
+    <div class="callout cyan"><strong>This is the same endpoint as <a data-nav="port">Port Info</a>.</strong> Terminal data is part of the port response. When a port has terminals, they are returned in the <code>terminals</code> array. Not all ports have terminals.</div>
+    <p>Look up a port by UUID or UNLOCODE using <code>GET /api/v0/port</code>. If terminals exist for that port, each one appears as an object in the <code>terminals</code> array with the fields below.</p>
+    <h3>Terminal Fields</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>terminal_code</code></td><td><span class="type-pill">string</span></td><td>Short terminal identifier</td></tr>
+        <tr><td><code>terminal_name</code></td><td><span class="type-pill">string</span></td><td>Full terminal name</td></tr>
+        <tr><td><code>company_name</code></td><td><span class="type-pill">string</span></td><td>Operator or company name</td></tr>
+        <tr><td><code>lat</code></td><td><span class="type-pill">number</span></td><td>Terminal latitude</td></tr>
+        <tr><td><code>lon</code></td><td><span class="type-pill">number</span></td><td>Terminal longitude</td></tr>
+        <tr><td><code>url</code></td><td><span class="type-pill">string</span></td><td>Terminal website</td></tr>
+        <tr><td><code>address</code></td><td><span class="type-pill">string</span></td><td>Physical address</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Example Response (terminals present)</h3>
+    ${singleCode('json', `{
+  "data": {
+    "uuid": "3713d077-5daa-a40a-60df-1a55f6d5f515",
+    "port_name": "MARIN",
+    "unlocode": "ESMPG",
+    "terminals": [
+      {
+        "terminal_code": "MPT",
+        "terminal_name": "MARIN PORT TERMINAL",
+        "company_name": "PEREZ TORRES MARITIMA S.L.",
+        "lat": 42.405278,
+        "lon": -8.692778,
+        "url": "https://www.ptmar.com/en/puertos/puerto-marin",
+        "address": "Muelle comercial s/n, 36900 Marín, Pontevedra, Spain"
+      }
+    ]
+  }
+}`)}
+    <p>Don't have an API key yet? <a class="cta-link" href="${PRICING}" target="_blank" rel="noopener"><strong>Get one →</strong></a></p>
+  </section>`;
+
   default: return '';
   }
 }
@@ -2643,7 +2682,7 @@ function sdkSection(id,title,github,install,lang,example){
 /* =========================================================================
    BUILD PAGE
    ========================================================================= */
-const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","sdk-python","sdk-node","sdk-go"]);
+const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","sdk-python","sdk-node","sdk-go","port_terminals"]);
 
 function buildContent(){
   const parts=[];
