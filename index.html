@@ -697,7 +697,7 @@ tbody tr:hover{background:rgba(96,70,175,.03);}
 const NAV = [
   {group:"Getting Started", items:["introduction","authentication","stat","quickstart","rate-limits"]},
   {group:"Core Concepts", items:["credit-system","async-reports","field-reference","vessel-types","error-codes"]},
-  {group:"Live Data", items:["vessel","vessel_pro","vessel_bulk","vessel_inradius","sat-e"]},
+  {group:"Live Data", items:["vessel","vessel_pro","vessel_bulk","vessel_inradius","sat-e","weather"]},
   {group:"Historical Data", items:["vessel_history","inradius_history"]},
   {group:"Vessel Data", items:["vessel_info","vessel_find","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine"]},
   {group:"Ports & Routes", items:["port_find","port","port_terminals","route"]},
@@ -709,7 +709,7 @@ const NAV = [
 const TITLES = {
   "introduction":"Introduction","authentication":"Authentication","stat":"Account & Usage","quickstart":"Quickstart","rate-limits":"Rate Limits & Credits",
   "credit-system":"Credit System","async-reports":"Async Reports","field-reference":"Field Reference","vessel-types":"Vessel Types","error-codes":"Error Codes",
-  "vessel":"Vessel Tracking","vessel_pro":"Pro Vessel Tracking","vessel_bulk":"Bulk Vessel Tracking","vessel_inradius":"Area Traffic","sat-e":"SAT-E (Satellite Estimator)",
+  "vessel":"Vessel Tracking","vessel_pro":"Pro Vessel Tracking","vessel_bulk":"Bulk Vessel Tracking","vessel_inradius":"Area Traffic","sat-e":"SAT-E (Satellite Estimator)","weather":"Weather API",
   "vessel_history":"Vessel History","inradius_history":"Historical Area Scan",
   "vessel_info":"Vessel Info","vessel_find":"Vessel Finder","dry_dock_dates":"Dry Dock Dates","casualty":"Casualties","inspections":"Inspections & Detentions","spd":"Sales & Demolitions","ownership":"Ownership","class_society":"Classification Society","engine":"Vessel Engines",
   "port_find":"Port Finder","port":"Port Info","port_terminals":"Port Terminals","route":"Sea Routes",
@@ -2594,6 +2594,16 @@ fmt.Printf("%s: %.6f, %.6f\\n", vessel.Name, vessel.Lat, vessel.Lon)`);
     `{"api-key": "YOUR_KEY", "report_type": "companies"}`,
     true);
 
+  case "weather": return `<section class="section" id="weather" data-title="Weather API">
+    <h1>Weather API <span class="badge-soon">Coming Soon</span></h1>
+    <div class="method-row">
+      <span class="method-badge">GET</span>
+      <div class="url-bar"><span class="u">https://api.datalastic.com/api/v0/weather</span><button class="copy-btn" data-copy data-text="https://api.datalastic.com/api/v0/weather">Copy</button></div>
+    </div>
+    <div class="callout">Full documentation for this endpoint is coming soon. The Weather API will return real-time marine weather conditions for a given location, including wind speed, wave height, visibility, and pressure data.</div>
+    <p>Don't have an API key yet? <a class="cta-link" href="${PRICING}" target="_blank" rel="noopener"><strong>Get one →</strong></a></p>
+  </section>`;
+
   case "port_terminals": return `<section class="section" id="port_terminals" data-title="Port Terminals">
     <h1>Port Terminals</h1>
     <div class="method-row">
@@ -2682,7 +2692,7 @@ function sdkSection(id,title,github,install,lang,example){
 /* =========================================================================
    BUILD PAGE
    ========================================================================= */
-const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","sdk-python","sdk-node","sdk-go","port_terminals"]);
+const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","sdk-python","sdk-node","sdk-go","port_terminals","weather"]);
 
 function buildContent(){
   const parts=[];
