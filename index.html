@@ -2981,8 +2981,7 @@ function buildRail(currentId){
   const rail=document.getElementById('railLinks');
   if(!sec){rail.innerHTML='';return;}
   const heads=[...sec.querySelectorAll('h3, h4')].filter(h=>h.textContent.trim()!=='');
-  if(heads.length<2){rail.innerHTML='';document.querySelector('.rail').style.display='none';return;}
-  document.querySelector('.rail').style.display='';
+  if(heads.length<2){rail.innerHTML='';document.querySelector('.rail').style.visibility='hidden';return;}
   document.querySelector('.rail').style.visibility='';
   railIds=[];
   rail.innerHTML=heads.map((h,i)=>{
