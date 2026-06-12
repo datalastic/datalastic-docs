@@ -2227,32 +2227,32 @@ function staticSection(id){
       <thead><tr><th>Endpoint</th><th>Credit Cost</th></tr></thead>
       <tbody>
         <tr><td colspan="2" class="credit-section-head">Data Feed</td></tr>
-        <tr><td><code>/vessel</code></td><td>1 credit</td></tr>
-        <tr><td><code>/vessel_pro</code></td><td>3 credits</td></tr>
-        <tr><td><code>/vessel_bulk</code></td><td>1 per vessel (max 500 credits deducted per request)</td></tr>
-        <tr><td><code>/vessel_inradius</code></td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
-        <tr><td><code>/vessel_find</code></td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
-        <tr><td><code>/vessel_history</code></td><td>2 credits per day requested</td></tr>
-        <tr><td>Historical Area Scan (<code>inradius_history</code>)</td><td>2 credits per day requested</td></tr>
-        <tr><td><code>/vessel_info</code></td><td>1 credit</td></tr>
-        <tr><td><code>/port_find</code></td><td>1 per port found (max 500 credits deducted per request)</td></tr>
-        <tr><td><code>/port</code></td><td>1 per port</td></tr>
-        <tr><td><code>/stat</code></td><td>Free</td></tr>
+        <tr><td>Vessel Basic</td><td>1 credit</td></tr>
+        <tr><td>Vessel Pro</td><td>3 credits</td></tr>
+        <tr><td>Vessel Bulk</td><td>1 per vessel (max 500 credits deducted per request)</td></tr>
+        <tr><td>Location Traffic</td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
+        <tr><td>Vessel Finder</td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
+        <tr><td>Vessel History</td><td>2 credits per day requested</td></tr>
+        <tr><td>Historical Area Scan</td><td>2 credits per day requested</td></tr>
+        <tr><td>Vessel Info</td><td>1 credit</td></tr>
+        <tr><td>Port Finder</td><td>1 per port found (max 500 credits deducted per request)</td></tr>
+        <tr><td>Port Info</td><td>1 per port</td></tr>
+        <tr><td>Account &amp; Usage</td><td>Free</td></tr>
         <tr><td>Vessel List report</td><td>5,000 credits</td></tr>
         <tr><td>Port List report</td><td>500 credits</td></tr>
         <tr><td>Request Usage report</td><td>Free</td></tr>
         <tr><td colspan="2" class="credit-section-head addon-head">➕ Add-Ons</td></tr>
-        <tr><td>SAT-E (<code>/vessel_pro_est</code>)</td><td>3 credits</td></tr>
-        <tr><td>Sea Routes (<code>/route</code>)</td><td>1 per request</td></tr>
-        <tr><td><code>/dry_dock_dates</code></td><td>1 per vessel</td></tr>
-        <tr><td><code>/casualty</code></td><td>1 per vessel</td></tr>
-        <tr><td><code>/inspections</code></td><td>1 per vessel</td></tr>
-        <tr><td>Sales &amp; Demolitions (<code>/spd</code>)</td><td>1 per vessel</td></tr>
-        <tr><td><code>/ownership</code></td><td>1 per vessel</td></tr>
-        <tr><td><code>/class_society</code></td><td>1 per vessel</td></tr>
-        <tr><td><code>/engine</code></td><td>1 per vessel</td></tr>
-        <tr><td><code>/companies</code></td><td>1 per company</td></tr>
-        <tr><td><code>/weather</code></td><td>Coming Soon</td></tr>
+        <tr><td>SAT-E</td><td>3 credits</td></tr>
+        <tr><td>Sea Routes</td><td>1 per request</td></tr>
+        <tr><td>Dry Dock Dates</td><td>1 per vessel</td></tr>
+        <tr><td>Ship Casualties</td><td>1 per vessel</td></tr>
+        <tr><td>Inspections &amp; Detentions</td><td>1 per vessel</td></tr>
+        <tr><td>Sales &amp; Demolitions</td><td>1 per vessel</td></tr>
+        <tr><td>Vessel Ownership</td><td>1 per vessel</td></tr>
+        <tr><td>Classification Society</td><td>1 per vessel</td></tr>
+        <tr><td>Vessel Engines</td><td>1 per vessel</td></tr>
+        <tr><td>Maritime Companies</td><td>1 per company</td></tr>
+        <tr><td>Weather API</td><td>Coming Soon</td></tr>
         <tr><td>Add-On bulk reports</td><td>2,000 credits per report</td></tr>
       </tbody>
     </table></div>
@@ -2711,7 +2711,7 @@ function buildContent(){
 }
 
 /* nav IDs that are add-on endpoints (purchased separately) */
-const ADDON_NAV_IDS=new Set(["sat-e","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine","companies","route","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies"]);
+const ADDON_NAV_IDS=new Set(["sat-e","weather","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine","companies","route","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies"]);
 
 function buildNav(){
   const nav=document.getElementById('nav');
