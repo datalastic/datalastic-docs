@@ -710,7 +710,7 @@ const NAV = [
 const TITLES = {
   "introduction":"Introduction","authentication":"Authentication","stat":"Account & Usage","quickstart":"Quickstart","rate-limits":"Rate Limits & Credits",
   "credit-system":"Credit System","async-reports":"Async Reports","field-reference":"Field Reference","vessel-types":"Vessel Types","error-codes":"Error Codes",
-  "vessel":"Vessel Tracking","vessel_pro":"Pro Vessel Tracking","vessel_bulk":"Bulk Vessel Tracking","vessel_inradius":"Area Traffic","sat-e":"SAT-E (Satellite Estimator)","weather":"Weather API",
+  "vessel":"Vessel Tracking","vessel_pro":"Pro Vessel Tracking","vessel_bulk":"Bulk Vessel Tracking","vessel_inradius":"Location Traffic","sat-e":"SAT-E (Satellite Estimator)","weather":"Weather API",
   "vessel_history":"Vessel History","inradius_history":"Historical Area Scan",
   "vessel_info":"Vessel Info","vessel_find":"Vessel Finder","dry_dock_dates":"Dry Dock Dates","casualty":"Casualties","inspections":"Inspections & Detentions","spd":"Sales & Demolitions","ownership":"Ownership","class_society":"Classification Society","engine":"Vessel Engines",
   "port_find":"Port Finder","port":"Port Info","port_terminals":"Port Terminals","route":"Sea Routes",
@@ -1459,7 +1459,8 @@ System.out.println(response.body());`
 
 "route":{
   method:"GET", base:BASE_EXT, path:"route", addon:true,
-  note:"Uses the extended base URL <code>https://api.datalastic.com/api/ext/</code>. This endpoint is <strong>free of charge</strong>.",
+  note:"Uses the extended base URL <code>https://api.datalastic.com/api/ext/</code>. Costs <strong>1 credit per request</strong>.",
+  warn:"<strong>Not for navigation.</strong> Routes are for distance estimation and logistics planning only. Do not use for vessel routing, passage planning, or any safety-critical application.",
   desc:"Calculate the optimal sea route between two points. Input can be GPS coordinates, port UUIDs, or UN/LOCODEs. Returns a GeoJSON LineString with waypoints and total distance in nautical miles.",
   params:[
     ["api-key","string","required","Your API key"],
@@ -1993,6 +1994,7 @@ function renderEndpoint(key){
     <div class="endpoint">
       ${addonCallout}
       ${ep.note?`<div class="callout">${ep.note}</div>`:''}
+      ${ep.warn?`<div class="callout pink">${ep.warn}</div>`:''}
       <div class="method-row">
         ${badge}
         <div class="url-bar"><span class="u">${esc(fullUrl)}</span><button class="copy-btn" data-copy data-text="${esc(fullUrl)}">Copy</button></div>
@@ -2073,7 +2075,7 @@ function staticSection(id){
         <h4><span style="color:var(--color-purple)">◆</span> Data Feed</h4>
         <ul>
           <li>Live Vessel Tracking (Basic, Pro, Bulk)</li>
-          <li>Area Traffic Scanning</li>
+          <li>Location Traffic Scanning</li>
           <li>Historical Vessel Data</li>
           <li>Vessel Info &amp; Finder</li>
           <li>Port Finder &amp; Info</li>
@@ -2197,7 +2199,7 @@ function staticSection(id){
   },
   "meta": { "success": true }
 }`)}
-    <div class="callout cyan">That's it. Explore the <a data-nav="vessel">Vessel Tracking</a> endpoint next, or jump to <a data-nav="vessel_inradius">Area Traffic</a>.</div>
+    <div class="callout cyan">That's it. Explore the <a data-nav="vessel">Vessel Tracking</a> endpoint next, or jump to <a data-nav="vessel_inradius">Location Traffic</a>.</div>
   </section>`;
 
   case "rate-limits": return `<section class="section" id="rate-limits" data-title="Rate Limits & Credits">
@@ -2225,29 +2227,34 @@ function staticSection(id){
       <thead><tr><th>Endpoint</th><th>Credit Cost</th></tr></thead>
       <tbody>
         <tr><td colspan="2" class="credit-section-head">Data Feed</td></tr>
-        <tr><td><code>/vessel</code> or <code>/vessel_pro</code></td><td>1 credit per vessel</td></tr>
-        <tr><td><code>/vessel_bulk</code></td><td>1 credit per successfully found vessel (up to 100 per call)</td></tr>
-        <tr><td><code>/vessel_inradius</code></td><td>Credits = number of ships found (max 500 deducted per request)</td></tr>
-        <tr><td><code>/vessel_history</code></td><td>1 credit per vessel per day (e.g. 2 vessels × 10 days = 20 credits)</td></tr>
-        <tr><td><code>/vessel_info</code></td><td>1 credit per vessel</td></tr>
-        <tr><td><code>/vessel_find</code></td><td>1 credit per vessel found</td></tr>
-        <tr><td><code>/port_find</code></td><td>1 credit per port found</td></tr>
-        <tr><td><code>/report</code> (any type)</td><td>1 credit per submission</td></tr>
-        <tr><td>Historical Location (<code>inradius_history</code>)</td><td>(Days) × (Vessels/Day), max 500/day</td></tr>
+        <tr><td><code>/vessel</code></td><td>1 credit</td></tr>
+        <tr><td><code>/vessel_pro</code></td><td>3 credits</td></tr>
+        <tr><td><code>/vessel_bulk</code></td><td>1 per vessel (max 500 credits per request)</td></tr>
+        <tr><td><code>/vessel_inradius</code></td><td>1 per vessel found (max 500 credits per request)</td></tr>
+        <tr><td><code>/vessel_find</code></td><td>1 per vessel found (max 500 per request)</td></tr>
+        <tr><td><code>/vessel_history</code></td><td>2 credits per day requested</td></tr>
+        <tr><td>Historical Area Scan (<code>inradius_history</code>)</td><td>2 credits per day requested</td></tr>
+        <tr><td><code>/vessel_info</code></td><td>1 credit</td></tr>
+        <tr><td><code>/port_find</code></td><td>1 per port found (max 500 per request)</td></tr>
+        <tr><td><code>/port</code></td><td>1 per port</td></tr>
+        <tr><td><code>/stat</code></td><td>Free</td></tr>
+        <tr><td><code>/report</code> (async reports)</td><td>2,000 credits per report</td></tr>
         <tr><td>Vessel List report</td><td>5,000 credits</td></tr>
-        <tr><td>Port List report</td><td>500 credits</td></tr>
+        <tr><td>Port List report</td><td>5,000 credits</td></tr>
         <tr><td>Request Usage report</td><td>Free</td></tr>
         <tr><td colspan="2" class="credit-section-head addon-head">➕ Add-Ons</td></tr>
-        <tr><td>Sea Routes (<code>/route</code>)</td><td>Free</td></tr>
-        <tr><td>SAT-E (<code>/vessel_pro_est</code>)</td><td>1 credit per vessel query</td></tr>
-        <tr><td><code>/dry_dock_dates</code></td><td>1 credit per record returned</td></tr>
-        <tr><td><code>/casualty</code></td><td>1 credit per record returned</td></tr>
-        <tr><td><code>/inspections</code></td><td>1 credit per record returned</td></tr>
-        <tr><td>Sales &amp; Demolitions (<code>/spd</code>)</td><td>1 credit per record returned</td></tr>
-        <tr><td><code>/ownership</code></td><td>1 credit per record returned</td></tr>
-        <tr><td><code>/class_society</code></td><td>1 credit per record returned</td></tr>
-        <tr><td><code>/engine</code></td><td>1 credit per record returned</td></tr>
-        <tr><td><code>/companies</code></td><td>1 credit per record returned</td></tr>
+        <tr><td>SAT-E (<code>/vessel_pro_est</code>)</td><td>3 credits</td></tr>
+        <tr><td>Sea Routes (<code>/route</code>)</td><td>1 per request</td></tr>
+        <tr><td><code>/dry_dock_dates</code></td><td>1 per vessel</td></tr>
+        <tr><td><code>/casualty</code></td><td>1 per vessel</td></tr>
+        <tr><td><code>/inspections</code></td><td>1 per vessel</td></tr>
+        <tr><td>Sales &amp; Demolitions (<code>/spd</code>)</td><td>1 per vessel</td></tr>
+        <tr><td><code>/ownership</code></td><td>1 per vessel</td></tr>
+        <tr><td><code>/class_society</code></td><td>1 per vessel</td></tr>
+        <tr><td><code>/engine</code></td><td>1 per vessel</td></tr>
+        <tr><td><code>/companies</code></td><td>1 per company</td></tr>
+        <tr><td><code>/weather</code></td><td>1 per request</td></tr>
+        <tr><td>Add-On bulk reports</td><td>2,000 credits per report</td></tr>
       </tbody>
     </table></div>
     <h3>Monitor usage</h3>
@@ -2454,7 +2461,7 @@ System.out.println(response.body());`
       ["from","string","required","Start date YYYY-MM-DD"],
       ["to","string","required",'End date YYYY-MM-DD (max 7 days from "from")']
     ])}
-    <div class="callout pink"><strong>Credit cost:</strong> (Number of Days) × (Number of Vessels per Day), max 500 vessels per day.</div>
+    <div class="callout pink"><strong>Credit cost:</strong> 2 credits per day requested.</div>
     <h4>Submit</h4>
     ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
   -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
@@ -2468,7 +2475,7 @@ System.out.println(response.body());`
     "Contains: name, IMO, MMSI, UUID, callsign, country, type, subtype, draft, TEU, deadweight, dimensions, speeds, year_built, homeport, and activity status.",
     `{"api-key": "YOUR_KEY", "report_type": "vessel_list"}`);
 
-  case "report-port_list": return bulkReportSection("report-port_list","Port List","port_list","500 credits",
+  case "report-port_list": return bulkReportSection("report-port_list","Port List","port_list","5,000 credits",
     "Download the complete ports database.",
     "Contains: uuid, name, country, unlocode, type, lat, lon, and area levels.",
     `{"api-key": "YOUR_KEY", "report_type": "port_list"}`);
@@ -2490,7 +2497,7 @@ System.out.println(response.body());`
       ["from","string","required","Start date YYYY-MM-DD"],
       ["to","string","required",'End date YYYY-MM-DD (max 7 days from "from")']
     ])}
-    <div class="callout pink"><strong>Credit cost:</strong> (Days) × (Vessels/Day), max 500 vessels/day.</div>
+    <div class="callout pink"><strong>Credit cost:</strong> 2 credits per day requested.</div>
     <h4>Submit</h4>
     ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
   -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
@@ -2540,56 +2547,56 @@ vessel, err := client.Vessel.Get(datalastic.VesselParams{MMSI: "566093000"})
 fmt.Printf("%s: %.6f, %.6f\\n", vessel.Name, vessel.Lat, vessel.Lon)`);
 
   case "report-dry_dock_dates": return bulkReportSection(
-    "report-dry_dock_dates","Dry Dock Dates Report","dry_dock_dates","1 credit per record",
+    "report-dry_dock_dates","Dry Dock Dates Report","dry_dock_dates","2,000 credits per report",
     "Download all dry dock and special survey records across the fleet, including IOPP certificate dates and technical manager contact information.",
     "Contains: id, imo, vessel_name, special_survey_date, dry_dock_date, iopp_issue_date, iopp_exp_date, technical_manager, country_code, website, email, phone, address, linkedin, modified_at.",
     `{"api-key": "YOUR_KEY", "report_type": "dry_dock_dates"}`,
     true);
 
   case "report-casualty": return bulkReportSection(
-    "report-casualty","Ship Casualty Report","casualty","1 credit per record",
+    "report-casualty","Ship Casualty Report","casualty","2,000 credits per report",
     "Download historical casualty records covering groundings, collisions, fires, sinkings, and other incidents. Each record includes the incident type and a detailed narrative description.",
     "Contains: id, imo, vessel_name, casualty_date, casualty_type, casualty_details, modified_at.",
     `{"api-key": "YOUR_KEY", "report_type": "casualty", "from": "2024-01-01", "to": "2024-01-31"}`,
     true);
 
   case "report-inspections": return bulkReportSection(
-    "report-inspections","Ship Inspections Report","inspections","1 credit per record",
+    "report-inspections","Ship Inspections Report","inspections","2,000 credits per report",
     "Download Port State Control (PSC) inspection records including authority, port, deficiency descriptions, and detention outcomes.",
     "Contains: id, imo, vessel_name, vessel_type_code, flag_code, inspection_date, inspection_authority, inspection_port, inspection_type, detention, ship_deficiencies, deficiency_description, technical_ism_manager, country_code, website, email, phone, address, company_imo, modified_at.",
     `{"api-key": "YOUR_KEY", "report_type": "inspections", "from": "2024-01-01", "to": "2024-01-31"}`,
     true);
 
   case "report-spd": return bulkReportSection(
-    "report-spd","Ship Sales & Demolitions Report","sales_purchase_demolitions","1 credit per record",
+    "report-spd","Ship Sales & Demolitions Report","sales_purchase_demolitions","2,000 credits per report",
     "Download records of ship sales, purchases, and demolitions including transaction dates, buyer, seller, sale price, and scrapping destination.",
     "Contains: id, sales_report_date, imo, vessel_name, flag_name, vessel_type_code, built_year, dwt_design, gt, ldt, seller, buyer, sales_price_usd_mio, sales_price_usd/ldt, destination, sales_type, dry_dock_date, special_survey_date, sales_note, previous_sales_record, modified_at.",
     `{"api-key": "YOUR_KEY", "report_type": "sales_purchase_demolitions", "from": "2024-01-01", "to": "2024-01-31"}`,
     true);
 
   case "report-ownership": return bulkReportSection(
-    "report-ownership","Vessel Ownership Report","ownership","1 credit per record",
+    "report-ownership","Vessel Ownership Report","ownership","2,000 credits per report",
     "Download beneficial ownership, operator, technical manager, and commercial manager records across the fleet.",
     "Contains: id, imo, vessel_name, beneficial_owner, beneficial_owner_country, operator, operator_country, flag_name, vessel_type_code, built_year, dwt_design, class1_code, technical_manager, technical_manager_country, commercial_manager, commercial_manager_country, modified_at.",
     `{"api-key": "YOUR_KEY", "report_type": "ownership"}`,
     true);
 
   case "report-class_society": return bulkReportSection(
-    "report-class_society","Classification Society Report","class_society","1 credit per record",
+    "report-class_society","Classification Society Report","class_society","2,000 credits per report",
     "Download classification society records with full physical vessel specifications (LOA, LBP, depth, beam, draft) and engine details.",
     "Contains: imo, vessel_name, vessel_type_code, flag_name, built_year, dwt_design, special_survey_date, dry_dock_date, class1_code, beneficial_owner_imo, beneficial_owner, technical_manager_imo, technical_manager, draft_design, nt, gt, loa, lbp, depth, beam_moduled, engine_builder, engine_designer, propulsion_type_code, modified_at.",
     `{"api-key": "YOUR_KEY", "report_type": "class_society"}`,
     true);
 
   case "report-engine": return bulkReportSection(
-    "report-engine","Vessel Engine Report","engine","1 credit per record",
+    "report-engine","Vessel Engine Report","engine","2,000 credits per report",
     "Download engine specifications for the fleet including designation, builder, designer, MCO, RPM, and propulsion type.",
     "Contains: imo, vessel_name, vessel_type_code, propulsion_type_code, mco, mco_unit, mco_rpm, trading_category_code, built_year, gt, engine_designation, engine_builder, engine_designer, modified_at.",
     `{"api-key": "YOUR_KEY", "report_type": "engine"}`,
     true);
 
   case "report-companies": return bulkReportSection(
-    "report-companies","Maritime Companies Report","companies","1 credit per record",
+    "report-companies","Maritime Companies Report","companies","2,000 credits per report",
     "Download the full maritime companies database including company type, registration country, status, contact details, and parent company relationships.",
     "Contains: id, short_name, long_name, company_type, country_code, company_imo, website, company_status, email, phone, address, linkedin, parent_company_imo, parent_company_name, modified_at.",
     `{"api-key": "YOUR_KEY", "report_type": "companies"}`,
