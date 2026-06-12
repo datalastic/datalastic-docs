@@ -2229,18 +2229,17 @@ function staticSection(id){
         <tr><td colspan="2" class="credit-section-head">Data Feed</td></tr>
         <tr><td><code>/vessel</code></td><td>1 credit</td></tr>
         <tr><td><code>/vessel_pro</code></td><td>3 credits</td></tr>
-        <tr><td><code>/vessel_bulk</code></td><td>1 per vessel (max 500 credits per request)</td></tr>
-        <tr><td><code>/vessel_inradius</code></td><td>1 per vessel found (max 500 credits per request)</td></tr>
-        <tr><td><code>/vessel_find</code></td><td>1 per vessel found (max 500 per request)</td></tr>
+        <tr><td><code>/vessel_bulk</code></td><td>1 per vessel (max 500 credits deducted per request)</td></tr>
+        <tr><td><code>/vessel_inradius</code></td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
+        <tr><td><code>/vessel_find</code></td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
         <tr><td><code>/vessel_history</code></td><td>2 credits per day requested</td></tr>
         <tr><td>Historical Area Scan (<code>inradius_history</code>)</td><td>2 credits per day requested</td></tr>
         <tr><td><code>/vessel_info</code></td><td>1 credit</td></tr>
-        <tr><td><code>/port_find</code></td><td>1 per port found (max 500 per request)</td></tr>
+        <tr><td><code>/port_find</code></td><td>1 per port found (max 500 credits deducted per request)</td></tr>
         <tr><td><code>/port</code></td><td>1 per port</td></tr>
         <tr><td><code>/stat</code></td><td>Free</td></tr>
-        <tr><td><code>/report</code> (async reports)</td><td>2,000 credits per report</td></tr>
         <tr><td>Vessel List report</td><td>5,000 credits</td></tr>
-        <tr><td>Port List report</td><td>5,000 credits</td></tr>
+        <tr><td>Port List report</td><td>500 credits</td></tr>
         <tr><td>Request Usage report</td><td>Free</td></tr>
         <tr><td colspan="2" class="credit-section-head addon-head">➕ Add-Ons</td></tr>
         <tr><td>SAT-E (<code>/vessel_pro_est</code>)</td><td>3 credits</td></tr>
@@ -2253,7 +2252,7 @@ function staticSection(id){
         <tr><td><code>/class_society</code></td><td>1 per vessel</td></tr>
         <tr><td><code>/engine</code></td><td>1 per vessel</td></tr>
         <tr><td><code>/companies</code></td><td>1 per company</td></tr>
-        <tr><td><code>/weather</code></td><td>1 per request</td></tr>
+        <tr><td><code>/weather</code></td><td>Coming Soon</td></tr>
         <tr><td>Add-On bulk reports</td><td>2,000 credits per report</td></tr>
       </tbody>
     </table></div>
@@ -2475,7 +2474,7 @@ System.out.println(response.body());`
     "Contains: name, IMO, MMSI, UUID, callsign, country, type, subtype, draft, TEU, deadweight, dimensions, speeds, year_built, homeport, and activity status.",
     `{"api-key": "YOUR_KEY", "report_type": "vessel_list"}`);
 
-  case "report-port_list": return bulkReportSection("report-port_list","Port List","port_list","5,000 credits",
+  case "report-port_list": return bulkReportSection("report-port_list","Port List","port_list","500 credits",
     "Download the complete ports database.",
     "Contains: uuid, name, country, unlocode, type, lat, lon, and area levels.",
     `{"api-key": "YOUR_KEY", "report_type": "port_list"}`);
