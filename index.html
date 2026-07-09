@@ -2569,37 +2569,48 @@ System.out.println(response.body());`
     <div class="method-row">
       <div class="url-bar"><span class="u">https://mcp.datalastic.com/mcp</span><button class="copy-btn" data-copy data-text="https://mcp.datalastic.com/mcp">Copy</button></div>
     </div>
-    <p>MCP (Model Context Protocol) is an open standard that lets AI assistants call external APIs as tools. The Datalastic server is hosted, so there is nothing to install or run locally. Connect once by logging in with your Datalastic account. There is no API key to copy, and the key never leaves our servers. Same account, same plan, same credits as the REST API.</p>
+    <p>MCP (Model Context Protocol) is the open standard AI assistants use to call external APIs. The server is hosted, so there is nothing to install. Log in once with your Datalastic account: no API key to copy, same plan and credits as the REST API.</p>
     <p class="muted">GitHub: <a href="https://github.com/datalastic/mcp-server-datalastic" target="_blank" rel="noopener">datalastic/mcp-server-datalastic</a></p>
-    <h4>Claude</h4>
-    <ol>
-      <li>Open <a href="https://claude.ai/customize/connectors" target="_blank" rel="noopener">Claude Settings &rarr; Connectors</a> and click <strong>Add custom connector</strong>.</li>
-      <li>Paste <code>https://mcp.datalastic.com/mcp</code> and save.</li>
-      <li>Click <strong>Connect</strong> and log in with your Datalastic account.</li>
-    </ol>
-    <p class="muted">Works in Claude web and Claude Desktop.</p>
-    <h4>ChatGPT</h4>
-    <ol>
-      <li>Go to <strong>Settings &rarr; Apps &rarr; Advanced Settings</strong> and toggle <strong>Developer Mode</strong> on.</li>
-      <li>Click <strong>Create App</strong>, paste <code>https://mcp.datalastic.com/mcp</code>, and name it "Datalastic".</li>
-      <li>Log in with your Datalastic account when prompted.</li>
-    </ol>
-    <p class="muted">Custom connectors need a paid ChatGPT plan with developer mode enabled.</p>
-    <h4>Claude Code</h4>
-    ${singleCode('bash',`claude mcp add --scope user --transport http datalastic https://mcp.datalastic.com/mcp`)}
-    <p>Then run <code>/mcp</code> inside Claude Code and pick <strong>datalastic</strong> to sign in through your browser.</p>
-    <h4>Cursor, VS Code, Windsurf</h4>
-    <p>Add this to your client's MCP config file (for example <code>~/.cursor/mcp.json</code>):</p>
-    ${singleCode('json',`{
+    <div class="mcp-clients">
+      <div class="ep-tabbar">
+        <button class="ep-tab active" data-mcptab="claude">Claude</button>
+        <button class="ep-tab" data-mcptab="chatgpt">ChatGPT</button>
+        <button class="ep-tab" data-mcptab="code">Claude Code</button>
+        <button class="ep-tab" data-mcptab="ide">Cursor / VS Code / Windsurf</button>
+      </div>
+      <div class="ep-pane active" data-mcppane="claude">
+        <ol>
+          <li>Open <a href="https://claude.ai/customize/connectors" target="_blank" rel="noopener">Claude Settings &rarr; Connectors</a> and click <strong>Add custom connector</strong>.</li>
+          <li>Paste <code>https://mcp.datalastic.com/mcp</code> and save.</li>
+          <li>Click <strong>Connect</strong> and log in with your Datalastic account.</li>
+        </ol>
+        <p class="muted">Works in Claude web and Claude Desktop.</p>
+      </div>
+      <div class="ep-pane" data-mcppane="chatgpt">
+        <ol>
+          <li>Go to <strong>Settings &rarr; Apps &rarr; Advanced Settings</strong> and toggle <strong>Developer Mode</strong> on.</li>
+          <li>Click <strong>Create App</strong>, paste <code>https://mcp.datalastic.com/mcp</code>, and name it "Datalastic".</li>
+          <li>Log in with your Datalastic account when prompted.</li>
+        </ol>
+        <p class="muted">Custom connectors need a paid ChatGPT plan with developer mode enabled.</p>
+      </div>
+      <div class="ep-pane" data-mcppane="code">
+        ${singleCode('bash',`claude mcp add --scope user --transport http datalastic https://mcp.datalastic.com/mcp`)}
+        <p>Then run <code>/mcp</code> inside Claude Code and pick <strong>datalastic</strong> to sign in through your browser.</p>
+      </div>
+      <div class="ep-pane" data-mcppane="ide">
+        <p>Add this to your client's MCP config file (for example <code>~/.cursor/mcp.json</code>):</p>
+        ${singleCode('json',`{
   "mcpServers": {
     "datalastic": {
       "url": "https://mcp.datalastic.com/mcp"
     }
   }
 }`)}
-    <p>The client opens a browser to sign in with your Datalastic account the first time you use a Datalastic tool. Key names vary slightly per client: VS Code uses <code>.vscode/mcp.json</code> with <code>"servers"</code> and <code>"type": "http"</code>, Windsurf uses <code>"serverUrl"</code>.</p>
-    <h4>Prefer your API key?</h4>
-    <p>Headless clients and scripts that can't open a browser can skip OAuth and send the key as an <code>X-Api-Key</code> header instead, for example <code>claude mcp add ... --header "X-Api-Key: YOUR_API_KEY"</code>.</p>
+        <p class="muted">A browser opens to sign in on first use. VS Code uses <code>.vscode/mcp.json</code> with <code>"servers"</code> and <code>"type": "http"</code>. Windsurf uses <code>"serverUrl"</code>.</p>
+      </div>
+    </div>
+    <p class="muted">Headless clients and scripts that can't open a browser can skip the sign-in and send your API key as an <code>X-Api-Key</code> header instead.</p>
     <h4>Available tools</h4>
     <p>The server exposes the API as assistant tools, grouped the same way as this documentation:</p>
     <ul>
@@ -2863,6 +2874,14 @@ function initInteractions(){
       eptab.classList.add('active');
       const pane=card.querySelector(`[data-eptabpane="${eptab.dataset.eptab}"]`);
       if(pane) pane.classList.add('active');
+      return;
+    }
+    // MCP client tabs (MCP Server section)
+    const mtab=e.target.closest('[data-mcptab]');
+    if(mtab){
+      const wrap=mtab.closest('.mcp-clients');
+      wrap.querySelectorAll('[data-mcptab]').forEach(t=>t.classList.toggle('active',t===mtab));
+      wrap.querySelectorAll('[data-mcppane]').forEach(p=>p.classList.toggle('active',p.dataset.mcppane===mtab.dataset.mcptab));
       return;
     }
     // code tabs (language switcher inside Code Examples pane)
