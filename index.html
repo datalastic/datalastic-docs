@@ -2431,13 +2431,17 @@ System.out.println(response.body());`
     "report_id": "4ddc14e0-9059-9b86-1156-8efd93f0cfe6",
     "report_type": "inradius_history",
     "status": "_DONE_",
-    "result_url": "https://report.datalastic.com/dl/4ddc14e0-9059-9b86-1156-8efd93f0cfe6.zip",
+    "result_url": "https://report.datalastic.com/dl/4ddc14e0-9059-9b86-1156-8efd93f0cfe6.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...&X-Amz-Date=20220731T192237Z&X-Amz-Expires=21600&X-Amz-SignedHeaders=host&X-Amz-Signature=...",
     "created_at": "2022-07-31T18:33:07.999153Z",
     "updated_at": "2022-07-31T19:22:37.733028Z"
   },
   "meta": {"duration": 0.002157077, "endpoint": "/api/v0/report", "success": true}
 }`)}
     <div class="callout cyan">Once <code>status</code> is <code>_DONE_</code>, download the ZIP at <code>result_url</code>. See <a data-nav="report-vessel_list">Bulk Reports</a> for every available report type.</div>
+    <h3>3. Download link expiry</h3>
+    <p><code>result_url</code> is a short-lived, signed download link, valid for 6 hours from when it is issued. The extra query-string parameters (<code>X-Amz-Signature</code>, <code>X-Amz-Expires</code>, and so on) are the signature, not an error. Once the window passes, the link returns <code>403 Forbidden</code>.</p>
+    <p>Don't store <code>result_url</code> long-term. Poll the report status again right before you download: every status call returns a freshly signed link with a full new 6-hour window. The export file itself is generated once and never changes. Re-checking status is free and does not re-run the report or deduct credits.</p>
+    <div class="callout">If a fresh link still returns 403: copy the entire URL including the full query string (editing or trimming any part of it invalidates the signature), and use a plain GET request. Tools that send HEAD, such as <code>curl -I</code>, always get 403 on signed links.</div>
   </section>`;
 
   case "field-reference": return `<section class="section" id="field-reference" data-title="Field Reference">
@@ -2570,13 +2574,13 @@ System.out.println(response.body());`
       <div class="url-bar"><span class="u">https://mcp.datalastic.com/mcp</span><button class="copy-btn" data-copy data-text="https://mcp.datalastic.com/mcp">Copy</button></div>
     </div>
     <p>MCP (Model Context Protocol) is the open standard AI assistants use to call external APIs. The server is hosted, so there is nothing to install. Log in once with your Datalastic account: no API key to copy, same plan and credits as the REST API.</p>
-    <p class="muted">GitHub: <a href="https://github.com/datalastic/mcp-server-datalastic" target="_blank" rel="noopener">datalastic/mcp-server-datalastic</a></p>
+    <p class="muted">Learn more: <a href="https://datalastic.com/mcp/" target="_blank" rel="noopener">datalastic.com/mcp</a> &middot; GitHub: <a href="https://github.com/datalastic/mcp-server-datalastic" target="_blank" rel="noopener">datalastic/mcp-server-datalastic</a></p>
     <div class="mcp-clients">
       <div class="ep-tabbar">
         <button class="ep-tab active" data-mcptab="claude">Claude</button>
         <button class="ep-tab" data-mcptab="chatgpt">ChatGPT</button>
         <button class="ep-tab" data-mcptab="code">Claude Code</button>
-        <button class="ep-tab" data-mcptab="ide">Cursor / VS Code / Windsurf</button>
+        <button class="ep-tab" data-mcptab="ide">Cursor / VS Code</button>
       </div>
       <div class="ep-pane active" data-mcppane="claude">
         <ol>
@@ -2607,7 +2611,7 @@ System.out.println(response.body());`
     }
   }
 }`)}
-        <p class="muted">A browser opens to sign in on first use. VS Code uses <code>.vscode/mcp.json</code> with <code>"servers"</code> and <code>"type": "http"</code>. Windsurf uses <code>"serverUrl"</code>.</p>
+        <p class="muted">A browser opens to sign in on first use. VS Code uses <code>.vscode/mcp.json</code> with <code>"servers"</code> and <code>"type": "http"</code>.</p>
       </div>
     </div>
     <p class="muted">Headless clients and scripts that can't open a browser can skip the sign-in and send your API key as an <code>X-Api-Key</code> header instead.</p>
