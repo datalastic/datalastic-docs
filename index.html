@@ -5,20 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="Datalastic_logo.png">
 <title>Datalastic API Documentation: Vessel Tracking, AIS & Maritime Data</title>
-<meta name="description" content="Datalastic API Documentation for the maritime API. Query live AIS vessel positions, historical ship data, ports, and sea routes across 20 endpoints with clean JSON responses and global coverage.">
+<meta name="description" content="Datalastic API Documentation for the maritime API. Query live AIS vessel positions, historical ship data, ports, and sea routes across 21 endpoints with clean JSON responses and global coverage.">
 <link rel="canonical" href="https://docs.datalastic.com/">
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="1NLF1HmCWMFokudZRvb5-7eQtRD4IcUwhg4J7prvntI" />
 <meta property="og:type" content="website">
 <meta property="og:title" content="Datalastic API Documentation: Vessel Tracking, AIS & Maritime Data">
-<meta property="og:description" content="Datalastic API Documentation for the maritime API. Query live AIS vessel positions, historical ship data, ports, and sea routes across 20 endpoints with clean JSON responses and global coverage.">
+<meta property="og:description" content="Datalastic API Documentation for the maritime API. Query live AIS vessel positions, historical ship data, ports, and sea routes across 21 endpoints with clean JSON responses and global coverage.">
 <meta property="og:url" content="https://docs.datalastic.com/">
 <meta property="og:site_name" content="Datalastic">
 <meta property="og:image" content="https://docs.datalastic.com/Datalastic_logo.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://docs.datalastic.com/Datalastic_logo.png">
 <meta name="twitter:title" content="Datalastic API Documentation">
-<meta name="twitter:description" content="Live AIS vessel tracking, historical ship data, ports, and sea routes. 20 endpoints, clean JSON, global coverage.">
+<meta name="twitter:description" content="Live AIS vessel tracking, historical ship data, ports, and sea routes. 21 endpoints, clean JSON, global coverage.">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1219,6 +1219,95 @@ System.out.println(response.body());`
 }`
 },
 
+"weather":{
+  method:"GET", base:BASE_V0, path:"weather",
+  note:"Pass exactly one location group: coordinates (<code>lat</code> + <code>lon</code>), one vessel identifier (<code>mmsi</code>, <code>imo</code>, or <code>uuid</code>), or one port identifier (<code>port_unlocode</code> or <code>port_uuid</code>).",
+  desc:"One complete weather picture for a location: marine conditions merged with general atmospheric conditions, with current conditions plus 7-day daily and hourly forecasts. Check the weather at any fixed point on the map by passing <code>lat</code> and <code>lon</code> coordinates, or at a port by UN/LOCODE or UUID. You can also track weather around a moving vessel: pass its MMSI, IMO, or UUID and the point resolves dynamically to the ship's last known position.",
+  params:[
+    ["api-key","string","required","Your API key"],
+    ["lat","number","conditional","Latitude (use with lon)"],
+    ["lon","number","conditional","Longitude (use with lat)"],
+    ["mmsi","string","conditional","Vessel MMSI, weather at its last known position"],
+    ["imo","string","conditional","Vessel IMO, weather at its last known position"],
+    ["uuid","string","conditional","Vessel UUID, weather at its last known position"],
+    ["port_unlocode","string","conditional","Port UN/LOCODE"],
+    ["port_uuid","string","conditional","Port UUID"],
+    ["mode","string","optional","current (default), daily, or hourly. Repeat the parameter to combine modes: mode=current&mode=hourly"]
+  ],
+  tryParams:[{name:"lat",def:"54.54",required:true},{name:"lon",def:"10.23",required:true},{name:"mode",def:"current",required:false}],
+  attrs:[
+    ["location","object","GeoJSON Point Feature for the resolved location. properties.type is Coordinates Point, Vessel, or Port, with the matching identifying fields populated"],
+    ["weather","object","The conditions, one section per requested mode. Every field has a matching entry under the same key in the corresponding _units object"],
+    ["weather.timezone","string","Timezone of all timestamps"],
+    ["weather.current","object","Conditions right now (mode=current)"],
+    ["weather.current_units","object","Unit for every field in current"],
+    ["weather.hourly","object","7-day hourly forecast, one array per field (mode=hourly)"],
+    ["weather.hourly_units","object","Unit for every field in hourly"],
+    ["weather.daily","object","7-day daily aggregates (mode=daily, see naming note below)"],
+    ["weather.daily_units","object","Unit for every field in daily"],
+    ["Marine fields","","wave_direction, wave_height, wave_period, wave_period_peak, swell_wave_direction, swell_wave_height, swell_wave_period, swell_wave_peak_period, secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, wind_wave_peak_period, ocean_u_current, ocean_v_current, sea_surface_temperature, sea_level_height_msl, invert_barometer_height"],
+    ["Atmospheric fields","","temperature_2m, apparent_temperature, dew_point_2m, relative_humidity_2m, precipitation, weather_code, cloud_cover, visibility, wind_speed_10m, wind_direction_10m, wind_gusts_10m, pressure_msl"],
+    ["Daily naming","","Daily values are aggregates, not instantaneous readings, so some fields change names: temperature_2m becomes temperature_2m_max, temperature_2m_min, and temperature_2m_mean; precipitation becomes precipitation_sum; wind_speed_10m becomes wind_speed_10m_max; wind_direction_10m becomes wind_direction_10m_dominant; wind_gusts_10m becomes wind_gusts_10m_max; apparent_temperature becomes apparent_temperature_max and apparent_temperature_min. Five fields have no daily aggregate at all and appear in current and hourly only: relative_humidity_2m, dew_point_2m, visibility, pressure_msl, cloud_cover"]
+  ],
+  response:`{
+  "data": {
+    "location": {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [10.23, 54.54]},
+      "properties": {"type": "Coordinates Point", "mmsi": null, "imo": null, "uuid": null, "port_unlocode": null, "port_uuid": null, "port_name": null}
+    },
+    "weather": {
+      "latitude": 54.54,
+      "longitude": 10.24,
+      "timezone": "GMT",
+      "current_units": {
+        "time": "iso8601",
+        "wave_height": "m",
+        "wave_direction": "°",
+        "wave_period": "s",
+        "swell_wave_height": "m",
+        "swell_wave_direction": "°",
+        "sea_surface_temperature": "°C",
+        "sea_level_height_msl": "m",
+        "temperature_2m": "°C",
+        "relative_humidity_2m": "%",
+        "wind_speed_10m": "km/h",
+        "wind_gusts_10m": "km/h",
+        "wind_direction_10m": "°",
+        "visibility": "m",
+        "pressure_msl": "hPa",
+        "precipitation": "mm",
+        "cloud_cover": "%"
+      },
+      "current": {
+        "time": "2026-07-21T17:00",
+        "wave_height": 0.22,
+        "wave_direction": 328,
+        "wave_period": 2.35,
+        "swell_wave_height": 0.1,
+        "swell_wave_direction": 359,
+        "sea_surface_temperature": 20.1,
+        "sea_level_height_msl": -0.25,
+        "temperature_2m": 19.5,
+        "relative_humidity_2m": 61,
+        "wind_speed_10m": 30.3,
+        "wind_gusts_10m": 33.1,
+        "wind_direction_10m": 283,
+        "visibility": 24140,
+        "pressure_msl": 1020.2,
+        "precipitation": 0,
+        "cloud_cover": 0
+      }
+    }
+  },
+  "meta": {
+    "duration": 0.412,
+    "endpoint": "/api/v0/weather",
+    "success": true
+  }
+}`
+},
+
 "vessel_history":{
   method:"GET", base:BASE_V0, path:"vessel_history",
   desc:"Retrieve historical movement data for a specific vessel. Data is available since August 10, 2021. Only position changes are stored (stationary vessels may have gaps). Specify a date range or a number of past days.",
@@ -2136,7 +2225,7 @@ function staticSection(id){
         <p class="plan-note">Available on Add-Ons plan tiers. Upgrade your plan to get access. Same API key.</p>
       </div>
     </div>
-    <p>The API covers real-time vessel tracking, marine location traffic data, port information, and historical ship data, with every endpoint returning clean, structured JSON. Use this Vessel Tracking API Documentation as your reference for the live AIS feeds, and read on for the full AIS API Documentation across all 20 endpoints.</p>
+    <p>The API covers real-time vessel tracking, marine location traffic data, port information, and historical ship data, with every endpoint returning clean, structured JSON. Use this Vessel Tracking API Documentation as your reference for the live AIS feeds, and read on for the full AIS API Documentation across all 21 endpoints.</p>
     <div class="callout cyan"><strong>Use Datalastic inside your AI assistant.</strong> Ask Claude, ChatGPT, Cursor, or any other AI tool for live vessel data in plain language. They connect to the API through our hosted MCP server, and setup takes about a minute. See <a data-nav="mcp-server">MCP Server</a> for instructions.</div>
     <h3>What you can build</h3>
     <ul>
@@ -2274,6 +2363,7 @@ function staticSection(id){
         <tr><td>Vessel Info</td><td>1 credit</td></tr>
         <tr><td>Port Finder</td><td>1 per port found (max 500 credits deducted per request)</td></tr>
         <tr><td>Port Info</td><td>1 per port</td></tr>
+        <tr><td>Weather</td><td>1 credit per request</td></tr>
         <tr><td>Account &amp; Usage</td><td>Free</td></tr>
         <tr><td>Vessel List report</td><td>5,000 credits</td></tr>
         <tr><td>Port List report</td><td>500 credits</td></tr>
@@ -2289,7 +2379,6 @@ function staticSection(id){
         <tr><td>Classification Society</td><td>1 per vessel</td></tr>
         <tr><td>Vessel Engines</td><td>1 per vessel</td></tr>
         <tr><td>Maritime Companies</td><td>1 per company</td></tr>
-        <tr><td>Weather API</td><td>Coming Soon</td></tr>
         <tr><td>Add-On bulk reports</td><td>2,000 credits per report</td></tr>
       </tbody>
     </table></div>
@@ -2707,16 +2796,6 @@ fmt.Printf("%s: %.6f, %.6f\\n", vessel.Name, vessel.Lat, vessel.Lon)`);
     `{"api-key": "YOUR_KEY", "report_type": "companies"}`,
     true);
 
-  case "weather": return `<section class="section" id="weather" data-title="Weather API">
-    <h1>Weather API <span class="badge-soon">Coming Soon</span></h1>
-    <div class="method-row">
-      <span class="method-badge">GET</span>
-      <div class="url-bar"><span class="u">https://api.datalastic.com/api/v0/weather</span><button class="copy-btn" data-copy data-text="https://api.datalastic.com/api/v0/weather">Copy</button></div>
-    </div>
-    <div class="callout">Full documentation for this endpoint is coming soon. The Weather API will return real-time marine weather conditions for a given location, including wind speed, wave height, visibility, and pressure data.</div>
-    <p>Don't have an API key yet? <a class="cta-link" href="${PRICING}" target="_blank" rel="noopener"><strong>Get one →</strong></a></p>
-  </section>`;
-
   case "port_terminals": return `<section class="section" id="port_terminals" data-title="Port Terminals">
     <h1>Port Terminals</h1>
     <div class="method-row">
@@ -2804,7 +2883,7 @@ function sdkSection(id,title,github,install,lang,example){
 /* =========================================================================
    BUILD PAGE
    ========================================================================= */
-const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","mcp-server","sdk-python","sdk-node","sdk-go","port_terminals","weather"]);
+const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","mcp-server","sdk-python","sdk-node","sdk-go","port_terminals"]);
 
 function buildContent(){
   const parts=[];
@@ -2816,7 +2895,7 @@ function buildContent(){
 }
 
 /* nav IDs that are add-on endpoints (purchased separately) */
-const ADDON_NAV_IDS=new Set(["sat-e","weather","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine","companies","route","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies"]);
+const ADDON_NAV_IDS=new Set(["sat-e","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine","companies","route","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies"]);
 
 function buildNav(){
   const nav=document.getElementById('nav');
