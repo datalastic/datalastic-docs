@@ -1221,7 +1221,7 @@ System.out.println(response.body());`
 
 "weather":{
   method:"GET", base:BASE_V0, path:"weather",
-  note:"Pass exactly one location group: coordinates (<code>lat</code> + <code>lon</code>), one vessel identifier (<code>mmsi</code>, <code>imo</code>, or <code>uuid</code>), or one port identifier (<code>port_unlocode</code> or <code>port_uuid</code>).",
+  note:"Pass exactly one location group: coordinates (<code>lat</code> + <code>lon</code>), one vessel identifier (<code>mmsi</code>, <code>imo</code>, or <code>uuid</code>), or one port identifier (<code>port_unlocode</code> or <code>port_uuid</code>). Responses return plain numeric values; the measurement unit of every field is listed under Response Attributes.",
   desc:"One complete weather picture for a location: marine conditions merged with general atmospheric conditions, with current conditions plus 7-day daily and hourly forecasts. Check the weather at any fixed point on the map by passing <code>lat</code> and <code>lon</code> coordinates, or at a port by UN/LOCODE or UUID. You can also track weather around a moving vessel: pass its MMSI, IMO, or UUID and the point resolves dynamically to the ship's last known position.",
   params:[
     ["api-key","string","required","Your API key"],
@@ -1235,19 +1235,47 @@ System.out.println(response.body());`
     ["mode","string","optional","current (default), daily, or hourly. Repeat the parameter to combine modes: mode=current&mode=hourly"]
   ],
   tryParams:[{name:"port_unlocode",def:"FIHEL",required:false},{name:"mode",def:"current",required:false}],
+  attrsOpen:true,
   attrs:[
     ["location","object","GeoJSON Point Feature for the resolved location. properties.type is Coordinates Point, Vessel, or Port, with the matching identifying fields populated"],
-    ["weather","object","The conditions, one section per requested mode. Every field has a matching entry under the same key in the corresponding _units object"],
-    ["weather.timezone","string","Timezone of all timestamps"],
-    ["weather.current","object","Conditions right now (mode=current)"],
-    ["weather.current_units","object","Unit for every field in current"],
-    ["weather.hourly","object","7-day hourly forecast, one array per field (mode=hourly)"],
-    ["weather.hourly_units","object","Unit for every field in hourly"],
-    ["weather.daily","object","7-day daily aggregates (mode=daily, see naming note below)"],
-    ["weather.daily_units","object","Unit for every field in daily"],
-    ["Marine fields","","wave_direction, wave_height, wave_period, wind_wave_direction, wind_wave_height, wind_wave_period, wind_wave_peak_period, swell_wave_direction, swell_wave_height, swell_wave_period, swell_wave_peak_period, secondary_swell_wave_direction, secondary_swell_wave_height, secondary_swell_wave_period, tertiary_swell_wave_direction, tertiary_swell_wave_height, tertiary_swell_wave_period (tertiary swell: hourly only), ocean_current_velocity, ocean_current_direction, sea_surface_temperature, sea_level_height_msl, invert_barometer_height"],
-    ["Atmospheric fields","","temperature_2m, apparent_temperature, dew_point_2m, relative_humidity_2m, precipitation, weather_code, cloud_cover, visibility, wind_speed_10m, wind_direction_10m, wind_gusts_10m, pressure_msl"],
-    ["Daily naming","","Daily values are aggregates, not instantaneous readings, so fields are renamed: temperature_2m_max, temperature_2m_min, apparent_temperature_max, apparent_temperature_min, precipitation_sum, wind_speed_10m_max, wind_direction_10m_dominant, wind_gusts_10m_max, wave_height_max, wave_direction_dominant, wave_period_max, wind_wave_height_max, wind_wave_direction_dominant, wind_wave_period_max, wind_wave_peak_period_max, swell_wave_height_max, swell_wave_direction_dominant, swell_wave_period_max, swell_wave_peak_period_max. All other fields (humidity, dew point, visibility, pressure, cloud cover, weather code, sea surface temperature, sea level, ocean current, secondary and tertiary swell) have no daily aggregate and appear in current and hourly only"]
+    ["weather","object","The conditions, one section per requested mode: current (right now), hourly (7-day forecast, one array per field), daily (7-day aggregates, see Daily naming below). Values come without units; the unit of every field is listed here"],
+    ["time","string","Timestamp of the reading or forecast step, ISO 8601, GMT"],
+    ["interval","integer","Reading window in seconds, current mode only"],
+    ["temperature_2m","number","Air temperature at 2 m above surface in °C"],
+    ["precipitation","number","Precipitation amount in millimeters"],
+    ["weather_code","integer|null","WMO weather interpretation code"],
+    ["wind_speed_10m","number","Wind speed at 10 m above surface in knots"],
+    ["wind_direction_10m","number","Wind direction at 10 m above surface in degrees"],
+    ["wind_gusts_10m","number","Wind gusts at 10 m above surface in knots"],
+    ["cloud_cover","number","Total cloud cover in percent"],
+    ["relative_humidity_2m","number","Relative humidity at 2 m above surface in percent"],
+    ["dew_point_2m","number","Dew point at 2 m above surface in °C"],
+    ["apparent_temperature","number","Feels-like temperature in °C"],
+    ["visibility","number","Horizontal visibility in meters"],
+    ["pressure_msl","number","Air pressure at mean sea level in hPa"],
+    ["wave_height","number","Significant height of combined waves in meters"],
+    ["wave_direction","number","Mean direction of combined waves in degrees"],
+    ["wave_period","number","Mean period of combined waves in seconds"],
+    ["wind_wave_height","number","Wind wave height in meters"],
+    ["wind_wave_direction","number","Wind wave direction in degrees"],
+    ["wind_wave_period","number","Wind wave mean period in seconds"],
+    ["wind_wave_peak_period","number","Wind wave peak period in seconds"],
+    ["swell_wave_height","number","Primary swell height in meters"],
+    ["swell_wave_direction","number","Primary swell direction in degrees"],
+    ["swell_wave_period","number","Primary swell mean period in seconds"],
+    ["swell_wave_peak_period","number","Primary swell peak period in seconds"],
+    ["secondary_swell_wave_height","number","Secondary swell height in meters"],
+    ["secondary_swell_wave_direction","number","Secondary swell direction in degrees"],
+    ["secondary_swell_wave_period","number","Secondary swell mean period in seconds"],
+    ["tertiary_swell_wave_height","number","Tertiary swell height in meters, hourly mode only"],
+    ["tertiary_swell_wave_direction","number","Tertiary swell direction in degrees, hourly mode only"],
+    ["tertiary_swell_wave_period","number","Tertiary swell mean period in seconds, hourly mode only"],
+    ["sea_surface_temperature","number","Sea surface temperature in °C"],
+    ["invert_barometer_height","number","Inverse barometer effect on sea level in meters"],
+    ["sea_level_height_msl","number","Sea level height above mean sea level in meters"],
+    ["ocean_current_velocity","number","Ocean current speed in km/h"],
+    ["ocean_current_direction","number","Ocean current direction in degrees"],
+    ["Daily naming","","Daily values are aggregates, not instantaneous readings, so fields are renamed: temperature_2m_max, temperature_2m_min, apparent_temperature_max, apparent_temperature_min, precipitation_sum, wind_speed_10m_max, wind_direction_10m_dominant, wind_gusts_10m_max, wave_height_max, wave_direction_dominant, wave_period_max, wind_wave_height_max, wind_wave_direction_dominant, wind_wave_period_max, wind_wave_peak_period_max, swell_wave_height_max, swell_wave_direction_dominant, swell_wave_period_max, swell_wave_peak_period_max. Units stay the same as the base fields. All other fields (humidity, dew point, visibility, pressure, cloud cover, weather code, sea surface temperature, sea level, ocean current, secondary and tertiary swell) have no daily aggregate and appear in current and hourly only"]
   ],
   response:`{
   "data": {
@@ -1264,85 +1292,50 @@ System.out.println(response.body());`
     "weather": {
       "latitude": 60.16998,
       "longitude": 24.94519,
-      "generationtime_ms": 0.5517005920410156,
+      "generationtime_ms": 0.6312131881713867,
       "utc_offset_seconds": 0,
       "timezone": "GMT",
       "timezone_abbreviation": "GMT",
-      "current_units": {
-        "time": "iso8601",
-        "interval": "seconds",
-        "temperature_2m": "°C",
-        "precipitation": "mm",
-        "weather_code": "wmo code",
-        "wind_speed_10m": "km/h",
-        "wind_direction_10m": "°",
-        "wind_gusts_10m": "km/h",
-        "cloud_cover": "%",
-        "relative_humidity_2m": "%",
-        "dew_point_2m": "°C",
-        "apparent_temperature": "°C",
-        "visibility": "m",
-        "pressure_msl": "hPa",
-        "wave_height": "m",
-        "wave_direction": "°",
-        "wave_period": "s",
-        "wind_wave_height": "m",
-        "wind_wave_direction": "°",
-        "wind_wave_period": "s",
-        "wind_wave_peak_period": "s",
-        "swell_wave_height": "m",
-        "swell_wave_direction": "°",
-        "swell_wave_period": "s",
-        "swell_wave_peak_period": "s",
-        "secondary_swell_wave_height": "m",
-        "secondary_swell_wave_direction": "°",
-        "secondary_swell_wave_period": "s",
-        "sea_surface_temperature": "°C",
-        "invert_barometer_height": "m",
-        "sea_level_height_msl": "m",
-        "ocean_current_velocity": "km/h",
-        "ocean_current_direction": "°"
-      },
       "current": {
-        "time": "2026-07-21T19:15",
+        "time": "2026-07-24T10:45",
         "interval": 900,
-        "temperature_2m": 12.8,
+        "temperature_2m": 18.9,
         "precipitation": 0.00,
         "weather_code": 3,
-        "wind_speed_10m": 7.3,
-        "wind_direction_10m": 33,
-        "wind_gusts_10m": 18.7,
+        "wind_speed_10m": 6.1,
+        "wind_direction_10m": 217,
+        "wind_gusts_10m": 16.3,
         "cloud_cover": 100,
-        "relative_humidity_2m": 79,
-        "dew_point_2m": 9.2,
-        "apparent_temperature": 11.5,
+        "relative_humidity_2m": 63,
+        "dew_point_2m": 11.7,
+        "apparent_temperature": 17.8,
         "visibility": 24140.00,
-        "pressure_msl": 1011.8,
-        "wave_height": 0.26,
-        "wave_direction": 70,
-        "wave_period": 2.65,
-        "wind_wave_height": 0.18,
-        "wind_wave_direction": 45,
-        "wind_wave_period": 1.70,
-        "wind_wave_peak_period": 2.00,
-        "swell_wave_height": 0.14,
-        "swell_wave_direction": 72,
-        "swell_wave_period": 2.40,
-        "swell_wave_peak_period": 5.75,
-        "secondary_swell_wave_height": 0.06,
-        "secondary_swell_wave_direction": -81,
-        "secondary_swell_wave_period": 3.85,
-        "sea_surface_temperature": 19.5,
-        "invert_barometer_height": 0.01,
-        "sea_level_height_msl": -0.03,
-        "ocean_current_velocity": 0.2,
-        "ocean_current_direction": 270
+        "pressure_msl": 1010.1,
+        "wave_height": 0.08,
+        "wave_direction": 224,
+        "wave_period": 2.50,
+        "wind_wave_height": 0.02,
+        "wind_wave_direction": 243,
+        "wind_wave_period": 1.05,
+        "wind_wave_peak_period": 1.50,
+        "swell_wave_height": 0.06,
+        "swell_wave_direction": 224,
+        "swell_wave_period": 2.50,
+        "swell_wave_peak_period": 5.20,
+        "secondary_swell_wave_height": 0.02,
+        "secondary_swell_wave_direction": 49,
+        "secondary_swell_wave_period": 4.50,
+        "sea_surface_temperature": 19.4,
+        "invert_barometer_height": 0.02,
+        "sea_level_height_msl": 0.10,
+        "ocean_current_velocity": 0.4,
+        "ocean_current_direction": 63
       },
       "elevation": 0.0
     }
   },
   "meta": {
-    "duration": 0.006864558,
+    "duration": 0.021066314,
     "endpoint": "/api/v0/weather",
     "success": true
   }
@@ -2102,13 +2095,13 @@ function singleCode(lang,code){
   </div>`;
 }
 
-function attrsCollapse(attrs){
+function attrsCollapse(attrs,open){
   const rows=attrs.map(([n,t,d])=>`<div class="attr">
     <span class="a-name">${esc(n)}</span>
     ${t?`<span class="a-type">${esc(t)}</span>`:''}
     <span class="a-desc">${esc(d)}</span>
   </div>`).join('');
-  return `<div class="collapse">
+  return `<div class="collapse${open?' open':''}">
     <div class="collapse-head" data-collapse><span>Response Attributes</span><span class="chev">▶</span></div>
     <div class="collapse-body">${rows}</div>
   </div>`;
@@ -2174,7 +2167,7 @@ function renderEndpoint(key){
         ${codeTabs(examples)}
       </div>
       <div class="ep-pane" data-eptabpane="response">
-        ${attrsCollapse(ep.attrs)}
+        ${attrsCollapse(ep.attrs,ep.attrsOpen)}
         ${singleCode('json',ep.response)}
         ${bulk}
       </div>
