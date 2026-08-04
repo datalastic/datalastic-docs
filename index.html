@@ -2393,7 +2393,7 @@ function staticSection(id){
         <tr><td>Location Traffic</td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
         <tr><td>Vessel Finder</td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
         <tr><td>Vessel History</td><td>2 credits per day requested</td></tr>
-        <tr><td>Historical Area Scan</td><td>2 credits per day requested</td></tr>
+        <tr><td>Historical Area Scan</td><td>1 per unique vessel per calendar day, summed across the date range</td></tr>
         <tr><td>Vessel Info</td><td>1 credit</td></tr>
         <tr><td>Port Finder</td><td>1 per port found (max 500 credits deducted per request)</td></tr>
         <tr><td>Port Info</td><td>1 per port</td></tr>
@@ -2624,7 +2624,6 @@ System.out.println(response.body());`
       ["from","string","required","Start date YYYY-MM-DD"],
       ["to","string","required",'End date YYYY-MM-DD (max 7 days from "from")']
     ])}
-    <div class="callout pink"><strong>Credit cost:</strong> 2 credits per day requested.</div>
     <h4>Submit</h4>
     ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
   -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
@@ -2660,7 +2659,7 @@ System.out.println(response.body());`
       ["from","string","required","Start date YYYY-MM-DD"],
       ["to","string","required",'End date YYYY-MM-DD (max 7 days from "from")']
     ])}
-    <div class="callout pink"><strong>Credit cost:</strong> 2 credits per day requested.</div>
+    <div class="callout pink"><strong>Cost:</strong> 1 credit per unique vessel seen per calendar day, summed across the requested date range. A 2-day report with 10 unique vessels on day one and 15 on day two costs 10 + 15 = 25 credits. A vessel seen on both days counts once per day.</div>
     <h4>Submit</h4>
     ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
   -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
