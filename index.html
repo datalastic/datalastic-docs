@@ -733,7 +733,7 @@ tbody tr:hover{background:rgba(96,70,175,.03);}
    ========================================================================= */
 const NAV = [
   {group:"Getting Started", items:["introduction","authentication","stat","quickstart","rate-limits"]},
-  {group:"Core Concepts", items:["credit-system","async-reports","field-reference","vessel-types","error-codes"]},
+  {group:"Core Concepts", items:["credit-system","response-headers","async-reports","field-reference","vessel-types","error-codes"]},
   {group:"Live Data", items:["vessel","vessel_pro","vessel_bulk","vessel_inradius","sat-e","weather"]},
   {group:"Historical Data", items:["vessel_history","inradius_history"]},
   {group:"Vessel Data", items:["vessel_info","vessel_find","dry_dock_dates","casualty","inspections","spd","ownership","class_society","engine"]},
@@ -745,7 +745,7 @@ const NAV = [
 ];
 const TITLES = {
   "introduction":"Introduction","authentication":"Authentication","stat":"Account & Usage","quickstart":"Quickstart","rate-limits":"Rate Limits & Credits",
-  "credit-system":"Credit System","async-reports":"Async Reports","field-reference":"Field Reference","vessel-types":"Vessel Types","error-codes":"Error Codes",
+  "credit-system":"Credit System","response-headers":"Response Headers","async-reports":"Async Reports","field-reference":"Field Reference","vessel-types":"Vessel Types","error-codes":"Error Codes",
   "vessel":"Vessel Tracking","vessel_pro":"Pro Vessel Tracking","vessel_bulk":"Bulk Vessel Tracking","vessel_inradius":"Location Traffic","sat-e":"SAT-E (Satellite Estimator)","weather":"Maritime Weather",
   "vessel_history":"Vessel History","inradius_history":"Historical Area Scan",
   "vessel_info":"Vessel Info","vessel_find":"Vessel Finder","dry_dock_dates":"Dry Dock Dates","casualty":"Casualties","inspections":"Inspections & Detentions","spd":"Sales & Demolitions","ownership":"Ownership","class_society":"Classification Society","engine":"Vessel Engines",
@@ -971,7 +971,8 @@ const ENDPOINTS = {
 
 "vessel_bulk":{
   method:"GET", base:BASE_V0, path:"vessel_bulk",
-  desc:"Retrieve tracking data for up to 100 vessels in a single API call by chaining multiple MMSI, IMO, or UUID parameters. Returns the same fields as the Basic tracking endpoint. Credits are deducted only for successfully found vessels.",
+  desc:"Retrieve tracking data for up to 100 vessels in a single API call by chaining multiple MMSI, IMO, or UUID parameters. Returns the same fields as the Basic tracking endpoint. Credits are deducted per vessel returned, and only for vessels that were found.",
+  note:"In rare cases a single identifier matches more than one vessel, for example a placeholder MMSI shared by several ships. This endpoint returns every match and charges per vessel returned, up to the 100-credit maximum. Use <a data-nav=\"vessel\">Vessel Tracking</a> when you need exactly one vessel per identifier.",
   examples:{
     curl:`curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/vessel_bulk?mmsi=566093000&imo=9249403"`,
     python:`import requests
@@ -1112,7 +1113,7 @@ System.out.println(response.body());`
 
 "vessel_inradius":{
   method:"GET", base:BASE_V0, path:"vessel_inradius",
-  desc:"Scan a circular area to see all vessels currently within the radius. Supports a static geographic center (lat/lon coordinates or port by UUID/UNLOCODE) or a dynamic vessel-centered scan (MMSI/IMO/UUID). Supports type filtering and pagination for large result sets.",
+  desc:"Scan a circular area to see all vessels currently within the radius. Supports a static geographic center (lat/lon coordinates or port by UUID/UNLOCODE) or a dynamic vessel-centered scan (MMSI/IMO/UUID). Supports type filtering. The full result set is returned in a single response, and <code>data.total</code> gives the record count.",
   params:[
     ["api-key","string","required","Your API key"],
     ["lat","number","conditional","Center latitude (use with lon)"],
@@ -1127,8 +1128,7 @@ System.out.println(response.body());`
     ["type_specific","string","optional","Filter by vessel subtype"],
     ["exclude","string","optional","Exclude certain vessel types"],
     ["_empty_","boolean","optional","Include/exclude null-type vessels"],
-    ["nav_status","integer","optional","Filter by navigational status number"],
-    ["next","string","optional","Pagination token (max 500 results/page)"]
+    ["nav_status","integer","optional","Filter by navigational status number"]
   ],
   tryParams:[{name:"lat",def:"41.10103",required:true},{name:"lon",def:"1.224716",required:true},{name:"radius",def:"5",required:true}],
   attrs:[
@@ -1345,6 +1345,7 @@ System.out.println(response.body());`
 "vessel_history":{
   method:"GET", base:BASE_V0, path:"vessel_history",
   desc:"Retrieve historical movement data for a specific vessel. Data is available since August 10, 2021. Only position changes are stored (stationary vessels may have gaps). Specify a date range or a number of past days.",
+  note:"Billing is per calendar date returned, not per day requested. A window of N days usually spans N+1 UTC dates, so <code>days=1</code> typically costs 4 credits. Dates with no position data are not charged.",
   params:[
     ["api-key","string","required","Your API key"],
     ["uuid","string","one required","Vessel UUID"],
@@ -2321,8 +2322,10 @@ function staticSection(id){
         <tr><td><code>key_status</code></td><td><span class="type-pill">string</span></td><td>Key validity: <code>"Valid"</code> or <code>"Invalid"</code></td></tr>
         <tr><td><code>requests_made</code></td><td><span class="type-pill">integer</span></td><td>Credits used in the current billing period</td></tr>
         <tr><td><code>requests_remaining</code></td><td><span class="type-pill">integer</span></td><td>Credits remaining in the current billing period</td></tr>
+        <tr><td><code>addons</code></td><td><span class="type-pill">boolean</span></td><td><code>true</code> if the Add-Ons package is active on this key</td></tr>
       </tbody>
     </table></div>
+    <div class="callout">On unlimited plans <code>requests_remaining</code> reports a fixed placeholder value and <code>requests_made</code> stays at <code>0</code>. Use the free <a data-nav="report-request_usage">API Usage Report</a> to review historical consumption.</div>
     <h3>Example</h3>
     ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/stat"')}
     ${singleCode('json',`{
@@ -2330,7 +2333,8 @@ function staticSection(id){
     "user_id": "{YOUR_API_KEY}",
     "key_status": "Valid",
     "requests_made": 112,
-    "requests_remaining": 888
+    "requests_remaining": 888,
+    "addons": true
   },
   "meta": {
     "duration": 0.004715806,
@@ -2375,7 +2379,7 @@ function staticSection(id){
       </tbody>
     </table></div>
     <h3>Rate limit</h3>
-    <p>The API allows <strong>600 requests per minute</strong>. Exceeding this returns a <code>Too Many Requests</code> error (HTTP 429). Implement backoff and retry logic for high-volume workloads.</p>
+    <p>The API allows <strong>600 requests per minute</strong>. Exceeding this returns a <code>Too Many Requests</code> error (HTTP 429) with a <code>Retry-After</code> header giving the wait in seconds. Remaining capacity is reported on every call in the <a data-nav="response-headers">rate limit headers</a>.</p>
     <div class="callout pink"><strong>Only successful requests deduct credits.</strong> Failed lookups (e.g. a vessel not found) do not consume your allowance.</div>
     <a class="btn btn-ghost btn-sm" href="${PRICING}" target="_blank" rel="noopener">Compare plans →</a>
   </section>`;
@@ -2392,7 +2396,7 @@ function staticSection(id){
         <tr><td>Vessel Bulk</td><td>1 per vessel (max 100 credits deducted per request)</td></tr>
         <tr><td>Location Traffic</td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
         <tr><td>Vessel Finder</td><td>1 per vessel found (max 500 credits deducted per request)</td></tr>
-        <tr><td>Vessel History</td><td>2 credits per day requested</td></tr>
+        <tr><td>Vessel History</td><td>2 credits per calendar date returned</td></tr>
         <tr><td>Historical Area Scan</td><td>1 per unique vessel per calendar day, summed across the date range</td></tr>
         <tr><td>Vessel Info</td><td>1 credit</td></tr>
         <tr><td>Port Finder</td><td>1 per port found (max 500 credits deducted per request)</td></tr>
@@ -2405,17 +2409,18 @@ function staticSection(id){
         <tr><td colspan="2" class="credit-section-head addon-head">➕ Add-Ons</td></tr>
         <tr><td>SAT-E</td><td>3 credits</td></tr>
         <tr><td>Sea Routes</td><td>1 per request</td></tr>
-        <tr><td>Dry Dock Dates</td><td>1 per vessel</td></tr>
-        <tr><td>Ship Casualties</td><td>1 per vessel</td></tr>
-        <tr><td>Inspections &amp; Detentions</td><td>1 per vessel</td></tr>
-        <tr><td>Sales &amp; Demolitions</td><td>1 per vessel</td></tr>
-        <tr><td>Vessel Ownership</td><td>1 per vessel</td></tr>
-        <tr><td>Classification Society</td><td>1 per vessel</td></tr>
-        <tr><td>Vessel Engines</td><td>1 per vessel</td></tr>
+        <tr><td>Dry Dock Dates</td><td>1 per record returned</td></tr>
+        <tr><td>Ship Casualties</td><td>1 per record returned</td></tr>
+        <tr><td>Inspections &amp; Detentions</td><td>1 per record returned</td></tr>
+        <tr><td>Sales &amp; Demolitions</td><td>1 per record returned</td></tr>
+        <tr><td>Vessel Ownership</td><td>1 per record returned</td></tr>
+        <tr><td>Classification Society</td><td>1 per record returned</td></tr>
+        <tr><td>Vessel Engines</td><td>1 per record returned</td></tr>
         <tr><td>Maritime Companies</td><td>1 per company</td></tr>
         <tr><td>Add-On bulk reports</td><td>2,000 credits per report</td></tr>
       </tbody>
     </table></div>
+    <div class="callout cyan">Costs that depend on what comes back, such as per vessel or per record, are reported on every call in the <code>X-Request-Cost</code> header. See <a data-nav="response-headers">Response Headers</a>.</div>
     <h3>Monitor usage</h3>
     ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/stat"')}
     ${singleCode('json',`{
@@ -2423,7 +2428,8 @@ function staticSection(id){
     "user_id": "{YOUR_API_KEY}",
     "key_status": "Valid",
     "requests_made": 112,
-    "requests_remaining": 888
+    "requests_remaining": 888,
+    "addons": true
   },
   "meta": {
     "duration": 0.004715806,
@@ -2431,6 +2437,42 @@ function staticSection(id){
     "success": true
   }
 }`)}
+  </section>`;
+
+  case "response-headers": return `<section class="section" id="response-headers" data-title="Response Headers">
+    <h1>Response Headers</h1>
+    <p>Every authenticated response carries six headers showing what the request cost and how much capacity is left. Header names are case-insensitive.</p>
+    <h3>Credit headers</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Header</th><th>Example</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>X-Request-Cost</code></td><td><code>3</code></td><td>DB credits this request cost. <code>0</code> when nothing was billed</td></tr>
+        <tr><td><code>X-Requestlimit-Remaining</code></td><td><code>9497</code></td><td>Credits left in the current billing period, after this request</td></tr>
+        <tr><td><code>X-Requestlimit-Limit</code></td><td><code>10000</code></td><td>Total credits in your plan's billing period</td></tr>
+      </tbody>
+    </table></div>
+    <p><code>X-Request-Cost</code> always matches the amount deducted from your balance. For endpoints billed per record, such as Location Traffic, Vessel Finder and Vessel History, it is the simplest way to see what a call charged without a second request to <a data-nav="stat">/stat</a>.</p>
+    <h3>Rate limit headers</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Header</th><th>Example</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>X-Ratelimit-Limit</code></td><td><code>600</code></td><td>Requests per minute allowed on your key</td></tr>
+        <tr><td><code>X-Ratelimit-Remaining</code></td><td><code>574</code></td><td>Requests still available in the current window</td></tr>
+        <tr><td><code>X-Ratelimit-Reset</code></td><td><code>29</code></td><td>Seconds until the current window resets. Capacity returns gradually as the window slides, so read the current value rather than predicting it</td></tr>
+      </tbody>
+    </table></div>
+    <p>The rate limit counts requests, not credits. A free call still uses one request, and so does a 500-credit one.</p>
+    <h3>Example</h3>
+    ${singleCode('bash','curl -i -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/vessel_pro?mmsi=566093000"')}
+    ${singleCode('yaml',`HTTP/1.1 200 OK
+Content-Type: application/json
+X-Request-Cost: 3
+X-Requestlimit-Remaining: 9497
+X-Requestlimit-Limit: 10000
+X-Ratelimit-Limit: 600
+X-Ratelimit-Remaining: 570
+X-Ratelimit-Reset: 29`)}
+    <div class="callout">On a <code>429</code> the <code>X-Ratelimit-*</code> headers are not sent. Use the <code>Retry-After</code> header instead, which gives the wait in seconds. See <a data-nav="error-codes">Error Codes</a>.</div>
   </section>`;
 
   case "async-reports": return `<section class="section" id="async-reports" data-title="Async Reports">
@@ -2600,7 +2642,7 @@ System.out.println(response.body());`
         <tr><td>Unauthorized</td><td><span class="type-pill">401</span></td><td>Invalid or expired API key</td></tr>
         <tr><td>Payment Required</td><td><span class="type-pill">402</span></td><td>API key is valid but credit balance is exhausted or subscription has expired. Purchase more credits to continue</td></tr>
         <tr><td>Not Found</td><td><span class="type-pill">404</span></td><td>Requested vessel, port, or resource was not found</td></tr>
-        <tr><td>Too Many Requests</td><td><span class="type-pill">429</span></td><td>More than 600 API calls in a single minute. Implement backoff and retry logic</td></tr>
+        <tr><td>Too Many Requests</td><td><span class="type-pill">429</span></td><td>More than 600 API calls in a single minute. The response carries a <code>Retry-After</code> header with the wait in seconds. Use it for backoff</td></tr>
         <tr><td>Internal Error</td><td><span class="type-pill">500</span></td><td>Server-side error. Retry the request</td></tr>
       </tbody>
     </table></div>
@@ -2624,6 +2666,7 @@ System.out.println(response.body());`
       ["from","string","required","Start date YYYY-MM-DD"],
       ["to","string","required",'End date YYYY-MM-DD (max 7 days from "from")']
     ])}
+    <div class="callout pink"><strong>Cost:</strong> 1 credit per unique vessel seen per calendar day, summed across the requested date range. A 2-day report with 10 unique vessels on day one and 15 on day two costs 10 + 15 = 25 credits. A vessel seen on both days counts once per day, and a partial day counts as a full calendar date.</div>
     <h4>Submit</h4>
     ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
   -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
@@ -2659,7 +2702,7 @@ System.out.println(response.body());`
       ["from","string","required","Start date YYYY-MM-DD"],
       ["to","string","required",'End date YYYY-MM-DD (max 7 days from "from")']
     ])}
-    <div class="callout pink"><strong>Cost:</strong> 1 credit per unique vessel seen per calendar day, summed across the requested date range. A 2-day report with 10 unique vessels on day one and 15 on day two costs 10 + 15 = 25 credits. A vessel seen on both days counts once per day.</div>
+    <div class="callout pink"><strong>Cost:</strong> 1 credit per unique vessel seen per calendar day, summed across the requested date range. A 2-day report with 10 unique vessels on day one and 15 on day two costs 10 + 15 = 25 credits. A vessel seen on both days counts once per day, and a partial day counts as a full calendar date.</div>
     <h4>Submit</h4>
     ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
   -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
@@ -2916,7 +2959,7 @@ function sdkSection(id,title,github,install,lang,example){
 /* =========================================================================
    BUILD PAGE
    ========================================================================= */
-const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","mcp-server","sdk-python","sdk-node","sdk-go","port_terminals"]);
+const STATIC_IDS=new Set(["introduction","authentication","stat","quickstart","rate-limits","credit-system","response-headers","async-reports","field-reference","vessel-types","error-codes","inradius_history","report-vessel_list","report-port_list","report-inradius_history","report-request_usage","report-dry_dock_dates","report-casualty","report-inspections","report-spd","report-ownership","report-class_society","report-engine","report-companies","mcp-server","sdk-python","sdk-node","sdk-go","port_terminals"]);
 
 function buildContent(){
   const parts=[];
