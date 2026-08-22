@@ -2606,8 +2606,7 @@ System.out.println(response.body());`
     <div class="callout cyan">Once <code>status</code> is <code>_DONE_</code>, download the ZIP at <code>result_url</code>. See <a data-nav="report-vessel_list">Bulk Reports</a> for every available report type.</div>
     <h3>3. Download link expiry</h3>
     <p><code>result_url</code> is a short-lived, signed download link, valid for 6 hours from when it is issued. The extra query-string parameters (<code>X-Amz-Signature</code>, <code>X-Amz-Expires</code>, and so on) are the signature, not an error. Once the window passes, the link returns <code>403 Forbidden</code>.</p>
-    <p>Don't store <code>result_url</code> long-term. Poll the report status again right before you download: every status call returns a freshly signed link with a full new 6-hour window. The export file itself is generated once and never changes. Re-checking status is free and does not re-run the report or deduct credits.</p>
-    <p>The report file is stored for 180 days. Any time within that window, polling the status returns a working fresh link. After that the report expires and a new one must be submitted.</p>
+    <p>A download link is valid for 6 hours. The report file behind it is stored for 180 days. If your link has expired, poll the report status again: every status call returns a new link, valid for another 6 hours. This works at any time during the 180 days, is free, and does not re-run the report or deduct credits.</p>
     <div class="callout">If a fresh link still returns 403: copy the entire URL including the full query string (editing or trimming any part of it invalidates the signature), and use a plain GET request. Tools that send HEAD, such as <code>curl -I</code>, always get 403 on signed links.</div>
   </section>`;
 
