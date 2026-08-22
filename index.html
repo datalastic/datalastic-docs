@@ -2485,6 +2485,7 @@ X-Ratelimit-Reset: 29`)}
     <h3>Lifecycle</h3>
     <p>A report transitions through the following states:</p>
     <p><code>Submit</code> → <code>_PENDING_</code> → <code>_IN_PROGRESS_</code> → <code>_DONE_</code> (with <code>result_url</code> ZIP download link)</p>
+    <p>You can queue up to 10 reports at once per API key.</p>
     <h3>1. Submit a report</h3>
     ${codeTabs({
       curl:`curl -X POST -H "Content-Type: application/json" \\
@@ -2606,6 +2607,7 @@ System.out.println(response.body());`
     <h3>3. Download link expiry</h3>
     <p><code>result_url</code> is a short-lived, signed download link, valid for 6 hours from when it is issued. The extra query-string parameters (<code>X-Amz-Signature</code>, <code>X-Amz-Expires</code>, and so on) are the signature, not an error. Once the window passes, the link returns <code>403 Forbidden</code>.</p>
     <p>Don't store <code>result_url</code> long-term. Poll the report status again right before you download: every status call returns a freshly signed link with a full new 6-hour window. The export file itself is generated once and never changes. Re-checking status is free and does not re-run the report or deduct credits.</p>
+    <p>The report file is stored for 180 days. Any time within that window, polling the status returns a working fresh link. After that the report expires and a new one must be submitted.</p>
     <div class="callout">If a fresh link still returns 403: copy the entire URL including the full query string (editing or trimming any part of it invalidates the signature), and use a plain GET request. Tools that send HEAD, such as <code>curl -I</code>, always get 403 on signed links.</div>
   </section>`;
 
@@ -2724,7 +2726,8 @@ System.out.println(response.body());`
       ["from","string","optional","Start date YYYY-MM-DD"],
       ["to","string","optional",'End date YYYY-MM-DD (max 31 days from "from")']
     ])}
-    <p class="muted">If <code>from</code>/<code>to</code> are omitted, the report covers the last month. Contains: endpoint called, credits deducted, remaining balance, and date/time.</p>
+    <p class="muted">If <code>from</code>/<code>to</code> are omitted, the report covers the last month.</p>
+    <p>The ZIP contains two CSV files: <code>request_usage_&lt;timestamp&gt;.csv</code> lists every API call your key made, and <code>report_usage_&lt;timestamp&gt;.csv</code> lists every report you requested and its cost. Add the <code>req_cost</code> columns of both together for your total credit spend.</p>
     <h4>Submit</h4>
     ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
   -d '{"api-key": "YOUR_KEY", "report_type": "request_usage", "from": "2024-01-01", "to": "2024-01-31"}' \\
