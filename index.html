@@ -873,7 +873,7 @@ const ENDPOINTS = {
 
 "vessel":{
   method:"GET", base:BASE_V0, path:"vessel",
-  desc:"Real-time vessel tracking with the most popular AIS data fields. Returns current position, speed, course, heading, type, destination, and timestamp. Average response time is 0.005 seconds.",
+  desc:"Real-time vessel tracking with the most popular AIS data fields. Returns current position, speed, course, heading, type, destination, ETA, and timestamp. Average response time is 0.005 seconds.",
   params:ID_PARAMS,
   tryParams:[{name:"mmsi",def:"566093000",required:false}],
   attrs:[
@@ -885,7 +885,9 @@ const ENDPOINTS = {
     ["speed","number","Speed in knots"],["course","number","Course in degrees"],
     ["navigation_status","string","AIS navigational status"],["heading","number","Heading in degrees"],
     ["destination","string","Reported destination"],["last_position_epoch","integer","Unix timestamp"],
-    ["last_position_UTC","string","ISO 8601 timestamp"]
+    ["last_position_UTC","string","ISO 8601 timestamp"],
+    ["eta_epoch","integer|null","Estimated arrival timestamp (epoch)"],
+    ["eta_UTC","string|null","Estimated arrival timestamp (UTC)"]
   ],
   response:`{
   "data": {
@@ -905,7 +907,9 @@ const ENDPOINTS = {
     "heading": 226,
     "destination": "TANGER MED",
     "last_position_epoch": 1620484020,
-    "last_position_UTC": "2021-05-08T14:27:00Z"
+    "last_position_UTC": "2021-05-08T14:27:00Z",
+    "eta_epoch": 1621330200,
+    "eta_UTC": "2021-05-18T09:30:00Z"
   },
   "meta": {
     "duration": 0.00246942,
@@ -917,20 +921,24 @@ const ENDPOINTS = {
 
 "vessel_pro":{
   method:"GET", base:BASE_V0, path:"vessel_pro",
-  desc:"All Basic tracking data plus Estimated Time of Arrival (ETA), Actual Time of Departure (ATD), current draft, and standardized destination/departure port names with UN/LOCODE. Average response time: 0.9 seconds.",
+  desc:"All Basic tracking data plus Actual Time of Departure (ATD), current draft, standardized destination and departure ports with UN/LOCODE and UUID, and the local timezone at the vessel's position. Average response time: 0.9 seconds.",
   params:ID_PARAMS,
   tryParams:[{name:"mmsi",def:"566093000",required:false}],
   attrs:[
     ["...","","All fields from /vessel, plus the following:"],
     ["current_draught","number","Current reported draught in meters"],
+    ["dest_port_uuid","string","Destination port UUID"],
     ["dest_port","string","Standardized destination port name"],
     ["dest_port_unlocode","string","Destination UN/LOCODE"],
+    ["dep_port_uuid","string","Departure port UUID"],
     ["dep_port","string","Departure port name"],
     ["dep_port_unlocode","string","Departure UN/LOCODE"],
     ["atd_epoch","integer","Actual departure timestamp (epoch)"],
     ["atd_UTC","string","Actual departure timestamp (UTC)"],
     ["eta_epoch","integer","Estimated arrival timestamp (epoch)"],
-    ["eta_UTC","string","Estimated arrival timestamp (UTC)"]
+    ["eta_UTC","string","Estimated arrival timestamp (UTC)"],
+    ["timezone_offset_sec","integer","Timezone offset from UTC at the vessel's position, in seconds"],
+    ["timezone","string","Timezone abbreviation at the vessel's position"]
   ],
   response:`{
   "data": {
@@ -950,8 +958,10 @@ const ENDPOINTS = {
     "navigation_status": "Under way using engine",
     "heading": 226,
     "destination": "NGAPP>TGLFW",
+    "dest_port_uuid": "ee7e0dd4-18ac-6c90-b5e9-01052d739faf",
     "dest_port": "LOME",
     "dest_port_unlocode": "TGLFW",
+    "dep_port_uuid": "db836e7a-d2c2-a067-c254-621df796dfac",
     "dep_port": "JEBEL ALI [AE]",
     "dep_port_unlocode": "AEJEA",
     "last_position_epoch": 1620484020,
@@ -959,7 +969,9 @@ const ENDPOINTS = {
     "atd_epoch": 1621469820,
     "atd_UTC": "2021-05-20T00:17:00Z",
     "eta_epoch": 1622980800,
-    "eta_UTC": "2021-06-06T12:00:00Z"
+    "eta_UTC": "2021-06-06T12:00:00Z",
+    "timezone_offset_sec": 3600,
+    "timezone": "WAT"
   },
   "meta": {
     "duration": 0.9124872,
@@ -1155,7 +1167,6 @@ System.out.println(response.body());`
         "speed": 0,
         "course": 349,
         "heading": 165,
-        "navigation_status": null,
         "destination": "OPL MALTA",
         "last_position_epoch": 1638551100,
         "last_position_UTC": "2021-12-03T17:05:00Z",
@@ -1359,6 +1370,8 @@ System.out.println(response.body());`
   attrs:[
     ["uuid","string","Vessel UUID"],["name","string","Vessel name"],
     ["mmsi","string","MMSI"],["imo","string","IMO"],
+    ["eni","string|null","European ID"],["country_iso","string","2-letter country code"],
+    ["type","string","Vessel type"],["type_specific","string","Vessel subtype"],
     ["positions","array","Ordered position records (lat, lon, speed, course, heading, destination, timestamps)"]
   ],
   response:`{
@@ -1680,6 +1693,7 @@ System.out.println(response.body());`
     ["id","integer","Record ID"],["imo","string","Vessel IMO"],["vessel_name","string","Vessel name"],
     ["special_survey_date","string","Next special survey date"],["dry_dock_date","string","Dry dock date"],
     ["iopp_issue_date","string","IOPP certificate issue date"],["iopp_exp_date","string","IOPP certificate expiry date"],
+    ["country_name","string|null","Manager country name"],
     ["technical_manager","string","Technical manager company"],["country_code","string","Manager country code"],
     ["website","string","Manager website"],["email","string","Contact email"],["phone","string","Contact phone"],
     ["address","string","Manager address"],["linkedin","string","LinkedIn URL"],["modified_at","string","Last modified timestamp"]
@@ -1863,35 +1877,43 @@ System.out.println(response.body());`
   tryParams:[{name:"imo",def:"9951783",required:false}],
   attrs:[
     ["id","integer","Record ID"],["imo","string","Vessel IMO"],["vessel_name","string","Vessel name"],
-    ["beneficial_owner","string","Beneficial owner"],["beneficial_owner_country","string","Owner country"],
-    ["operator","string","Operator"],["operator_country","string","Operator country"],
+    ["beneficial_owner","string","Beneficial owner"],["beneficial_owner_imo","string|null","Owner IMO"],["beneficial_owner_country","string","Owner country"],
+    ["operator","string","Operator"],["operator_imo","string|null","Operator IMO"],["operator_country","string","Operator country"],
     ["flag_name","string|null","Flag state"],["vessel_type_code","string","Vessel type code"],
     ["built_year","string","Year built"],["buyer","string|null","Buyer"],["dwt_design","integer","Design deadweight"],
     ["class1_code","string|null","Classification society code"],["technical_manager","string|null","Technical manager"],
+    ["technical_manager_imo","string|null","Technical manager IMO"],
     ["technical_manager_country","string|null","Technical manager country"],["commercial_manager","string","Commercial manager"],
-    ["commercial_manager_country","string","Commercial manager country"],["modified_at","string","Last modified timestamp"]
+    ["commercial_manager_imo","string|null","Commercial manager IMO"],
+    ["commercial_manager_country","string","Commercial manager country"],
+    ["pi_club","string|null","P&I club"],["modified_at","string","Last modified timestamp"]
   ],
   response:`{
   "data": [
     {
-      "id": 38914,
+      "id": 40240,
       "imo": "9951783",
       "vessel_name": "KARLOVASI",
-      "beneficial_owner": "Samos Steamship Co",
+      "beneficial_owner": "Samos Steamship",
+      "beneficial_owner_imo": "1426198",
       "beneficial_owner_country": "Greece",
-      "operator": "Samos Steamship Co",
+      "operator": "Samos Steamship",
+      "operator_imo": "1426198",
       "operator_country": "Greece",
-      "flag_name": null,
+      "flag_name": "Liberia",
       "vessel_type_code": "Bulk",
-      "built_year": "2023",
+      "built_year": "2025",
       "buyer": null,
       "dwt_design": 63470,
       "class1_code": null,
-      "technical_manager": null,
-      "technical_manager_country": null,
-      "commercial_manager": "Samos Steamship Co",
+      "technical_manager": "Samos Steamship",
+      "technical_manager_imo": "1426198",
+      "technical_manager_country": "Greece",
+      "commercial_manager": "Samos Steamship",
+      "commercial_manager_imo": "1426198",
       "commercial_manager_country": "Greece",
-      "modified_at": "2020-01-01T00:00:00Z"
+      "pi_club": null,
+      "modified_at": "2026-08-06T00:00:00Z"
     }
   ],
   "meta": {"duration": 0.010656275, "endpoint": "/api/maritime_reports/ownership", "success": true}
@@ -2208,7 +2230,11 @@ const FIELD_REF=[
  ["length","Vessel length in meters","249.12"],["breadth","Vessel beam in meters","37.4"],["year_built","Year of construction","2011"],
  ["home_port","Port of registry","SINGAPORE"],["is_navaid","Whether vessel is a navigation aid","false"],
  ["dest_port","Standardized destination port name","LOME"],["dest_port_unlocode","Destination port UN/LOCODE","TGLFW"],
- ["dep_port","Departure port name","JEBEL ALI [AE]"],["dep_port_unlocode","Departure port UN/LOCODE","AEJEA"]
+ ["dest_port_uuid","Destination port UUID","ee7e0dd4-18ac-6c90-b5e9-01052d739faf"],
+ ["dep_port","Departure port name","JEBEL ALI [AE]"],["dep_port_unlocode","Departure port UN/LOCODE","AEJEA"],
+ ["dep_port_uuid","Departure port UUID","db836e7a-d2c2-a067-c254-621df796dfac"],
+ ["timezone_offset_sec","Timezone offset from UTC at the vessel's position, in seconds","3600"],
+ ["timezone","Timezone abbreviation at the vessel's position","WAT"]
 ];
 const VTYPES="Anti-Pollution, Anti-Pollution Vessel, Beacon Cardinal E, Beacon Cardinal N, Beacon Cardinal S, Beacon Cardinal W, Beacon Isolated danger, Beacon Port Hand, Beacon Preferred Channel Port hand, Beacon Preferred Channel Starboard hand, Beacon Safe Water, Beacon Special Mark, Beacon Starboard Hand, Cardinal Mark E, Cardinal Mark N, Cardinal Mark S, Cardinal Mark W, Cargo, Cargo - Hazard A (Major), Cargo - Hazard B, Cargo - Hazard C (Minor), Cargo - Hazard D (Recognizable), Cargo: Hazardous category A, Cargo: Hazardous category B, Cargo: Hazardous category C, Cargo: Hazardous category D, Dive Ops, Dive Vessel, Dredger, Fishing, High Speed Craft, HSC, Isolated Danger, Law Enforce, Law Enforcement, Light Vessel, Light without Sectors, Light with Sectors, Local Vessel, Manned VTS, Medical Trans, Military Ops, Navigation Aid, OffShore Structure, Other, Passenger, Pilot Vessel, Pleasure Craft, Port Hand Mark, Port Tender, Preferred Channel Port Hand, Preferred Channel Starboard Hand, RACON, Reference Point, Reserved, Safe Water, Sailing Vessel, SAR, SAR Aircraft, Search and Rescue Aircraft, Search and Rescue Vessel, Spare, Special Craft, Starboard Hand Mark, Tanker, Tanker - Hazard A (Major), Tanker - Hazard B, Tanker - Hazard C (Minor), Tanker - Hazard D (Recognizable), Tanker: Hazardous category A, Tanker: Hazardous category B, Tanker: Hazardous category C, Tanker: Hazardous category D, Tug, Unspecified, WIG, Wing In Grnd".split(/,\s*/);
 const VSUBTYPES="Accommodation Barge, Accommodation Jack Up, Accommodation Platform, Accommodation Ship, Accommodation Vessel, Aggregates Carrier, Air Cushion Patrol Vessel, Anchor Handling Vessel, Anti-Pollution, Anti-Pollution Vessel, Articulated Pusher Tug, Asphalt or Bitumen Tanker, Backhoe Dredger, Barge Carrier, Bulk Carrier, Bulker, Bunkering Tanker, Buoy-Laying Vessel, Cable Layer, Cabu Carrier, Cargo, Cargo Barge, Cargo or Containership, Cement Carrier, Chemical Tanker, CO2 Tanker, Combat Vessel, Command Vessel, Construction Support Vessel, Container, Container Ship, Crane Barge, Crane Ship, Crew Boat, Crude Oil, Crude Oil Tanker, Cutter Suction Dredger, Deck Cargo Pontoon, Deck Cargo Ship, Dive Vessel, Diving Support Platform, Diving Support Vessel, Dredger, Drill Barge, Drilling Jack Up, Drilling Rig, Drill Ship, Edible Oil Tanker, Factory Trawler, Fire Fighting Vessel, Fish Carrier, Fishery Patrol Vessel, Fishery Research Vessel, Fishery Support Vessel, Fish Factory, Fishing Vessel, Floating Crane, Floating Hotel or Restaurant, Floating Sheerleg, Floating Storage or Production, Fruit Juice Tanker, General Cargo, Heavy Lift Vessel, Heavy Load Carrier, Hopper Barge, Hopper Dredger, Hospital Ship, Houseboat, Hovercraft, Hydrofoil, Icebreaker, LNG Tanker, LPG Tanker, LPG or Chemical Tanker, Livestock Carrier, Mining Vessel, Motor Hopper, Multi Purpose Offshore Vessel, Naval Craft, Naval Patrol Vessel, Nuclear Fuel Carrier, Obo Carrier, Offshore Construction Vessel, Offshore Supply Ship, Oil or Chemical Tanker, Oil Products Tanker, Ore Carrier, Passenger Ship, Patrol Vessel, Pipe Layer, Platform, Pollution Control Vessel, Pusher Tug, Reefer, Research or Survey Vessel, Ro-Ro Cargo, Sailing Vessel, Salvage or Rescue Vessel, Shuttle Tanker, Supply Vessel, Tank Barge, Tanker, Towing Vessel, Trawler, Tug, Tug or Ice Breaker, Utility Vessel, Vehicles Carrier, Waste Disposal Vessel, Water Tanker, Work Vessel, Yacht".split(/,\s*/);
