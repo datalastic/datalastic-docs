@@ -2491,6 +2491,7 @@ X-Ratelimit-Reset: 29`)}
     <h3>Lifecycle</h3>
     <p>A report transitions through the following states:</p>
     <p><code>Submit</code> → <code>_PENDING_</code> → <code>_IN_PROGRESS_</code> → <code>_DONE_</code> (with <code>result_url</code> ZIP download link)</p>
+    <p><code>_IN_PROGRESS_</code> → <code>_FAILED_</code> (terminal, with <code>message</code>)</p>
     <p>You can queue up to 10 reports at once per API key.</p>
     <h3>1. Submit a report</h3>
     ${codeTabs({
@@ -2617,6 +2618,24 @@ System.out.println(response.body());`
     <p><code>result_url</code> is a short-lived, signed download link, valid for 6 hours from when it is issued. The extra query-string parameters (<code>X-Amz-Signature</code>, <code>X-Amz-Expires</code>, and so on) are the signature, not an error. Once the window passes, the link returns <code>403 Forbidden</code>.</p>
     <p>If your link has expired, poll the report status again: every status call returns a new link, valid for another 6 hours. This is free and does not re-run the report or deduct credits.</p>
     <div class="callout">If a fresh link still returns 403: copy the entire URL including the full query string (editing or trimming any part of it invalidates the signature), and use a plain GET request. Tools that send HEAD, such as <code>curl -I</code>, always get 403 on signed links.</div>
+    <h3>4. Failed reports</h3>
+    <p><code>_FAILED_</code> is terminal. The report will not be retried and will never get a <code>result_url</code>. Stop polling and read <code>message</code>, which says what went wrong in plain language.</p>
+    <p>A report can move between <code>_PENDING_</code> and <code>_IN_PROGRESS_</code> more than once before it finishes. That is normal. Problems that cannot be fixed on our side, such as invalid parameters, an unsupported report type, or insufficient credits, are marked <code>_FAILED_</code> right away.</p>
+    <h4>Failed response</h4>
+    ${singleCode('json',`{
+  "data": {
+    "report_id": "4ddc14e0-9059-9b86-1156-8efd93f0cfe6",
+    "report_type": "inradius_history",
+    "params": "{\\"report_type\\":\\"inradius_history\\",\\"lat\\":51.92,\\"lon\\":3.87,\\"radius\\":10,\\"from\\":\\"2026-05-01T00:00:00Z\\",\\"to\\":\\"2026-05-01T00:00:00Z\\"}",
+    "status": "_FAILED_",
+    "message": "bad parameters: to must be later than from",
+    "result_url": null,
+    "created_at": "2026-07-01T00:43:16.624959Z",
+    "updated_at": "2026-07-01T00:44:08.083999Z"
+  },
+  "meta": {"duration": 0.002157077, "endpoint": "/api/v0/report", "success": true}
+}`)}
+    <div class="callout cyan">A failed report does not deduct credits. If you can correct the cause, fix it and submit a new report. An existing report cannot be restarted.</div>
   </section>`;
 
   case "field-reference": return `<section class="section" id="field-reference" data-title="Field Reference">
