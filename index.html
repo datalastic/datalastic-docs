@@ -248,13 +248,16 @@ a:hover{text-decoration:underline;}
 .section h4{font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.5px;}
 .section p{margin-bottom:14px;color:var(--color-text);}
 .muted{color:var(--color-text-muted);}
+.lifecycle{display:grid;grid-template-columns:auto 1fr;column-gap:6px;row-gap:8px;align-items:baseline;margin:0 0 14px;}
+.lifecycle span{white-space:nowrap;}
+@media (max-width:640px){.lifecycle{grid-template-columns:1fr;}.lifecycle .lifecycle-blank{display:none;}.lifecycle span{white-space:normal;}}
 .lead{font-size:17px;color:var(--color-text-muted);margin-bottom:20px;}
 .section ul,.section ol{margin:0 0 16px 22px;}
 .section li{margin-bottom:6px;}
 hr.div{border:none;border-top:1px solid var(--color-border);margin:36px 0;}
 
 /* inline code pill */
-code.pill,p code,li code,td code{
+code.pill,p code,li code,td code,.lifecycle code{
   background:var(--color-surface);
   border:1px solid var(--color-border);
   border-radius:6px;
@@ -2490,8 +2493,12 @@ X-Ratelimit-Reset: 29`)}
     </div>
     <h3>Lifecycle</h3>
     <p>A report transitions through the following states:</p>
-    <p><code>Submit</code> → <code>_PENDING_</code> → <code>_IN_PROGRESS_</code> → <code>_DONE_</code> (with <code>result_url</code> ZIP download link)</p>
-    <p><code>_IN_PROGRESS_</code> → <code>_FAILED_</code> (terminal, with <code>message</code>)</p>
+    <div class="lifecycle">
+      <span><code>Submit</code> → <code>_PENDING_</code> → <code>_IN_PROGRESS_</code></span>
+      <span>→ <code>_DONE_</code> (with <code>result_url</code> ZIP download link)</span>
+      <span class="lifecycle-blank"></span>
+      <span>→ <code>_FAILED_</code> (terminal, with <code>message</code>)</span>
+    </div>
     <p>You can queue up to 10 reports at once per API key.</p>
     <h3>1. Submit a report</h3>
     ${codeTabs({
