@@ -2290,9 +2290,9 @@ function staticSection(id){
     ${singleCode('bash','x-api-key: YOUR_API_KEY')}
     <p>Example:</p>
     ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/vessel?mmsi=566093000"')}
-    <p>Keys sent in a URL end up in server logs, proxy logs, and browser history. A header keeps the key out of all three.</p>
     <h4>Legacy: query parameter</h4>
     <p>The key can also be passed as a query parameter. This remains fully supported for existing integrations but is not recommended for new ones.</p>
+    <p>Keys sent in a URL end up in server logs, proxy logs, and browser history. A header keeps the key out of all three.</p>
     ${singleCode('bash','?api-key=YOUR_API_KEY')}
     <h4>Base URLs</h4>
     <div class="table-wrap"><table>
