@@ -855,7 +855,6 @@ System.out.println(response.body());`
 
 /* shared param fragments */
 const ID_PARAMS = [
-  ["api-key","string","required","Your API key"],
   ["uuid","string","one required","Datalastic vessel UUID"],
   ["mmsi","string","one required","9-digit MMSI number"],
   ["imo","string","one required","7-digit IMO number"]
@@ -1057,7 +1056,6 @@ HttpResponse<String> response = HttpClient.newHttpClient()
 System.out.println(response.body());`
   },
   params:[
-    ["api-key","string","required","Your API key"],
     ["mmsi","string","multiple","MMSI (can repeat up to 100)"],
     ["imo","string","multiple","IMO (can repeat up to 100)"],
     ["uuid","string","multiple","UUID (can repeat up to 100)"]
@@ -1127,7 +1125,6 @@ System.out.println(response.body());`
   method:"GET", base:BASE_V0, path:"vessel_inradius",
   desc:"Scan a circular area to see all vessels currently within the radius. Supports a static geographic center (lat/lon coordinates or port by UUID/UNLOCODE) or a dynamic vessel-centered scan (MMSI/IMO/UUID). Supports type filtering. The full result set is returned in a single response, and <code>data.total</code> gives the record count.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["lat","number","conditional","Center latitude (use with lon)"],
     ["lon","number","conditional","Center longitude (use with lat)"],
     ["port_uuid","string","conditional","Port UUID as center"],
@@ -1235,7 +1232,6 @@ System.out.println(response.body());`
   note:"Pass exactly one location group: coordinates (<code>lat</code> + <code>lon</code>), one vessel identifier (<code>mmsi</code>, <code>imo</code>, or <code>uuid</code>), or one port identifier (<code>port_unlocode</code> or <code>port_uuid</code>). Responses return plain numeric values; the measurement unit of every field is listed under Response Attributes.",
   desc:"One complete weather picture for a location: marine conditions merged with general atmospheric conditions, with current conditions plus 7-day daily and hourly forecasts. Check the weather at any fixed point on the map by passing <code>lat</code> and <code>lon</code> coordinates, or at a port by UN/LOCODE or UUID. You can also track weather around a moving vessel: pass its MMSI, IMO, or UUID and the point resolves dynamically to the ship's last known position.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["lat","number","conditional","Latitude (use with lon)"],
     ["lon","number","conditional","Longitude (use with lat)"],
     ["mmsi","string","conditional","Vessel MMSI, weather at its last known position"],
@@ -1358,7 +1354,6 @@ System.out.println(response.body());`
   desc:"Retrieve historical movement data for a specific vessel. Data is available since August 10, 2021. Only position changes are stored (stationary vessels may have gaps). Specify a date range or a number of past days.",
   note:"Billing is per calendar date returned, not per day requested. A window of N days usually spans N+1 UTC dates, so <code>days=1</code> typically costs 4 credits. Dates with no position data are not charged.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["uuid","string","one required","Vessel UUID"],
     ["mmsi","string","one required","Vessel MMSI"],
     ["imo","string","one required","Vessel IMO"],
@@ -1472,7 +1467,6 @@ System.out.println(response.body());`
   method:"GET", base:BASE_V0, path:"vessel_find",
   desc:"Search the vessel database using any combination of type, name, dimensions, country, or year built, without needing a specific MMSI or IMO number. Returns up to 500 results per page; use the next pagination token for additional pages.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["name","string","optional","Vessel name (use with fuzzy)"],
     ["fuzzy","integer","optional","0=exact match, 1=similar names"],
     ["type","string","optional","Vessel type filter"],
@@ -1538,7 +1532,6 @@ System.out.println(response.body());`
   method:"GET", base:BASE_V0, path:"port_find",
   desc:"Search for maritime ports by name, UNLOCODE, type, country, or geographic coordinates. Fuzzy search allows finding ports by approximate name. Geographic search returns ports within a specified radius.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["name","string","optional","Port name"],
     ["uuid","string","optional","Port UUID"],
     ["fuzzy","integer","optional","0=exact match, 1=approximate"],
@@ -1585,7 +1578,6 @@ System.out.println(response.body());`
   method:"GET", base:BASE_V0, path:"port",
   desc:"Return detailed data for a specific port: UUID, name, country, type, coordinates, and area classification. Look up a port by UUID or UNLOCODE. When a port has terminals, they are included in the port object. Not all ports have terminals.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["uuid","string","optional","Port UUID"],
     ["unlocode","string","optional","Port UN/LOCODE"]
   ],
@@ -1636,7 +1628,6 @@ System.out.println(response.body());`
   warn:"<strong>Not for navigation.</strong> Routes are for distance estimation and logistics planning only. Do not use for vessel routing, passage planning, or any safety-critical application.",
   desc:"Calculate the optimal sea route between two points. Input can be GPS coordinates, port UUIDs, or UN/LOCODEs. Returns a GeoJSON LineString with waypoints and total distance in nautical miles.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["lat_from","number","conditional","Origin latitude"],
     ["lon_from","number","conditional","Origin longitude"],
     ["port_uuid_from","string","conditional","Origin port UUID"],
@@ -1682,7 +1673,6 @@ System.out.println(response.body());`
   bulkType:"dry_dock_dates",
   desc:"Retrieve planned and completed dry dock dates, special survey dates, IOPP certificate dates, and technical manager contact information for vessels.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["imo","string","optional","Vessel IMO number"],
     ["name","string","optional","Vessel name"],
     ["dry_dock_from","string","optional","Filter from date (YYYY-MM-DD)"],
@@ -1728,7 +1718,6 @@ System.out.println(response.body());`
   bulkType:"casualty",
   desc:"Access historical ship casualty records including grounding, collision, fire, sinking, and other incidents. Each record includes the incident type, date, and a detailed narrative description.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["imo","string","optional","Vessel IMO"],
     ["name","string","optional","Vessel name"],
     ["from","string","optional","Start date YYYY-MM-DD"],
@@ -1761,7 +1750,6 @@ System.out.println(response.body());`
   bulkType:"inspections",
   desc:"Retrieve Port State Control (PSC) inspection records including inspection type, authority, port, deficiency descriptions, and whether the vessel was detained. Includes technical manager contact information.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["imo","string","optional","Vessel IMO"],
     ["name","string","optional","Vessel name"],
     ["from","string","optional","Start date YYYY-MM-DD"],
@@ -1813,7 +1801,6 @@ System.out.println(response.body());`
   bulkType:"sales_purchase_demolitions",
   desc:"Access records of ship sales, purchases, and demolitions including transaction dates, seller, buyer, sale price, light displacement tonnage, and destination (for scrapping).",
   params:[
-    ["api-key","string","required","Your API key"],
     ["imo","string","optional","Vessel IMO"],
     ["name","string","optional","Vessel name"],
     ["from","string","optional","Start date YYYY-MM-DD"],
@@ -1865,7 +1852,6 @@ System.out.println(response.body());`
   bulkType:"ownership",
   desc:"Find the beneficial owner, commercial operator, technical manager, and commercial manager of any vessel. Filter by company name to find all vessels managed by a specific company.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["imo","string","optional","Vessel IMO"],
     ["name","string","optional","Vessel name"],
     ["beneficial_owner","string","optional","Filter by owner name"],
@@ -1925,7 +1911,6 @@ System.out.println(response.body());`
   bulkType:"class_society",
   desc:"Retrieve classification society information, vessel physical specifications (LOA, LBP, depth, beam), engine details, and ownership information for any vessel.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["imo","string","optional","Vessel IMO"],
     ["name","string","optional","Vessel name"],
     ["fuzzy","integer","optional","0=exact, 1=approximate"],
@@ -1986,7 +1971,6 @@ System.out.println(response.body());`
   bulkType:"engine",
   desc:"Access engine specifications for vessels including designation, builder, designer, maximum continuous output (MCO), RPM, and propulsion type.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["imo","string","optional","Vessel IMO"],
     ["name","string","optional","Vessel name"],
     ["fuzzy","integer","optional","0=exact, 1=approximate"],
@@ -2028,7 +2012,6 @@ System.out.println(response.body());`
   bulkType:"companies",
   desc:"Search maritime companies by name or IMO number. Returns company type, registration country, status, contact details, and parent company information.",
   params:[
-    ["api-key","string","required","Your API key"],
     ["company_imo","string","optional","Company IMO number"],
     ["name","string","optional","Company name"],
     ["updated_from","string","optional","Records updated since YYYY-MM-DD"]
@@ -2086,7 +2069,8 @@ function paramsTable(params){
       <td>${esc(desc)}</td>
     </tr>`;
   }).join('');
-  return `<div class="table-wrap"><table>
+  return `<p class="muted">Authenticate with the <code>x-api-key</code> header. See <a data-nav="authentication">Authentication</a>.</p>
+    <div class="table-wrap"><table>
     <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
     <tbody>${rows}</tbody></table></div>`;
 }
@@ -2301,13 +2285,14 @@ function staticSection(id){
 
   case "authentication": return `<section class="section" id="authentication" data-title="Authentication">
     <h1>Authentication</h1>
-    <p>All requests authenticate with a single API key. Send it as a request header — this is the recommended approach.</p>
+    <p>All requests authenticate with a single API key. Send it in the <code>x-api-key</code> request header.</p>
     <h4>Recommended: header</h4>
     ${singleCode('bash','x-api-key: YOUR_API_KEY')}
     <p>Example:</p>
     ${singleCode('bash','curl -H "x-api-key: YOUR_API_KEY" "https://api.datalastic.com/api/v0/vessel?mmsi=566093000"')}
-    <h4>Alternative: query parameter</h4>
-    <p>You can also pass the key as a query parameter. This is simpler for quick testing in a browser or plain cURL, but the key will appear in server logs.</p>
+    <p>Keys sent in a URL end up in server logs, proxy logs, and browser history. A header keeps the key out of all three.</p>
+    <h4>Legacy: query parameter</h4>
+    <p>The key can also be passed as a query parameter. This remains fully supported for existing integrations but is not recommended for new ones.</p>
     ${singleCode('bash','?api-key=YOUR_API_KEY')}
     <h4>Base URLs</h4>
     <div class="table-wrap"><table>
@@ -2334,12 +2319,7 @@ function staticSection(id){
     <h3>Endpoint</h3>
     ${singleCode('bash','GET https://api.datalastic.com/api/v0/stat')}
     <h3>Parameters</h3>
-    <div class="table-wrap"><table class="params-table">
-      <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td><code>api-key</code></td><td><span class="type-pill">string</span></td><td><span class="req-badge">required</span></td><td>Your API key</td></tr>
-      </tbody>
-    </table></div>
+    <p>None. Authenticate with the <code>x-api-key</code> header as described in <a data-nav="authentication">Authentication</a>.</p>
     <h3>Response Fields</h3>
     <div class="table-wrap"><table class="params-table">
       <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
@@ -2514,15 +2494,15 @@ X-Ratelimit-Reset: 29`)}
     <p>You can queue up to 10 reports at once per API key.</p>
     <h3>1. Submit a report</h3>
     ${codeTabs({
-      curl:`curl -X POST -H "Content-Type: application/json" \\
-  -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
+      curl:`curl -X POST -H "x-api-key: YOUR_API_KEY" -H "Content-Type: application/json" \\
+  -d '{"report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
   "https://api.datalastic.com/api/v0/report"`,
       python:`import requests
 
 r = requests.post(
   url='https://api.datalastic.com/api/v0/report',
+  headers={'x-api-key': 'YOUR_API_KEY'},
   json={
-    'api-key': 'YOUR_KEY',
     'report_type': 'inradius_history',
     'lat': 51.8951, 'lon': 4.3973, 'radius': 10,
     'from': '2022-07-01', 'to': '2022-07-05'
@@ -2533,9 +2513,8 @@ print(r.text)`,
 
 const res = await fetch('https://api.datalastic.com/api/v0/report', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  headers: { 'x-api-key': 'YOUR_API_KEY', 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    'api-key': 'YOUR_KEY',
     report_type: 'inradius_history',
     lat: 51.8951, lon: 4.3973, radius: 10,
     from: '2022-07-01', to: '2022-07-05'
@@ -2552,8 +2531,11 @@ import (
 )
 
 func main() {
-    body := []byte(\`{"api-key":"YOUR_KEY","report_type":"inradius_history","lat":51.8951,"lon":4.3973,"radius":10,"from":"2022-07-01","to":"2022-07-05"}\`)
-    res, _ := http.Post("https://api.datalastic.com/api/v0/report", "application/json", bytes.NewBuffer(body))
+    body := []byte(\`{"report_type":"inradius_history","lat":51.8951,"lon":4.3973,"radius":10,"from":"2022-07-01","to":"2022-07-05"}\`)
+    req, _ := http.NewRequest("POST", "https://api.datalastic.com/api/v0/report", bytes.NewBuffer(body))
+    req.Header.Set("x-api-key", "YOUR_API_KEY")
+    req.Header.Set("Content-Type", "application/json")
+    res, _ := http.DefaultClient.Do(req)
     defer res.Body.Close()
     out, _ := io.ReadAll(res.Body)
     fmt.Println(string(out))
@@ -2562,9 +2544,9 @@ func main() {
 require 'json'
 
 uri = URI('https://api.datalastic.com/api/v0/report')
-req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+req = Net::HTTP::Post.new(uri, 'x-api-key' => 'YOUR_API_KEY', 'Content-Type' => 'application/json')
 req.body = {
-  'api-key' => 'YOUR_KEY', 'report_type' => 'inradius_history',
+  'report_type' => 'inradius_history',
   'lat' => 51.8951, 'lon' => 4.3973, 'radius' => 10,
   'from' => '2022-07-01', 'to' => '2022-07-05'
 }.to_json
@@ -2572,22 +2554,23 @@ res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |h| h.request(req
 puts res.body`,
       php:`<?php
 $payload = json_encode([
-  'api-key' => 'YOUR_KEY', 'report_type' => 'inradius_history',
+  'report_type' => 'inradius_history',
   'lat' => 51.8951, 'lon' => 4.3973, 'radius' => 10,
   'from' => '2022-07-01', 'to' => '2022-07-05'
 ]);
 $c = curl_init('https://api.datalastic.com/api/v0/report');
 curl_setopt_array($c, [
   CURLOPT_POST => true,
-  CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+  CURLOPT_HTTPHEADER => ['x-api-key: YOUR_API_KEY', 'Content-Type: application/json'],
   CURLOPT_POSTFIELDS => $payload,
   CURLOPT_RETURNTRANSFER => true
 ]);
 echo curl_exec($c);
 curl_close($c);`,
-      java:`String payload = "{\\"api-key\\":\\"YOUR_KEY\\",\\"report_type\\":\\"inradius_history\\",\\"lat\\":51.8951,\\"lon\\":4.3973,\\"radius\\":10,\\"from\\":\\"2022-07-01\\",\\"to\\":\\"2022-07-05\\"}";
+      java:`String payload = "{\\"report_type\\":\\"inradius_history\\",\\"lat\\":51.8951,\\"lon\\":4.3973,\\"radius\\":10,\\"from\\":\\"2022-07-01\\",\\"to\\":\\"2022-07-05\\"}";
 HttpRequest request = HttpRequest.newBuilder()
   .uri(URI.create("https://api.datalastic.com/api/v0/report"))
+  .header("x-api-key", "YOUR_API_KEY")
   .header("Content-Type", "application/json")
   .POST(HttpRequest.BodyPublishers.ofString(payload))
   .build();
@@ -2685,7 +2668,6 @@ System.out.println(response.body());`
     <p>Generate an async report of all vessels that passed through a geographic area during a specified time period. Submit it as a report job, poll for completion, then download the result as a ZIP file. Set <code>report_type</code> to <code>inradius_history</code>.</p>
     <h4>JSON Body Parameters</h4>
     ${paramsTable([
-      ["api-key","string","required","Your API key"],
       ["report_type","string","required",'Must be "inradius_history"'],
       ["lat","number","required","Center latitude"],
       ["lon","number","required","Center longitude"],
@@ -2695,8 +2677,8 @@ System.out.println(response.body());`
     ])}
     <div class="callout pink"><strong>Cost:</strong> 1 credit per unique vessel seen per calendar day, summed across the requested date range. A 2-day report with 10 unique vessels on day one and 15 on day two costs 10 + 15 = 25 credits. A vessel seen on both days counts once per day, and a partial day counts as a full calendar date.</div>
     <h4>Submit</h4>
-    ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
-  -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
+    ${singleCode('bash',`curl -X POST -H "x-api-key: YOUR_API_KEY" -H "Content-Type: application/json" \\
+  -d '{"report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
   "https://api.datalastic.com/api/v0/report"`)}
     <div class="callout cyan">See the <a data-nav="async-reports">Async Reports</a> section for the full submit → poll → download lifecycle and response examples.</div>
     <p class="endpoint-cta">Don't have an API key yet? <a href="${PRICING}" target="_blank" rel="noopener">Get one →</a></p>
@@ -2705,12 +2687,12 @@ System.out.println(response.body());`
   case "report-vessel_list": return bulkReportSection("report-vessel_list","Vessel List","vessel_list","5,000 credits",
     "Download the complete database of over 1,000,000 vessels with detailed specifications. One report, the full fleet.",
     "Contains: name, IMO, MMSI, UUID, callsign, country, type, subtype, draft, TEU, deadweight, dimensions, speeds, year_built, homeport, and activity status.",
-    `{"api-key": "YOUR_KEY", "report_type": "vessel_list"}`);
+    `{"report_type": "vessel_list"}`);
 
   case "report-port_list": return bulkReportSection("report-port_list","Port List","port_list","500 credits",
     "Download the complete ports database.",
     "Contains: uuid, name, country, unlocode, type, lat, lon, and area levels.",
-    `{"api-key": "YOUR_KEY", "report_type": "port_list"}`);
+    `{"report_type": "port_list"}`);
 
   case "report-inradius_history": return `<section class="section" id="report-inradius_history" data-title="Historical Location Data">
     <h1>Historical Location Data</h1>
@@ -2721,7 +2703,6 @@ System.out.println(response.body());`
     <p>Generate a historical scan of all vessels that passed through a geographic area during a time window. Submit it as an async job, poll for completion, then download the ZIP result.</p>
     <h4>JSON Body Parameters</h4>
     ${paramsTable([
-      ["api-key","string","required","Your API key"],
       ["report_type","string","required",'Must be "inradius_history"'],
       ["lat","number","required","Center latitude"],
       ["lon","number","required","Center longitude"],
@@ -2731,8 +2712,8 @@ System.out.println(response.body());`
     ])}
     <div class="callout pink"><strong>Cost:</strong> 1 credit per unique vessel seen per calendar day, summed across the requested date range. A 2-day report with 10 unique vessels on day one and 15 on day two costs 10 + 15 = 25 credits. A vessel seen on both days counts once per day, and a partial day counts as a full calendar date.</div>
     <h4>Submit</h4>
-    ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
-  -d '{"api-key": "YOUR_KEY", "report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
+    ${singleCode('bash',`curl -X POST -H "x-api-key: YOUR_API_KEY" -H "Content-Type: application/json" \\
+  -d '{"report_type": "inradius_history", "lat": 51.8951, "lon": 4.3973, "radius": 10, "from": "2022-07-01", "to": "2022-07-05"}' \\
   "https://api.datalastic.com/api/v0/report"`)}
     <div class="callout cyan">See the <a data-nav="async-reports">Async Reports</a> section for the full polling and download workflow.</div>
   </section>`;
@@ -2746,7 +2727,6 @@ System.out.println(response.body());`
     <p>Download a detailed log of your API key's usage history. Set <code>report_type</code> to <code>request_usage</code>. <strong>This report is free.</strong></p>
     <h4>JSON Body Parameters</h4>
     ${paramsTable([
-      ["api-key","string","required","Your API key"],
       ["report_type","string","required",'Must be "request_usage"'],
       ["from","string","optional","Start date YYYY-MM-DD"],
       ["to","string","optional",'End date YYYY-MM-DD (max 31 days from "from")']
@@ -2754,8 +2734,8 @@ System.out.println(response.body());`
     <p class="muted">If <code>from</code>/<code>to</code> are omitted, the report covers the last month.</p>
     <p>The ZIP contains two CSV files: <code>request_usage_&lt;timestamp&gt;.csv</code> lists every API call your key made, and <code>report_usage_&lt;timestamp&gt;.csv</code> lists every report you requested and its cost. Add the <code>req_cost</code> columns of both together for your total credit spend.</p>
     <h4>Submit</h4>
-    ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
-  -d '{"api-key": "YOUR_KEY", "report_type": "request_usage", "from": "2024-01-01", "to": "2024-01-31"}' \\
+    ${singleCode('bash',`curl -X POST -H "x-api-key: YOUR_API_KEY" -H "Content-Type: application/json" \\
+  -d '{"report_type": "request_usage", "from": "2024-01-01", "to": "2024-01-31"}' \\
   "https://api.datalastic.com/api/v0/report"`)}
     <div class="callout cyan">Poll and download as described in <a data-nav="async-reports">Async Reports</a>.</div>
   </section>`;
@@ -2848,56 +2828,56 @@ fmt.Printf("%s: %.6f, %.6f\\n", vessel.Name, vessel.Lat, vessel.Lon)`);
     "report-dry_dock_dates","Dry Dock Dates Report","dry_dock_dates","2,000 credits per report",
     "Download all dry dock and special survey records across the fleet, including IOPP certificate dates and technical manager contact information.",
     "Contains: id, imo, vessel_name, special_survey_date, dry_dock_date, iopp_issue_date, iopp_exp_date, technical_manager, country_code, website, email, phone, address, linkedin, modified_at.",
-    `{"api-key": "YOUR_KEY", "report_type": "dry_dock_dates"}`,
+    `{"report_type": "dry_dock_dates"}`,
     true);
 
   case "report-casualty": return bulkReportSection(
     "report-casualty","Ship Casualty Report","casualty","2,000 credits per report",
     "Download historical casualty records covering groundings, collisions, fires, sinkings, and other incidents. Each record includes the incident type and a detailed narrative description.",
     "Contains: id, imo, vessel_name, casualty_date, casualty_type, casualty_details, modified_at.",
-    `{"api-key": "YOUR_KEY", "report_type": "casualty", "from": "2024-01-01", "to": "2024-01-31"}`,
+    `{"report_type": "casualty", "from": "2024-01-01", "to": "2024-01-31"}`,
     true);
 
   case "report-inspections": return bulkReportSection(
     "report-inspections","Ship Inspections Report","inspections","2,000 credits per report",
     "Download Port State Control (PSC) inspection records including authority, port, deficiency descriptions, and detention outcomes.",
     "Contains: id, imo, vessel_name, vessel_type_code, flag_code, inspection_date, inspection_authority, inspection_port, inspection_type, detention, ship_deficiencies, deficiency_description, technical_ism_manager, country_code, website, email, phone, address, company_imo, modified_at.",
-    `{"api-key": "YOUR_KEY", "report_type": "inspections", "from": "2024-01-01", "to": "2024-01-31"}`,
+    `{"report_type": "inspections", "from": "2024-01-01", "to": "2024-01-31"}`,
     true);
 
   case "report-spd": return bulkReportSection(
     "report-spd","Ship Sales & Demolitions Report","sales_purchase_demolitions","2,000 credits per report",
     "Download records of ship sales, purchases, and demolitions including transaction dates, buyer, seller, sale price, and scrapping destination.",
     "Contains: id, sales_report_date, imo, vessel_name, flag_name, vessel_type_code, built_year, dwt_design, gt, ldt, seller, buyer, sales_price_usd_mio, sales_price_usd/ldt, destination, sales_type, dry_dock_date, special_survey_date, sales_note, previous_sales_record, modified_at.",
-    `{"api-key": "YOUR_KEY", "report_type": "sales_purchase_demolitions", "from": "2024-01-01", "to": "2024-01-31"}`,
+    `{"report_type": "sales_purchase_demolitions", "from": "2024-01-01", "to": "2024-01-31"}`,
     true);
 
   case "report-ownership": return bulkReportSection(
     "report-ownership","Vessel Ownership Report","ownership","2,000 credits per report",
     "Download beneficial ownership, operator, technical manager, and commercial manager records across the fleet.",
     "Contains: id, imo, vessel_name, beneficial_owner, beneficial_owner_country, operator, operator_country, flag_name, vessel_type_code, built_year, dwt_design, class1_code, technical_manager, technical_manager_country, commercial_manager, commercial_manager_country, modified_at.",
-    `{"api-key": "YOUR_KEY", "report_type": "ownership"}`,
+    `{"report_type": "ownership"}`,
     true);
 
   case "report-class_society": return bulkReportSection(
     "report-class_society","Classification Society Report","class_society","2,000 credits per report",
     "Download classification society records with full physical vessel specifications (LOA, LBP, depth, beam, draft) and engine details.",
     "Contains: imo, vessel_name, vessel_type_code, flag_name, built_year, dwt_design, special_survey_date, dry_dock_date, class1_code, beneficial_owner_imo, beneficial_owner, technical_manager_imo, technical_manager, draft_design, nt, gt, loa, lbp, depth, beam_moduled, engine_builder, engine_designer, propulsion_type_code, modified_at.",
-    `{"api-key": "YOUR_KEY", "report_type": "class_society"}`,
+    `{"report_type": "class_society"}`,
     true);
 
   case "report-engine": return bulkReportSection(
     "report-engine","Vessel Engine Report","engine","2,000 credits per report",
     "Download engine specifications for the fleet including designation, builder, designer, MCO, RPM, and propulsion type.",
     "Contains: imo, vessel_name, vessel_type_code, propulsion_type_code, mco, mco_unit, mco_rpm, trading_category_code, built_year, gt, engine_designation, engine_builder, engine_designer, modified_at.",
-    `{"api-key": "YOUR_KEY", "report_type": "engine"}`,
+    `{"report_type": "engine"}`,
     true);
 
   case "report-companies": return bulkReportSection(
     "report-companies","Maritime Companies Report","companies","2,000 credits per report",
     "Download the full maritime companies database including company type, registration country, status, contact details, and parent company relationships.",
     "Contains: id, short_name, long_name, company_type, country_code, company_imo, website, company_status, email, phone, address, linkedin, parent_company_imo, parent_company_name, modified_at.",
-    `{"api-key": "YOUR_KEY", "report_type": "companies"}`,
+    `{"report_type": "companies"}`,
     true);
 
   case "port_terminals": return `<section class="section" id="port_terminals" data-title="Port Terminals">
@@ -2964,7 +2944,7 @@ function bulkReportSection(id,title,type,cost,desc,contains,body,addon=false){
     <h4>JSON Body</h4>
     ${singleCode('json',body)}
     <h4>Submit</h4>
-    ${singleCode('bash',`curl -X POST -H "Content-Type: application/json" \\
+    ${singleCode('bash',`curl -X POST -H "x-api-key: YOUR_API_KEY" -H "Content-Type: application/json" \\
   -d '${body}' \\
   "https://api.datalastic.com/api/v0/report"`)}
     <div class="callout cyan">Poll for completion and download the ZIP as described in <a data-nav="async-reports">Async Reports</a>.</div>
